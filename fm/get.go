@@ -4,9 +4,12 @@
  * All Rights Reserved.
  */
 
-package server
+package fm
 
-func init() {
-	sv := &srServer{}
-	serverImpl = sv
+func GetDefault[T any](val *T, defaultValue T) T {
+	if val == nil {
+		return defaultValue
+	}
+
+	return *val
 }

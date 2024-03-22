@@ -9,16 +9,16 @@ package gmod
 import (
 	"log"
 
+	_ "github.com/andypangaribuan/gmod/gm"
+
 	"github.com/andypangaribuan/gmod/core/json"
 	"github.com/andypangaribuan/gmod/core/net"
 	"github.com/andypangaribuan/gmod/ice"
-
-	_ "github.com/andypangaribuan/gmod/gm"
 )
 
 var iceGM ice.GM
 
-func Init() {
+func init() {
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
 	iceGM.SetJson(json.Create())

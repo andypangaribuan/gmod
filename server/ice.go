@@ -6,17 +6,38 @@
 
 package server
 
+import "google.golang.org/grpc"
+
 type server interface {
+	FuseG(grpcPort int, routes func(router RouterG))
 	FuseR(restPort int, routes func(router RouterR))
+	FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR))
 }
 
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Single(path string, handlers ...func(sc Context) error)
-	Group(endpoints map[string][]func(sc Context) error)
-	Unrouted(handler func(ctx Context, method, path, url string) error)
+	Unrouted(controller func(ctx FuseContextR, method, path, url string) error)
+	Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR)))
+	Single(path string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR)))
 }
 
-type Context interface {
+type RouterG interface {
+	AutoRecover(autoRecover bool)
+	Server() *grpc.Server
+}
+
+type FuseContextR interface {
+	Regulator() FuseContextRegulatorR
+	GetResponse() (code int, obj interface{})
+}
+
+type FuseContextRegulatorR interface {
+	Next() (canNext bool, ctrl func() func(ctx FuseContextR))
+	ContextBuilder() FuseContextBuilderR
+	Send()
+}
+
+type FuseContextBuilderR interface {
+	Build() FuseContextR
 }

@@ -8,7 +8,7 @@ package server
 
 import (
 	"fmt"
-	"log"
+	"os"
 	"time"
 
 	"github.com/andypangaribuan/gmod/gm"
@@ -18,7 +18,8 @@ import (
 
 func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
 	if gm.Net.IsPortUsed(restPort) {
-		panic("rest-port already in use")
+		fmt.Printf("fuse server [restful]: port %v already in use\n", restPort)
+		os.Exit(100)
 	}
 
 	fuseFiberApp = fiber.New(fiber.Config{
@@ -40,25 +41,35 @@ func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
 		fuseFiberApp.Use(recover.New())
 	}
 
+	isListenFailed := false
 	go func ()  {
 		tryCount := 0
-		maxTry := 5
+		maxTry := 30
 		time.Sleep(time.Millisecond * 100)
 
 		for {
+			if isListenFailed {
+				break
+			}
+
 			tryCount++
 			if tryCount > maxTry {
 				break
 			}
 
 			if gm.Net.IsPortUsed(restPort) {
-				fmt.Printf("fuse server: restful run at port %v\n", restPort)
+				fmt.Printf("fuse server [restful]: run at port %v\n", restPort)
 				break
 			}
 
-			time.Sleep(time.Second)
+			time.Sleep(time.Millisecond * 100)
 		}
 	}()
 
-	log.Fatal(fuseFiberApp.Listen(fmt.Sprintf(":%v", restPort)))
+	err := fuseFiberApp.Listen(fmt.Sprintf(":%v", restPort))
+	if err != nil {
+		isListenFailed = true
+		fmt.Printf("fuse server [restful]: failed to listen on port %v\n", restPort)
+		os.Exit(100)
+	}
 }
