@@ -39,8 +39,6 @@ func (slf *srFuseContextRegulatorR) Send() {
 		ctx.Send(fm.GetDefault(val, []byte{}))
 	case interface{}:
 		ctx.JSON(val)
-	case *interface{}:
-		ctx.JSON(fm.GetDefault(val, nil))
 	default:
 		ctx.SendString("invalid response object")
 	}
