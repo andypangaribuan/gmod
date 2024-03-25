@@ -78,3 +78,16 @@ func (slf *pgInstance) Execute(query string, args ...interface{}) (string, error
 
 	return conn.conf.Host, err
 }
+
+func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, string, error) {
+	conn, err := slf.crw()
+	if err != nil {
+		return nil, conn.conf.Host, err
+	}
+
+	startTime := gm.Util.Timenow()
+	id, _, err := executeRID(conn, nil, query, args...)
+	printSql(conn, startTime, query, args...)
+
+	return id, conn.conf.Host, err
+}

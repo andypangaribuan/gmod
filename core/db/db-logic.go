@@ -92,6 +92,43 @@ func execute(conn *srConnection, tx ice.DbTx, query string, args ...interface{})
 	return res, err
 }
 
+func executeRID(conn *srConnection, tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
+	query, args = normalizeSqlQueryParams(conn, query, args)
+
+	if tx != nil {
+		switch v := tx.(type) {
+		case *pqInstanceTx:
+			stmt, err := v.tx.Prepare(query)
+			if err != nil {
+				return nil, conn.conf.Host, err
+			}
+			defer stmt.Close()
+
+			var id *int64
+			err = stmt.QueryRow(args...).Scan(&id)
+			if err != nil {
+				return nil, conn.conf.Host, err
+			}
+
+			return id, conn.conf.Host, err
+		}
+	}
+
+	stmt, err := conn.sx.Prepare(query)
+	if err != nil {
+		return nil, conn.conf.Host, err
+	}
+	defer stmt.Close()
+
+	var id *int64
+	err = stmt.QueryRow(args...).Scan(&id)
+	if err != nil {
+		return nil, conn.conf.Host, err
+	}
+
+	return id, conn.conf.Host, err
+}
+
 func printSql(conn *srConnection, startTime time.Time, query string, args ...interface{}) {
 	if conn.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()

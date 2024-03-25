@@ -25,4 +25,6 @@ type DbPostgresInstance interface {
 type DbInstance interface {
 	Ping() (string, error)
 	PingRead() (string, error)
+	Execute(query string, args ...interface{}) (string, error)
+	ExecuteRID(query string, args ...interface{}) (*int64, string, error)
 }
