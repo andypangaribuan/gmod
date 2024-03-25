@@ -4,7 +4,7 @@
  * All Rights Reserved.
  */
 
-package gm
+package json
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
@@ -12,13 +12,5 @@ import (
 	_ "unsafe"
 )
 
-//go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
-var iceGM ice.GM
-
-var (
-	// Conf *srConf
-	Conf ice.Conf
-	Json ice.Json
-	Net  ice.Net
-	Util *srUtil
-)
+//go:linkname iceJson github.com/andypangaribuan/gmod.iceJson
+var iceJson ice.Json

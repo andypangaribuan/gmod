@@ -6,6 +6,7 @@
 
 package net
 
-func Create() *srNet {
-	return &srNet{}
+func init() {
+	sr := new(srNet)
+	iceNet = sr
 }

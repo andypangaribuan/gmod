@@ -4,12 +4,8 @@
  * All Rights Reserved.
  */
 
-package gm
+package conf
 
-type srJson struct {
-	iceJson
-}
-
-type srNet struct {
-	iceNet
+func (slf *srConf) SetZxEnvName(name string) {
+	slf.zxEnvName = name
 }

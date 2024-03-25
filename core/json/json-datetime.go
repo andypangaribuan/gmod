@@ -6,7 +6,6 @@
 
 package json
 
-
 import (
 	"time"
 	"unsafe"

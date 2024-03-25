@@ -4,11 +4,8 @@
  * All Rights Reserved.
  */
 
-package ice
+package fm
 
-type GM interface {
-	SetConf(conf Conf)
-	SetJson(json Json)
-	SetNet(net Net)
-	SetUtil(util Util, env UtilEnv)
+func Ptr[T any](val T) *T {
+	return &val
 }

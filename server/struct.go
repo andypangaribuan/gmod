@@ -11,7 +11,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-type srServer struct{}
+type srServer struct {
+	logSpace string
+}
 
 type srGrpcServerHandler struct {
 	stackTraceSkipLevel int
@@ -35,6 +37,7 @@ type srFuseContextR struct {
 	endpoint     string
 	isRegulator  bool
 	regulatorCtx *srFuseContextRegulatorR
+	authObj      interface{}
 
 	controllers  []func(ctx FuseContextR)
 	responseCode int

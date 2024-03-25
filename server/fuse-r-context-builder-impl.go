@@ -12,6 +12,12 @@ func (slf *srFuseContextBuilderR) Build() FuseContextR {
 		endpoint:     slf.original.endpoint,
 		isRegulator:  false,
 		regulatorCtx: slf.original.regulatorCtx,
+		authObj:      slf.original.authObj,
+	}
+
+	currentControllerContext := slf.original.regulatorCtx.currentControllerContext
+	if currentControllerContext != nil {
+		ctx.authObj = currentControllerContext.authObj
 	}
 
 	return ctx

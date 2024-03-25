@@ -6,9 +6,9 @@
 
 package fm
 
-func GetDefault[T any](val *T, defaultValue T) T {
+func GetDefault[T any](val *T, dval T) T {
 	if val == nil {
-		return defaultValue
+		return dval
 	}
 
 	return *val

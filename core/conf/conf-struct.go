@@ -4,11 +4,8 @@
  * All Rights Reserved.
  */
 
-package ice
+package conf
 
-type GM interface {
-	SetConf(conf Conf)
-	SetJson(json Json)
-	SetNet(net Net)
-	SetUtil(util Util, env UtilEnv)
+type srConf struct {
+	zxEnvName string
 }

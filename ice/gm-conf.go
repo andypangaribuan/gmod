@@ -4,5 +4,8 @@
  * All Rights Reserved.
  */
 
-package exchange
+package ice
 
+type Conf interface {
+	SetZxEnvName(name string)
+}

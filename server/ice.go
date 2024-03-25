@@ -17,7 +17,7 @@ type server interface {
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Unrouted(controller func(ctx FuseContextR, method, path, url string) error)
+	Unrouted(controller func(ctx FuseContextR, method, path, url string))
 	Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR)))
 	Single(path string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR)))
 }
@@ -30,6 +30,7 @@ type RouterG interface {
 type FuseContextR interface {
 	Regulator() FuseContextRegulatorR
 	GetResponse() (code int, obj interface{})
+	SetAuth(val interface{})
 }
 
 type FuseContextRegulatorR interface {

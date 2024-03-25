@@ -31,3 +31,7 @@ func (slf *srFuseContextR) GetResponse() (code int, obj interface{}) {
 	slf.regulatorCtx.currentControllerContext = slf
 	return slf.responseCode, slf.responseObj
 }
+
+func (slf *srFuseContextR) SetAuth(obj interface{}) {
+	slf.authObj = obj
+}

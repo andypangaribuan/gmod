@@ -8,10 +8,6 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
-type iceJson interface {
-	ice.Json
-}
-
-type iceNet interface {
-	ice.Net
+type iceUtil interface {
+	ice.Util
 }

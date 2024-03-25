@@ -7,6 +7,8 @@
 package server
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"strings"
 
@@ -21,11 +23,48 @@ func (slf *srFuseRouterR) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *srFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, path, url string) error) {
+func (slf *srFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, path, url string)) {
+	slf.fiberApp.Use(func(c *fiber.Ctx) error {
+		err := c.Next()
+
+		var fe *fiber.Error
+		if errors.As(err, &fe) && fe.Code == 404 {
+			var (
+				url      = c.OriginalURL()
+				path     = c.Path()
+				method   = ""
+				endpoint = ""
+			)
+
+			if c.Route() != nil {
+				method = strings.ToUpper(c.Route().Method)
+
+				m := method
+				if len(m) > 3 {
+					m = m[:3]
+				}
+				endpoint = fmt.Sprintf("%v: %v", m, path)
+			}
+
+			if fe.Message == fmt.Sprintf("Cannot %v %v", method, path) {
+				ctx := &srFuseContextR{
+					fiberCtx:    c,
+					endpoint:    endpoint,
+					isRegulator: false,
+				}
+
+				controller(ctx, method, path, url)
+			}
+		}
+
+		return err
+	})
 }
 
 func (slf *srFuseRouterR) Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR))) {
-
+	for endpoint, controller := range endpoints {
+		slf.Single(endpoint, controller...)
+	}
 }
 
 func (slf *srFuseRouterR) Single(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {

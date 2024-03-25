@@ -4,11 +4,12 @@
  * All Rights Reserved.
  */
 
-package ice
+package util
 
-type GM interface {
-	SetConf(conf Conf)
-	SetJson(json Json)
-	SetNet(net Net)
-	SetUtil(util Util, env UtilEnv)
+type srUtil struct{}
+
+type srUtilEnv struct{}
+
+type srUtilEnvAppEnv struct {
+	val string
 }

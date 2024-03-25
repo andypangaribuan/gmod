@@ -16,15 +16,15 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (*srServer) FuseG(grpcPort int, routes func(router RouterG)) {
+func (slf *srServer) FuseG(grpcPort int, routes func(router RouterG)) {
 	if gm.Net.IsPortUsed(grpcPort) {
-		fmt.Printf("fuse server [grpc]: port %v already in use\n", grpcPort)
+		fmt.Printf("fuse server [grpc]%v: port %v already in use\n", slf.logSpace, grpcPort)
 		os.Exit(100)
 	}
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", grpcPort))
 	if err != nil {
-		fmt.Printf("fuse server [grpc]: failed to listen on port %v\n", grpcPort)
+		fmt.Printf("fuse server [grpc]%v: failed to listen on port %v\n", slf.logSpace, grpcPort)
 		os.Exit(100)
 	}
 
@@ -69,7 +69,7 @@ func (*srServer) FuseG(grpcPort int, routes func(router RouterG)) {
 			}
 
 			if gm.Net.IsPortUsed(grpcPort) {
-				fmt.Printf("fuse server [grpc]: run at port %v\n", grpcPort)
+				fmt.Printf("fuse server [grpc]%v: run at port %v\n", slf.logSpace, grpcPort)
 				break
 			}
 
@@ -80,7 +80,7 @@ func (*srServer) FuseG(grpcPort int, routes func(router RouterG)) {
 	err = router.server.Serve(listener)
 	if err != nil {
 		isListenFailed = true
-		fmt.Printf("fuse server [grpc]: failed to listen on port %v\n", grpcPort)
+		fmt.Printf("fuse server [grpc]%v: failed to listen on port %v\n", slf.logSpace, grpcPort)
 		os.Exit(100)
 	}
 }

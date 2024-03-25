@@ -8,14 +8,21 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
+func (*srGM) SetConf(conf ice.Conf) {
+	Conf = conf
+}
+
 func (*srGM) SetNet(net ice.Net) {
-	Net = &srNet{
-		net,
-	}
+	Net = net
 }
 
 func (*srGM) SetJson(json ice.Json) {
-	Json = &srJson{
-		json,
+	Json = json
+}
+
+func (*srGM) SetUtil(util ice.Util, env ice.UtilEnv) {
+	Util = &srUtil{
+		iceUtil: util,
+		Env:     env,
 	}
 }

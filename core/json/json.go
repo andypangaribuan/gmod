@@ -6,6 +6,7 @@
 
 package json
 
-func Create() *srJson {
-	return &srJson{}
+func init() {
+	sr := new(srJson)
+	iceJson = sr
 }

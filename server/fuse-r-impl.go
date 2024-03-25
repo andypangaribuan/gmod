@@ -23,8 +23,8 @@ func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
 	}
 
 	fuseFiberApp = fiber.New(fiber.Config{
-		JSONEncoder: gm.Json.Marshal,
-		JSONDecoder: gm.Json.UnMarshal,
+		JSONEncoder:           gm.Json.Marshal,
+		JSONDecoder:           gm.Json.UnMarshal,
 		DisableStartupMessage: true,
 	})
 
@@ -42,7 +42,7 @@ func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
 	}
 
 	isListenFailed := false
-	go func ()  {
+	go func() {
 		tryCount := 0
 		maxTry := 30
 		time.Sleep(time.Millisecond * 100)
