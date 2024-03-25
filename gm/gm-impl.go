@@ -12,6 +12,10 @@ func (*srGM) SetConf(conf ice.Conf) {
 	Conf = conf
 }
 
+func (*srGM) SetDb(db ice.Db) {
+	Db = db
+}
+
 func (*srGM) SetNet(net ice.Net) {
 	Net = net
 }

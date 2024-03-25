@@ -4,9 +4,12 @@
  * All Rights Reserved.
  */
 
-package conf
+package fm
 
-type srConf struct {
-	zxEnvName string
-	timeZone  string
+func Ternary[T any](condition bool, a, b T) T {
+	if condition {
+		return a
+	} else {
+		return b
+	}
 }

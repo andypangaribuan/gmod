@@ -9,9 +9,45 @@ package util
 import (
 	"fmt"
 	"reflect"
+	"time"
 	"unicode"
 	"unsafe"
 )
+
+func (slf *srUtil) getTimeLocation(timezone ...string) *time.Location {
+	zone := ""
+	if len(timezone) > 0 {
+		zone = timezone[0]
+	} else {
+		zone = dvalTimezone
+	}
+
+	if zone == "" {
+		return time.UTC
+	}
+
+	loc, ok := timezones[zone]
+	if ok {
+		return loc
+	}
+
+	timezoneLocking.Lock()
+	defer timezoneLocking.Unlock()
+
+	loc, ok = timezones[zone]
+	if ok {
+		return loc
+	}
+
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		timezones[zone] = time.UTC
+	} else {
+		timezones[zone] = loc
+	}
+
+	return timezones[zone]
+}
 
 func (slf *srUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj interface{}) (err error) {
 	switch rv.CanSet() {

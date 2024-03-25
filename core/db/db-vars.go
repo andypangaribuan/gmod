@@ -4,21 +4,20 @@
  * All Rights Reserved.
  */
 
-package gm
+package db
 
 import (
+	"sync"
+
 	"github.com/andypangaribuan/gmod/ice"
 
 	_ "unsafe"
 )
 
-//go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
-var iceGM ice.GM
+//go:linkname iceDb github.com/andypangaribuan/gmod.iceDb
+var iceDb ice.Db
 
 var (
-	Conf ice.Conf
-	Db   ice.Db
-	Json ice.Json
-	Net  ice.Net
-	Util *srUtil
+	connWriteLocking sync.Mutex
+	connReadLocking  sync.Mutex
 )

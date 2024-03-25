@@ -4,9 +4,9 @@
  * All Rights Reserved.
  */
 
-package conf
+package db
 
-type srConf struct {
-	zxEnvName string
-	timeZone  string
+func init() {
+	sr := new(srDb)
+	iceDb = sr
 }

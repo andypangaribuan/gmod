@@ -12,6 +12,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/gm"
 
 	_ "github.com/andypangaribuan/gmod/core/conf"
+	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/json"
 	_ "github.com/andypangaribuan/gmod/core/net"
 	_ "github.com/andypangaribuan/gmod/core/util"
@@ -22,6 +23,7 @@ import (
 var (
 	iceGM      ice.GM
 	iceConf    ice.Conf
+	iceDb      ice.Db
 	iceJson    ice.Json
 	iceNet     ice.Net
 	iceUtil    ice.Util
@@ -32,6 +34,7 @@ func init() {
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
 	iceGM.SetConf(iceConf)
+	iceGM.SetDb(iceDb)
 	iceGM.SetJson(iceJson)
 	iceGM.SetNet(iceNet)
 	iceGM.SetUtil(iceUtil, iceUtilEnv)

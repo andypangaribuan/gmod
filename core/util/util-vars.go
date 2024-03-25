@@ -7,6 +7,9 @@
 package util
 
 import (
+	"sync"
+	"time"
+
 	"github.com/andypangaribuan/gmod/ice"
 
 	_ "unsafe"
@@ -17,3 +20,9 @@ var iceUtil ice.Util
 
 //go:linkname iceUtilEnv github.com/andypangaribuan/gmod.iceUtilEnv
 var iceUtilEnv ice.UtilEnv
+
+var (
+	dvalTimezone    string
+	timezoneLocking *sync.Mutex
+	timezones       map[string]*time.Location
+)

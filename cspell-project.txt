@@ -6,3 +6,9 @@ dval
 sval
 sbox
 jsoniter
+dbname
+sslmode
+sqlx
+jmoiron
+timenow
+timzones

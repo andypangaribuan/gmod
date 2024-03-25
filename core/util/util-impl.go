@@ -13,6 +13,7 @@ import (
 	"net/mail"
 	"reflect"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -31,6 +32,11 @@ func (*srUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
 	}
 
 	return true
+}
+
+func (slf *srUtil) Timenow(timezone ...string) time.Time {
+	location := slf.getTimeLocation(timezone...)
+	return time.Now().In(location)
 }
 
 func (*srUtil) PanicCatcher(fn func()) (err error) {

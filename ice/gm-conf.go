@@ -8,4 +8,5 @@ package ice
 
 type Conf interface {
 	SetZxEnvName(name string)
+	SetTimeZone(zone string)
 }
