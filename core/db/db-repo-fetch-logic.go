@@ -46,13 +46,11 @@ func (slf *srRepo[T]) fetches(tx ice.DbTx, whereQuery, endQuery string, args []i
 	}
 
 	if slf.rwFetchWhenNull {
-		check := func() bool {
-			return out != nil && len(out) > 0
-		}
-		execReport, err = slf.ins.SelectR2(&out, check, report.query, report.args...)
+		execReport, err = slf.ins.SelectR2(&out, report.query, report.args, func() bool { return len(out) > 0 })
 	} else {
 		execReport, err = slf.ins.Select(&out, report.query, report.args...)
 	}
 
+	report.execReport = execReport
 	return out, report, err
 }

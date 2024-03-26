@@ -27,7 +27,7 @@ type DbInstance interface {
 	PingRead() (string, error)
 
 	Select(out interface{}, query string, args ...interface{}) (*model.DbExecReport, error)
-	SelectR2(out interface{}, check func() bool, query string, args ...interface{}) (*model.DbExecReport, error)
+	SelectR2(out interface{}, query string, args []interface{}, check func() bool) (*model.DbExecReport, error)
 	Execute(query string, args ...interface{}) (*model.DbExecReport, error)
 	ExecuteRID(query string, args ...interface{}) (*int64, *model.DbExecReport, error)
 

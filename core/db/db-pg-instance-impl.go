@@ -118,7 +118,7 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 	return report, err
 }
 
-func (slf *pgInstance) SelectR2(out interface{}, check func() bool, query string, args ...interface{}) (*model.DbExecReport, error) {
+func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check func() bool) (*model.DbExecReport, error) {
 	report := &model.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*model.DbExecReportHost, 0),
