@@ -13,3 +13,11 @@ func GetDefault[T any](val *T, dval T) T {
 
 	return *val
 }
+
+func GetFirst[T any](ls []T) *T {
+	if len(ls) == 0 {
+		return nil
+	}
+
+	return &ls[0]
+}

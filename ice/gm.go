@@ -8,6 +8,7 @@ package ice
 
 type GM interface {
 	SetConf(conf Conf)
+	SetConv(conv Conv, tm ConvTime)
 	SetDb(db Db)
 	SetJson(json Json)
 	SetNet(net Net)

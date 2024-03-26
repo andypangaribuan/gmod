@@ -12,3 +12,4 @@ sqlx
 jmoiron
 timenow
 timzones
+stretchr

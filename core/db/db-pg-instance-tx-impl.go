@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func (slf *pqInstanceTx) Commit() (err error) {
+func (slf *pgInstanceTx) Commit() (err error) {
 	if slf == nil {
 		return
 	}
@@ -27,7 +27,7 @@ func (slf *pqInstanceTx) Commit() (err error) {
 	return
 }
 
-func (slf *pqInstanceTx) Rollback() (err error) {
+func (slf *pgInstanceTx) Rollback() (err error) {
 	const (
 		min    int64 = 10
 		max    int64 = 300

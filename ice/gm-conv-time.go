@@ -4,9 +4,11 @@
  * All Rights Reserved.
  */
 
-package conf
+package ice
 
-type srConf struct {
-	zxEnvName string
-	timezone  string
+import "time"
+
+type ConvTime interface {
+	ToStrFull(val time.Time) string
+	ToStrDT(val time.Time) string
 }

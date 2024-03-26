@@ -8,6 +8,10 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
+type iceConv interface {
+	ice.Conv
+}
+
 type iceUtil interface {
 	ice.Util
 }

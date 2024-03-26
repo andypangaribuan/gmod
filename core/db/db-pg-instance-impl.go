@@ -10,6 +10,8 @@ import (
 	"errors"
 
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/andypangaribuan/gmod/ice"
+	"github.com/andypangaribuan/gmod/model"
 )
 
 func (slf *pgInstance) crw() (*srConnection, error) {
@@ -17,12 +19,10 @@ func (slf *pgInstance) crw() (*srConnection, error) {
 	defer connWriteLocking.Unlock()
 
 	if slf.rw.sx == nil {
-		sx, err := createConnection(slf.rw)
+		err := slf.rw.createConnection()
 		if err != nil {
 			return nil, err
 		}
-
-		slf.rw.sx = sx
 	}
 
 	return slf.rw, nil
@@ -37,12 +37,10 @@ func (slf *pgInstance) cro() (*srConnection, error) {
 	}
 
 	if slf.ro.sx == nil {
-		sx, err := createConnection(slf.ro)
+		err := slf.ro.createConnection()
 		if err != nil {
 			return nil, err
 		}
-
-		slf.ro.sx = sx
 	}
 
 	return slf.ro, nil
@@ -66,28 +64,149 @@ func (slf *pgInstance) PingRead() (string, error) {
 	return conn.conf.Host, conn.sx.Ping()
 }
 
-func (slf *pgInstance) Execute(query string, args ...interface{}) (string, error) {
-	conn, err := slf.crw()
-	if err != nil {
-		return conn.conf.Host, err
-	}
-
-	startTime := gm.Util.Timenow()
-	_, err = execute(conn, nil, query, args...)
-	printSql(conn, startTime, query, args...)
-
-	return conn.conf.Host, err
+func (slf *pgInstance) Execute(query string, args ...interface{}) (*model.DbExecReport, error) {
+	_, report, err := slf.execute(false, nil, query, args...)
+	return report, err
 }
 
-func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, string, error) {
-	conn, err := slf.crw()
-	if err != nil {
-		return nil, conn.conf.Host, err
+func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, *model.DbExecReport, error) {
+	return slf.execute(true, nil, query, args...)
+}
+
+func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...interface{}) (*model.DbExecReport, error) {
+	_, report, err := slf.execute(false, tx, query, args...)
+	return report, err
+}
+
+func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...interface{}) (*int64, *model.DbExecReport, error) {
+	return slf.execute(true, tx, query, args...)
+}
+
+func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}) (*model.DbExecReport, error) {
+	report := &model.DbExecReport{
+		StartedAt: gm.Util.Timenow(),
+		Hosts:     make([]*model.DbExecReportHost, 0),
+	}
+	defer updateReport(report)
+
+	var (
+		conn *srConnection
+		err  error
+	)
+
+	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+	report.Hosts = append(report.Hosts, reportHost)
+
+	if slf.ro != nil {
+		conn, err = slf.cro()
+	} else {
+		conn, err = slf.crw()
 	}
 
-	startTime := gm.Util.Timenow()
-	id, _, err := executeRID(conn, nil, query, args...)
-	printSql(conn, startTime, query, args...)
+	if err != nil {
+		updateReportHost(conn, reportHost)
+		return report, err
+	}
 
-	return id, conn.conf.Host, err
+	query, args = conn.normalizeQueryArgs(query, args)
+	report.Query = query
+	report.Args = args
+
+	err = slf.execSelect(conn, reportHost, nil, &out, query, args)
+	conn.printSql(reportHost.StartedAt, query, args)
+
+	return report, err
+}
+
+func (slf *pgInstance) SelectR2(out interface{}, check func() bool, query string, args ...interface{}) (*model.DbExecReport, error) {
+	report := &model.DbExecReport{
+		StartedAt: gm.Util.Timenow(),
+		Hosts:     make([]*model.DbExecReportHost, 0),
+	}
+	defer updateReport(report)
+
+	var (
+		conn *srConnection
+		err  error
+	)
+
+	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+	report.Hosts = append(report.Hosts, reportHost)
+
+	if slf.ro != nil {
+		conn, err = slf.cro()
+	} else {
+		conn, err = slf.crw()
+	}
+
+	if err != nil {
+		updateReportHost(conn, reportHost)
+		return report, err
+	}
+
+	query, args = conn.normalizeQueryArgs(query, args)
+	report.Query = query
+	report.Args = args
+
+	err = slf.execSelect(conn, reportHost, nil, &out, query, args)
+	conn.printSql(reportHost.StartedAt, query, args)
+
+	if err != nil {
+		return report, err
+	}
+
+	if !check() && slf.ro != nil {
+		reportHost := &model.DbExecReportHost{StartedAt: gm.Util.Timenow()}
+		report.Hosts = append(report.Hosts, reportHost)
+
+		conn, err = slf.crw()
+		if err != nil {
+			updateReportHost(conn, reportHost)
+			return report, err
+		}
+
+		err = slf.execSelect(conn, reportHost, nil, &out, query, args)
+	}
+
+	return report, err
+}
+
+func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args ...interface{}) (*model.DbExecReport, error) {
+	report := &model.DbExecReport{
+		StartedAt: gm.Util.Timenow(),
+		Hosts:     make([]*model.DbExecReportHost, 0),
+	}
+	defer updateReport(report)
+
+	if tx == nil {
+		return report, errors.New("db: tx is nil")
+	}
+
+	switch v := tx.(type) {
+	case *pgInstanceTx:
+		var (
+			conn *srConnection
+			err  error
+		)
+
+		reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+		report.Hosts = append(report.Hosts, reportHost)
+
+		conn, err = slf.crw()
+		if err != nil {
+			updateReportHost(conn, reportHost)
+			return report, err
+		}
+
+		query, args = conn.normalizeQueryArgs(query, args)
+		report.Query = query
+		report.Args = args
+
+		err = slf.execSelect(conn, reportHost, v, &out, query, args)
+		conn.printSql(reportHost.StartedAt, query, args)
+
+		return report, err
+	}
+
+	return report, errors.New("db: unknown tx transaction type")
 }

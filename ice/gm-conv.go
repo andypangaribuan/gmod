@@ -4,9 +4,6 @@
  * All Rights Reserved.
  */
 
-package conf
+package ice
 
-type srConf struct {
-	zxEnvName string
-	timezone  string
-}
+type Conv interface{}

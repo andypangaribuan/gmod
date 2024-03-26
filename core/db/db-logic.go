@@ -24,34 +24,58 @@ func setPgConfDVal(conf *model.DbConnection) {
 		log.Fatalf("db connection must have application name")
 	}
 
-	conf.Host = fm.Ternary(conf.Host != "", conf.Host, "127.0.0.1")
-	conf.Port = fm.Ternary(conf.Port != 0, conf.Port, 5432)
-	conf.Scheme = fm.Ternary(conf.Scheme != "", conf.Scheme, "public")
-	conf.MaxLifeTimeIns = fm.Ternary(conf.MaxLifeTimeIns != 0, conf.MaxLifeTimeIns, 300)
-	conf.MaxIdleTimeIns = fm.Ternary(conf.MaxIdleTimeIns != 0, conf.MaxIdleTimeIns, 30)
-	conf.MaxIdle = fm.Ternary(conf.MaxIdle != 0, conf.MaxIdle, 2)
-	conf.MaxOpen = fm.Ternary(conf.MaxOpen != 0, conf.MaxOpen, 10)
+	var (
+		dvalHost           = gm.Util.Env.GetString("DB_HOST", "127.0.0.1")
+		dvalPort           = gm.Util.Env.GetInt("DB_PORT", 5432)
+		dvalScheme         = gm.Util.Env.GetString("DB_SCHEME", "public")
+		dvalMaxLifeTimeIns = gm.Util.Env.GetInt("DB_MAX_LIFE_TIME_INS", 300)
+		dvalMaxIdleTimeIns = gm.Util.Env.GetInt("DB_MAX_IDLE_TIME_INS", 30)
+		dvalMaxIdle        = gm.Util.Env.GetInt("DB_MAX_IDLE", 2)
+		dvalMaxOpen        = gm.Util.Env.GetInt("DB_MAX_OPEN", 10)
+
+		dvalUnsafeCompatibility = fm.Ptr(gm.Util.Env.GetBool("DB_UNSAFE_COMPATIBILITY", false))
+		dvalPrintUnsafeError    = fm.Ptr(gm.Util.Env.GetBool("DB_PRINT_UNSAFE_ERROR", true))
+		dvalAutoRebind          = fm.Ptr(gm.Util.Env.GetBool("DB_AUTO_REBIND", true))
+		dvalPrintSql            = fm.Ptr(gm.Util.Env.GetBool("DB_PRINT_SQL", true))
+	)
+
+	conf.Host = fm.Ternary(conf.Host != "", conf.Host, dvalHost)
+	conf.Port = fm.Ternary(conf.Port != 0, conf.Port, dvalPort)
+	conf.Scheme = fm.Ternary(conf.Scheme != "", conf.Scheme, dvalScheme)
+	conf.MaxLifeTimeIns = fm.Ternary(conf.MaxLifeTimeIns != 0, conf.MaxLifeTimeIns, dvalMaxLifeTimeIns)
+	conf.MaxIdleTimeIns = fm.Ternary(conf.MaxIdleTimeIns != 0, conf.MaxIdleTimeIns, dvalMaxIdleTimeIns)
+	conf.MaxIdle = fm.Ternary(conf.MaxIdle != 0, conf.MaxIdle, dvalMaxIdle)
+	conf.MaxOpen = fm.Ternary(conf.MaxOpen != 0, conf.MaxOpen, dvalMaxOpen)
+
+	conf.UnsafeCompatibility = fm.Ternary(conf.UnsafeCompatibility != nil, conf.UnsafeCompatibility, dvalUnsafeCompatibility)
+	conf.PrintUnsafeError = fm.Ternary(conf.PrintUnsafeError != nil, conf.PrintUnsafeError, dvalPrintUnsafeError)
+	conf.AutoRebind = fm.Ternary(conf.AutoRebind != nil, conf.AutoRebind, dvalAutoRebind)
+	conf.PrintSql = fm.Ternary(conf.PrintSql != nil, conf.PrintSql, dvalPrintSql)
 }
 
 func getPgConnectionString(conf *model.DbConnection) string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s search_path=%s application_name=%s sslmode=disable", conf.Host, conf.Port, conf.Username, conf.Password, conf.Name, conf.Scheme, conf.AppName)
 }
 
-func createConnection(conn *srConnection) (*sqlx.DB, error) {
-	connStr := getPgConnectionString(conn.conf)
-	instance, err := sqlx.Connect(conn.driverName, connStr)
+func (slf *srConnection) createConnection() error {
+	connStr := getPgConnectionString(slf.conf)
+	instance, err := sqlx.Connect(slf.driverName, connStr)
 	if err == nil {
-		instance.SetConnMaxLifetime(time.Second * time.Duration(conn.conf.MaxLifeTimeIns))
-		instance.SetConnMaxIdleTime(time.Second * time.Duration(conn.conf.MaxIdleTimeIns))
-		instance.SetMaxIdleConns(conn.conf.MaxIdle)
-		instance.SetMaxOpenConns(conn.conf.MaxOpen)
+		instance.SetConnMaxLifetime(time.Second * time.Duration(slf.conf.MaxLifeTimeIns))
+		instance.SetConnMaxIdleTime(time.Second * time.Duration(slf.conf.MaxIdleTimeIns))
+		instance.SetMaxIdleConns(slf.conf.MaxIdle)
+		instance.SetMaxOpenConns(slf.conf.MaxOpen)
 		err = instance.Ping()
 	}
 
-	return instance, err
+	if err == nil {
+		slf.sx = instance
+	}
+
+	return err
 }
 
-func normalizeSqlQueryParams(conn *srConnection, query string, args []interface{}) (string, []interface{}) {
+func (slf *srConnection) normalizeQueryArgs(query string, args []interface{}) (string, []interface{}) {
 	if len(args) == 1 {
 		switch val := args[0].(type) {
 		case []interface{}:
@@ -59,18 +83,18 @@ func normalizeSqlQueryParams(conn *srConnection, query string, args []interface{
 		}
 	}
 
-	if conn.driverName == "postgres" && conn.conf.AutoRebind && len(args) > 0 {
+	if slf.driverName == "postgres" && *slf.conf.AutoRebind && len(args) > 0 {
 		query = sqlx.Rebind(sqlx.DOLLAR, query)
 	}
 	return query, args
 }
 
-func execute(conn *srConnection, tx ice.DbTx, query string, args ...interface{}) (sql.Result, error) {
-	query, args = normalizeSqlQueryParams(conn, query, args)
+func (slf *srConnection) execute(tx ice.DbTx, query string, args ...interface{}) (sql.Result, error) {
+	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
 		switch v := tx.(type) {
-		case *pqInstanceTx:
+		case *pgInstanceTx:
 			stmt, err := v.tx.Prepare(query)
 			if err != nil {
 				return nil, err
@@ -82,7 +106,7 @@ func execute(conn *srConnection, tx ice.DbTx, query string, args ...interface{})
 		}
 	}
 
-	stmt, err := conn.sx.Prepare(query)
+	stmt, err := slf.sx.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
@@ -92,50 +116,50 @@ func execute(conn *srConnection, tx ice.DbTx, query string, args ...interface{})
 	return res, err
 }
 
-func executeRID(conn *srConnection, tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
-	query, args = normalizeSqlQueryParams(conn, query, args)
+func (slf *srConnection) executeRID(tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
+	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
 		switch v := tx.(type) {
-		case *pqInstanceTx:
+		case *pgInstanceTx:
 			stmt, err := v.tx.Prepare(query)
 			if err != nil {
-				return nil, conn.conf.Host, err
+				return nil, slf.conf.Host, err
 			}
 			defer stmt.Close()
 
 			var id *int64
 			err = stmt.QueryRow(args...).Scan(&id)
 			if err != nil {
-				return nil, conn.conf.Host, err
+				return nil, slf.conf.Host, err
 			}
 
-			return id, conn.conf.Host, err
+			return id, slf.conf.Host, err
 		}
 	}
 
-	stmt, err := conn.sx.Prepare(query)
+	stmt, err := slf.sx.Prepare(query)
 	if err != nil {
-		return nil, conn.conf.Host, err
+		return nil, slf.conf.Host, err
 	}
 	defer stmt.Close()
 
 	var id *int64
 	err = stmt.QueryRow(args...).Scan(&id)
 	if err != nil {
-		return nil, conn.conf.Host, err
+		return nil, slf.conf.Host, err
 	}
 
-	return id, conn.conf.Host, err
+	return id, slf.conf.Host, err
 }
 
-func printSql(conn *srConnection, startTime time.Time, query string, args ...interface{}) {
-	if conn.conf.PrintSql {
+func (slf *srConnection) printSql(startTime time.Time, query string, args []interface{}) {
+	if *slf.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()
 		if len(args) == 0 {
-			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nDUR: %vms", conn.conf.Host, query, durationMs)
+			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nDUR: %vms", slf.conf.Host, query, durationMs)
 		} else {
-			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nARGS: %v\nDUR: %vms", conn.conf.Host, query, args, durationMs)
+			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nARGS: %v\nDUR: %vms", slf.conf.Host, query, args, durationMs)
 		}
 	}
 }

@@ -7,11 +7,23 @@
 package db
 
 import (
+	"time"
+
+	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/model"
 	"github.com/jmoiron/sqlx"
 )
 
 type srDb struct{}
+
+type srRepo[T any] struct {
+	ins                 ice.DbInstance
+	tableName           string
+	insertColumn        string
+	insertArgSign       string
+	withDeletedAtIsNull bool
+	rwFetchWhenNull     bool
+}
 
 type srConnection struct {
 	conf       *model.DbConnection
@@ -24,10 +36,33 @@ type pgInstance struct {
 	ro *srConnection
 }
 
-type pqInstanceTx struct {
+type pgInstanceTx struct {
 	ins        *pgInstance
 	tx         *sqlx.Tx
 	isCommit   bool
 	isRollback bool
 	errCommit  error
+}
+
+type srReport struct {
+	tableName     string
+	insertColumn  string
+	insertArgSign string
+	query         string
+	args          []interface{}
+	execReport    *model.DbExecReport
+}
+
+type srReportHost struct {
+	host       string
+	startedAt  time.Time
+	finishedAt time.Time
+	durationMs int64
+}
+
+type srUnsafe struct {
+	query   string
+	args    []interface{}
+	message string
+	trace   string
 }

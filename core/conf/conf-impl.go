@@ -10,6 +10,6 @@ func (slf *srConf) SetZxEnvName(name string) {
 	slf.zxEnvName = name
 }
 
-func (slf *srConf) SetTimeZone(zone string) {
-	slf.timeZone = zone
+func (slf *srConf) SetTimeZone(timezone string) {
+	slf.timezone = timezone
 }

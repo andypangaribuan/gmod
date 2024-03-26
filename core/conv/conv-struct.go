@@ -4,9 +4,8 @@
  * All Rights Reserved.
  */
 
-package conf
+package conv
 
-type srConf struct {
-	zxEnvName string
-	timezone  string
-}
+type srConv struct{}
+
+type srConvTime struct{}

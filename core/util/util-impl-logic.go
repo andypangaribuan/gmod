@@ -12,14 +12,30 @@ import (
 	"time"
 	"unicode"
 	"unsafe"
+
+	"github.com/andypangaribuan/gmod/gm"
 )
+
+func (slf *srUtil) dvalTimezone() string {
+	if !isGetDvalTimezone {
+		isGetDvalTimezone = true
+		val, err := slf.ReflectionGet(gm.Conf, "timezone")
+		if err == nil {
+			if v, ok := val.(string); ok {
+				dvalTimezone = v
+			}
+		}
+	}
+
+	return dvalTimezone
+}
 
 func (slf *srUtil) getTimeLocation(timezone ...string) *time.Location {
 	zone := ""
 	if len(timezone) > 0 {
 		zone = timezone[0]
 	} else {
-		zone = dvalTimezone
+		zone = slf.dvalTimezone()
 	}
 
 	if zone == "" {

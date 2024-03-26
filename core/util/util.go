@@ -14,8 +14,10 @@ import (
 )
 
 func init() {
-	util := new(srUtil)
-	utilEnv := new(srUtilEnv)
+	var (
+		util    = new(srUtil)
+		utilEnv = new(srUtilEnv)
+	)
 
 	iceUtil = util
 	iceUtilEnv = utilEnv

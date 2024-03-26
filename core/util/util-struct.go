@@ -13,3 +13,5 @@ type srUtilEnv struct{}
 type srUtilEnvAppEnv struct {
 	val string
 }
+
+type srUtilTime struct{}

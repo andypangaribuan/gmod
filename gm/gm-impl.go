@@ -12,6 +12,13 @@ func (*srGM) SetConf(conf ice.Conf) {
 	Conf = conf
 }
 
+func (*srGM) SetConv(conv ice.Conv, tm ice.ConvTime) {
+	Conv = &srConv{
+		iceConv: conv,
+		Time:    tm,
+	}
+}
+
 func (*srGM) SetDb(db ice.Db) {
 	Db = db
 }

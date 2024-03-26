@@ -37,11 +37,7 @@
     }
   },
   "fileHeaderComment.template": {
-    "*": [
-      "${commentbegin}",
-      "${commentprefix} ${license}",
-      "${commentend}"
-    ]
+    "*": ["${commentbegin}", "${commentprefix} ${license}", "${commentend}"]
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -54,5 +50,6 @@
   ],
   "merge-conflict.autoNavigateNextConflict.enabled": true,
   "merge-conflict.diffViewPosition": "Current",
-  "git.mergeEditor": true
+  "git.mergeEditor": true,
+  "go.testFlags": ["-v"]
 }

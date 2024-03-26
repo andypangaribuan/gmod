@@ -25,6 +25,13 @@ type DbPostgresInstance interface {
 type DbInstance interface {
 	Ping() (string, error)
 	PingRead() (string, error)
-	Execute(query string, args ...interface{}) (string, error)
-	ExecuteRID(query string, args ...interface{}) (*int64, string, error)
+
+	Select(out interface{}, query string, args ...interface{}) (*model.DbExecReport, error)
+	SelectR2(out interface{}, check func() bool, query string, args ...interface{}) (*model.DbExecReport, error)
+	Execute(query string, args ...interface{}) (*model.DbExecReport, error)
+	ExecuteRID(query string, args ...interface{}) (*int64, *model.DbExecReport, error)
+
+	TxSelect(tx DbTx, out interface{}, query string, args ...interface{}) (*model.DbExecReport, error)
+	TxExecute(tx DbTx, query string, args ...interface{}) (*model.DbExecReport, error)
+	TxExecuteRID(tx DbTx, query string, args ...interface{}) (*int64, *model.DbExecReport, error)
 }

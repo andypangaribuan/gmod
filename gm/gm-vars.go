@@ -17,6 +17,7 @@ var iceGM ice.GM
 
 var (
 	Conf ice.Conf
+	Conv *srConv
 	Db   ice.Db
 	Json ice.Json
 	Net  ice.Net

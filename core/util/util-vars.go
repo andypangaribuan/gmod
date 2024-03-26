@@ -22,7 +22,8 @@ var iceUtil ice.Util
 var iceUtilEnv ice.UtilEnv
 
 var (
-	dvalTimezone    string
-	timezoneLocking *sync.Mutex
-	timezones       map[string]*time.Location
+	dvalTimezone      string
+	isGetDvalTimezone bool
+	timezoneLocking   *sync.Mutex
+	timezones         map[string]*time.Location
 )
