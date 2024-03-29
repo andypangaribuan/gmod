@@ -15,7 +15,7 @@ import (
 
 func (slf *pgInstanceTx) Commit() (err error) {
 	if slf == nil {
-		return
+		return nil
 	}
 
 	if slf.isCommit || slf.isRollback || slf.tx == nil {
@@ -29,28 +29,28 @@ func (slf *pgInstanceTx) Commit() (err error) {
 
 func (slf *pgInstanceTx) Rollback() (err error) {
 	const (
-		min    int64 = 10
+		min    int64 = 100
 		max    int64 = 300
 		maxTry       = 3
 	)
 
 	if slf == nil {
-		return
+		return nil
 	}
 
 	if slf.isCommit || slf.isRollback || slf.tx == nil {
 		if slf.errCommit != nil && slf.isCommit {
-			log.Printf("db.tx.rollback can't commit: isCommit = %v\n", slf.isCommit)
+			log.Printf("db.tx.rollback: isCommit = %v\n", slf.isCommit)
 		}
 
 		if slf.isRollback {
-			log.Printf("db.tx.rollback can't commit: isRollback = %v\n", slf.isRollback)
+			log.Printf("db.tx.rollback: isRollback = %v\n", slf.isRollback)
 		}
 
 		return nil
 	}
 
-	iteration := 0
+	iteration := -1
 	for {
 		iteration++
 		err = slf.tx.Rollback()

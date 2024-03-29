@@ -65,6 +65,10 @@ func (slf *srUtil) getTimeLocation(timezone ...string) *time.Location {
 	return timezones[zone]
 }
 
+func (slf *srUtil) getRandomInt(min, max int) int {
+	return xRand.Intn(max) + min
+}
+
 func (slf *srUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj interface{}) (err error) {
 	switch rv.CanSet() {
 	case true:

@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/andypangaribuan/gmod/fm"
 )
 
 func (*srUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
@@ -37,6 +39,105 @@ func (*srUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
 func (slf *srUtil) Timenow(timezone ...string) time.Time {
 	location := slf.getTimeLocation(timezone...)
 	return time.Now().In(location)
+}
+
+func (slf *srUtil) SmallUID() string {
+	return slf.UID(0)
+}
+
+func (slf *srUtil) LiteUID() string {
+	return slf.UID(3)
+}
+
+func (slf *srUtil) UID(addition ...int) string {
+	length := *fm.GetFirst(addition, 8)
+	length = fm.Ternary(length < 0, 0, length)
+
+	randId := ""
+	if length > 0 {
+		randId = slf.GetRandom(length, numeric+alphabetLower+alphabetUpper)
+	}
+
+	tn := time.Now().UTC().Format("2006-01-02 15:04:05.000000")
+	tn = strings.ReplaceAll(tn, "-", "")
+	tn = strings.ReplaceAll(tn, ":", "")
+	tn = strings.ReplaceAll(tn, ".", "")
+	tn = strings.ReplaceAll(tn, " ", "")
+
+	// 2024-09-30 23:59:59.999999
+	// id1:20.240  id2:93.123  id3:59.599  id4:99.999 -> 12 char
+	id1 := l3uidN[l3uidAddZero(l3uidLength, tn[0:5])]
+	id2 := l3uidN[l3uidAddZero(l3uidLength, tn[5:10])]
+	id3 := l3uidN[l3uidAddZero(l3uidLength, tn[10:15])]
+	id4 := l3uidN[l3uidAddZero(l3uidLength, tn[15:20])]
+
+	return id1 + id2 + id3 + id4 + randId
+}
+
+func (slf *srUtil) DecodeUID(uid string, addition ...int) (rawId string, randId string, err error) {
+	length := *fm.GetFirst(addition, 8)
+	length = fm.Ternary(length < 0, 0, length)
+
+	if length > 0 && len(uid) > 12 {
+		randId = uid[12:]
+		uid = uid[:12]
+	}
+
+	uids, err := l3uidSplitter(uid)
+	if err != nil {
+		return "", "", err
+	}
+
+	raw := ""
+	num := ""
+	chunkSize := 5
+
+	for _, uid := range uids {
+		num = l3uidK[uid]
+		cut := len(num) - chunkSize
+		if cut < 0 {
+			cut = 0
+		}
+
+		raw += num[cut:]
+	}
+
+	return raw, randId, nil
+}
+
+func (slf *srUtil) GetAlphabet(isUpper ...bool) string {
+	upper := *fm.GetFirst(isUpper, false)
+	return fm.Ternary(upper, alphabetUpper, alphabetLower)
+}
+
+func (slf *srUtil) GetNumeric() string {
+	return numeric
+}
+
+func (slf *srUtil) GetRandom(length int, value string) string {
+	if length < 1 {
+		return ""
+	}
+
+	var (
+		res   = ""
+		count = -1
+		max   = len(value)
+		min   = 1
+		rin   int
+	)
+
+	for {
+		count++
+		if count == length {
+			break
+		}
+
+		rin = xRand.Intn(max) + min
+		res += value[rin-1 : rin]
+	}
+
+	return res
 }
 
 func (*srUtil) PanicCatcher(fn func()) (err error) {

@@ -64,6 +64,25 @@ func (slf *pgInstance) PingRead() (string, error) {
 	return conn.conf.Host, conn.sx.Ping()
 }
 
+func (slf *pgInstance) NewTransaction() (ice.DbTx, error) {
+	conn, err := slf.crw()
+	if err != nil {
+		return nil, err
+	}
+
+	tx, err := conn.sx.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	insx := &pgInstanceTx{
+		ins: slf,
+		tx:  tx,
+	}
+
+	return insx, err
+}
+
 func (slf *pgInstance) Execute(query string, args ...interface{}) (*model.DbExecReport, error) {
 	_, report, err := slf.execute(false, nil, query, args...)
 	return report, err
@@ -118,7 +137,7 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 	return report, err
 }
 
-func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check func() bool) (*model.DbExecReport, error) {
+func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check *func() bool) (*model.DbExecReport, error) {
 	report := &model.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*model.DbExecReportHost, 0),
@@ -133,7 +152,7 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
-	if slf.ro != nil {
+	if slf.ro != nil && check != nil {
 		conn, err = slf.cro()
 	} else {
 		conn, err = slf.crw()
@@ -148,24 +167,27 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	report.Query = query
 	report.Args = args
 
-	err = slf.execSelect(conn, reportHost, nil, &out, query, args)
+	err = slf.execSelect(conn, reportHost, nil, out, query, args)
 	conn.printSql(reportHost.StartedAt, query, args)
 
 	if err != nil {
 		return report, err
 	}
 
-	if !check() && slf.ro != nil {
-		reportHost := &model.DbExecReportHost{StartedAt: gm.Util.Timenow()}
-		report.Hosts = append(report.Hosts, reportHost)
+	if check != nil {
+		c := *check
+		if !c() && slf.ro != nil {
+			reportHost := &model.DbExecReportHost{StartedAt: gm.Util.Timenow()}
+			report.Hosts = append(report.Hosts, reportHost)
 
-		conn, err = slf.crw()
-		if err != nil {
-			updateReportHost(conn, reportHost)
-			return report, err
+			conn, err = slf.crw()
+			if err != nil {
+				updateReportHost(conn, reportHost)
+				return report, err
+			}
+
+			err = slf.execSelect(conn, reportHost, nil, out, query, args)
 		}
-
-		err = slf.execSelect(conn, reportHost, nil, &out, query, args)
 	}
 
 	return report, err

@@ -55,11 +55,11 @@ func (*srRepo[T]) formatInsertColumnArgs(val string) string {
 	return formatted
 }
 
-func (slf *srRepo[T]) getWhereQuery(condition string, args ...interface{}) string {
+func (slf *srRepo[T]) getWhereQuery(condition string, args []interface{}) string {
 	condition = strings.TrimSpace(condition)
 	var (
 		whereQuery          = ""
-		withDeletedAtIsNull = slf.isWithDeletedAtIsNull(args...)
+		withDeletedAtIsNull = slf.isWithDeletedAtIsNull(args)
 	)
 
 	if withDeletedAtIsNull {
@@ -74,7 +74,7 @@ func (slf *srRepo[T]) getWhereQuery(condition string, args ...interface{}) strin
 	return whereQuery
 }
 
-func (slf *srRepo[T]) isWithDeletedAtIsNull(args ...interface{}) bool {
+func (slf *srRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
 	isWith := slf.withDeletedAtIsNull
 
 	for _, arg := range args {
@@ -94,7 +94,7 @@ func (slf *srRepo[T]) isWithDeletedAtIsNull(args ...interface{}) bool {
 	return isWith
 }
 
-func (slf *srRepo[T]) getEndQuery(args ...interface{}) string {
+func (slf *srRepo[T]) getEndQuery(args []interface{}) string {
 	endQuery := ""
 
 	for _, arg := range args {
@@ -120,7 +120,7 @@ func (slf *srRepo[T]) getEndQuery(args ...interface{}) string {
 	return strings.TrimSpace(endQuery)
 }
 
-func (slf *srRepo[T]) getArgs(args ...interface{}) []interface{} {
+func (slf *srRepo[T]) getArgs(args []interface{}) []interface{} {
 	filtered := make([]interface{}, 0)
 
 	for _, arg := range args {

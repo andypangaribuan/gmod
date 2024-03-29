@@ -6,13 +6,6 @@
 
 package util
 
-import (
-	"sync"
-	"time"
-
-	"github.com/andypangaribuan/gmod/gm"
-)
-
 func init() {
 	var (
 		util    = new(srUtil)
@@ -22,16 +15,5 @@ func init() {
 	iceUtil = util
 	iceUtilEnv = utilEnv
 
-	adv()
-}
-
-func adv() {
-	timezoneLocking = &sync.Mutex{}
-	timezones = make(map[string]*time.Location, 0)
-
-	val, err := iceUtil.ReflectionGet(gm.Conf, "timeZone")
-	if err == nil {
-		val, _ := val.(string)
-		dvalTimezone = val
-	}
+	xinit()
 }

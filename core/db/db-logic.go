@@ -17,6 +17,7 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/model"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 func setPgConfDVal(conf *model.DbConnection) {

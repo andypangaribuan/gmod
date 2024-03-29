@@ -7,18 +7,25 @@
 package db
 
 import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/model"
 )
 
-func (slf *srRepo[T]) fetches(tx ice.DbTx, whereQuery, endQuery string, args []interface{}) ([]T, *srReport, error) {
-	report := &srReport{
-		tableName:     slf.tableName,
-		insertColumn:  slf.insertColumn,
-		insertArgSign: slf.insertArgSign,
-		query:         "SELECT * FROM ::tableName",
-		args:          args,
-	}
+func (slf *srRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *srReport, error) {
+	var (
+		whereQuery = slf.getWhereQuery(condition, args)
+		endQuery   = strings.TrimSpace(slf.getEndQuery(args) + fm.Ternary(isFetch, " LIMIT 1", ""))
+		report     = &srReport{
+			tableName:     slf.tableName,
+			insertColumn:  slf.insertColumn,
+			insertArgSign: slf.insertArgSign,
+			args:          slf.getArgs(args),
+			query:         "SELECT * FROM ::tableName",
+		}
+	)
 
 	if whereQuery != "" {
 		report.query += " " + whereQuery
@@ -30,7 +37,7 @@ func (slf *srRepo[T]) fetches(tx ice.DbTx, whereQuery, endQuery string, args []i
 
 	var (
 		err        error
-		out        []T
+		out        []*T
 		execReport *model.DbExecReport
 	)
 
@@ -41,14 +48,12 @@ func (slf *srRepo[T]) fetches(tx ice.DbTx, whereQuery, endQuery string, args []i
 
 	if tx != nil {
 		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
-		report.execReport = execReport
-		return out, report, err
-	}
-
-	if slf.rwFetchWhenNull {
-		execReport, err = slf.ins.SelectR2(&out, report.query, report.args, func() bool { return len(out) > 0 })
 	} else {
-		execReport, err = slf.ins.Select(&out, report.query, report.args...)
+		if slf.rwFetchWhenNull {
+			execReport, err = slf.ins.SelectR2(&out, report.query, report.args, fm.Ptr(func() bool { return len(out) > 0 }))
+		} else {
+			execReport, err = slf.ins.Select(&out, report.query, report.args...)
+		}
 	}
 
 	report.execReport = execReport
