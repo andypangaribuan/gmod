@@ -41,10 +41,6 @@ func (slf *srUtil) Timenow(timezone ...string) time.Time {
 	return time.Now().In(location)
 }
 
-func (slf *srUtil) SmallUID() string {
-	return slf.UID(0)
-}
-
 func (slf *srUtil) LiteUID() string {
 	return slf.UID(3)
 }
@@ -59,10 +55,7 @@ func (slf *srUtil) UID(addition ...int) string {
 	}
 
 	tn := time.Now().UTC().Format("2006-01-02 15:04:05.000000")
-	tn = strings.ReplaceAll(tn, "-", "")
-	tn = strings.ReplaceAll(tn, ":", "")
-	tn = strings.ReplaceAll(tn, ".", "")
-	tn = strings.ReplaceAll(tn, " ", "")
+	tn = *slf.ReplaceAll(&tn, "", "-", " ", ":", ".")
 
 	// 2024-09-30 23:59:59.999999
 	// id1:20.240  id2:93.123  id3:59.599  id4:99.999 -> 12 char
@@ -72,6 +65,41 @@ func (slf *srUtil) UID(addition ...int) string {
 	id4 := l3uidN[l3uidAddZero(l3uidLength, tn[15:20])]
 
 	return id1 + id2 + id3 + id4 + randId
+}
+
+func (slf *srUtil) GetAlphabet(isUpper ...bool) string {
+	upper := *fm.GetFirst(isUpper, false)
+	return fm.Ternary(upper, alphabetUpper, alphabetLower)
+}
+
+func (slf *srUtil) GetNumeric() string {
+	return numeric
+}
+
+func (slf *srUtil) GetRandom(length int, value string) string {
+	if length < 1 || length >= 100000 || len(value) == 0 {
+		return ""
+	}
+
+	var (
+		res   = ""
+		count = -1
+		max   = len(value)
+		min   = 1
+		rin   int
+	)
+
+	for {
+		count++
+		if count == length {
+			break
+		}
+
+		rin = xRand.Intn(max) + min
+		res += value[rin-1 : rin]
+	}
+
+	return res
 }
 
 func (slf *srUtil) DecodeUID(uid string, addition ...int) (rawId string, randId string, err error) {
@@ -102,42 +130,31 @@ func (slf *srUtil) DecodeUID(uid string, addition ...int) (rawId string, randId 
 		raw += num[cut:]
 	}
 
-	return raw, randId, nil
-}
-
-func (slf *srUtil) GetAlphabet(isUpper ...bool) string {
-	upper := *fm.GetFirst(isUpper, false)
-	return fm.Ternary(upper, alphabetUpper, alphabetLower)
-}
-
-func (slf *srUtil) GetNumeric() string {
-	return numeric
-}
-
-func (slf *srUtil) GetRandom(length int, value string) string {
-	if length < 1 {
-		return ""
-	}
-
 	var (
-		res   = ""
-		count = -1
-		max   = len(value)
-		min   = 1
-		rin   int
+		year         = raw[0:4]
+		month        = raw[4:6]
+		day          = raw[6:8]
+		hour         = raw[8:10]
+		minute       = raw[10:12]
+		second       = raw[12:14]
+		milliseconds = raw[14:20]
 	)
 
-	for {
-		count++
-		if count == length {
-			break
-		}
+	rawId = fmt.Sprintf("%v-%v-%v %v:%v:%v.%v", year, month, day, hour, minute, second, milliseconds)
+	return rawId, randId, nil
+}
 
-		rin = xRand.Intn(max) + min
-		res += value[rin-1 : rin]
+func (slf *srUtil) ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string {
+	if value == nil {
+		return value
 	}
 
-	return res
+	newValue := *value
+	for _, key := range replaceKey {
+		newValue = strings.ReplaceAll(newValue, key, replaceValue)
+	}
+
+	return &newValue
 }
 
 func (*srUtil) PanicCatcher(fn func()) (err error) {
