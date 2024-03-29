@@ -7,8 +7,6 @@
 package db
 
 import (
-	"time"
-
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/model"
 	"github.com/jmoiron/sqlx"
@@ -51,13 +49,6 @@ type srReport struct {
 	query         string
 	args          []interface{}
 	execReport    *model.DbExecReport
-}
-
-type srReportHost struct {
-	host       string
-	startedAt  time.Time
-	finishedAt time.Time
-	durationMs int64
 }
 
 type srUnsafe struct {

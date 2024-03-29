@@ -54,6 +54,6 @@ func TestDecodeL3Uid(t *testing.T) {
 	tn := fmt.Sprintf("%v-%v-%v %v:%v:%v.%v", year, month, day, hour, minute, second, milliseconds)
 	printLog(t, "raw : %v\n", tn)
 	printLog(t, "rand: %v\n", randId)
-	
+
 	assert.Equal(t, "2024-03-28 10:00:43.639351", tn)
 }

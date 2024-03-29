@@ -87,7 +87,7 @@ func decodeUidL3(uid string, chunk ...int) (string, error) {
 		if cut < 0 {
 			cut = 0
 		}
-		
+
 		raw += num[cut:]
 	}
 
