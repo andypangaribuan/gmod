@@ -4,9 +4,6 @@
  * All Rights Reserved.
  */
 
-package gm
+package json
 
-func init() {
-	sr := &stuGM{}
-	iceGM = sr
-}
+type stuJson struct{}

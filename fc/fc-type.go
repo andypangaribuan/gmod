@@ -413,3 +413,32 @@ func (slf *FCT) ToStringF2() string {
 
 	return v
 }
+
+func (slf *FCT) ToStringSlim() string {
+	val := slf.ToString()
+	if !strings.Contains(val, ".") {
+		return val
+	}
+
+	ls := strings.Split(val, ".")
+	decimalValue := ls[1]
+
+	for {
+		if len(decimalValue) == 0 {
+			break
+		}
+
+		if decimalValue[len(decimalValue)-1:] == "0" {
+			decimalValue = decimalValue[:len(decimalValue)-1]
+		} else {
+			break
+		}
+	}
+
+	val = ls[0]
+	if len(decimalValue) > 0 {
+		val += "." + decimalValue
+	}
+
+	return val
+}

@@ -8,31 +8,35 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
-func (*srGM) SetConf(conf ice.Conf) {
+func (*stuGM) SetConf(conf ice.Conf) {
 	Conf = conf
 }
 
-func (*srGM) SetConv(conv ice.Conv, tm ice.ConvTime) {
-	Conv = &srConv{
+func (*stuGM) SetConv(conv ice.Conv, tm ice.ConvTime) {
+	Conv = &stuConv{
 		iceConv: conv,
 		Time:    tm,
 	}
 }
 
-func (*srGM) SetDb(db ice.Db) {
+func (*stuGM) SetDb(db ice.Db) {
 	Db = db
 }
 
-func (*srGM) SetNet(net ice.Net) {
+func (*stuGM) SetHttp(http ice.Http) {
+	Http = http
+}
+
+func (*stuGM) SetNet(net ice.Net) {
 	Net = net
 }
 
-func (*srGM) SetJson(json ice.Json) {
+func (*stuGM) SetJson(json ice.Json) {
 	Json = json
 }
 
-func (*srGM) SetUtil(util ice.Util, env ice.UtilEnv) {
-	Util = &srUtil{
+func (*stuGM) SetUtil(util ice.Util, env ice.UtilEnv) {
+	Util = &stuUtil{
 		iceUtil: util,
 		Env:     env,
 	}

@@ -4,6 +4,8 @@
  * All Rights Reserved.
  */
 
-package json
+package http
 
-type srJson struct{}
+func init() {
+	iceHttp = new(stuHttp)
+}

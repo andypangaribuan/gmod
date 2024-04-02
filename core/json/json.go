@@ -7,6 +7,5 @@
 package json
 
 func init() {
-	sr := new(srJson)
-	iceJson = sr
+	iceJson = new(stuJson)
 }

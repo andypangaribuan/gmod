@@ -8,14 +8,14 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
-type srGM struct{}
+type stuGM struct{}
 
-type srConv struct {
+type stuConv struct {
 	iceConv
 	Time ice.ConvTime
 }
 
-type srUtil struct {
+type stuUtil struct {
 	iceUtil
 	Env ice.UtilEnv
 }

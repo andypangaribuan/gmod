@@ -17,9 +17,10 @@ var iceGM ice.GM
 
 var (
 	Conf ice.Conf
-	Conv *srConv
+	Conv *stuConv
 	Db   ice.Db
+	Http ice.Http
 	Json ice.Json
 	Net  ice.Net
-	Util *srUtil
+	Util *stuUtil
 )
