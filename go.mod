@@ -6,8 +6,10 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.2
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/json-iterator/go v1.1.12
-	github.com/lib/pq v1.2.0
-	github.com/stretchr/testify v1.6.1
+	github.com/lib/pq v1.10.9
+	github.com/shopspring/decimal v1.3.1
+	github.com/stretchr/testify v1.8.4
+	golang.org/x/text v0.14.0
 	google.golang.org/grpc v1.62.1
 )
 
@@ -29,8 +31,7 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

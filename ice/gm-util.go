@@ -11,6 +11,7 @@ import "time"
 type Util interface {
 	IsEmailValid(email string, verifyDomain ...bool) bool
 	Timenow(timezone ...string) time.Time
+	ConcurrentProcess(total, max int, fn func(index int))
 
 	LiteUID() string
 	UID(addition ...int) string

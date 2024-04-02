@@ -41,6 +41,10 @@ func (slf *srUtil) Timenow(timezone ...string) time.Time {
 	return time.Now().In(location)
 }
 
+func (slf *srUtil) ConcurrentProcess(total, max int, fn func(index int)) {
+	slf.concurrentProcess(total, max, fn)
+}
+
 func (slf *srUtil) LiteUID() string {
 	return slf.UID(3)
 }

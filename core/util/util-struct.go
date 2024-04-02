@@ -6,6 +6,11 @@
 
 package util
 
+import (
+	"sync"
+	"time"
+)
+
 type srUtil struct{}
 
 type srUtilEnv struct{}
@@ -14,4 +19,11 @@ type srUtilEnvAppEnv struct {
 	val string
 }
 
-type srUtilTime struct{}
+type srConcurrency struct {
+	mx            sync.Mutex
+	max           int
+	total         int
+	active        int
+	fn            func(index int)
+	sleepDuration time.Duration
+}

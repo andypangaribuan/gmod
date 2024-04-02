@@ -18,3 +18,4 @@ insx
 uids
 gonanoid
 matoous
+shopspring

@@ -34,6 +34,11 @@ func (slf *srRepo[T]) insert(tx ice.DbTx, rid bool, args []interface{}) (*int64,
 		execReport *model.DbExecReport
 	)
 
+	if rid {
+		report.query += `
+RETURNING id`
+	}
+
 	err = report.transform()
 	if err != nil {
 		return id, report, err

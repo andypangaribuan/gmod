@@ -19,6 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -41,7 +42,6 @@ func initDb() {
 }
 
 func TestDbFetches(t *testing.T) {
-	// tt := testingT{t}
 	startedTime := time.Now()
 	defer func() {
 		durationMs := time.Since(startedTime).Milliseconds()
@@ -54,17 +54,14 @@ func TestDbFetches(t *testing.T) {
 	models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
 	assert.Nil(t, err)
 
-	_, _, _ = uidL3()
+	l3, _, _ := uidL3()
 	// require.Equal(t, len(models), 0)
-	assert.Equal(t, len(models), 0)
-	// assert.Equal(t, len(models), len(l3))
-	// assert.Fail
-	// assert.EqualError(t, len(models), len(l3))
+	require.Equal(t, len(models), len(l3))
 
-	// for i := range l3 {
-	// 	assert.Equal(t, l3[i], models[i].Uid)
-	// 	assert.Equal(t, int64(i+1), models[i].Id)
-	// }
+	for i := range l3 {
+		require.Equal(t, l3[i], models[i].Uid)
+		require.Equal(t, int64(i+1), models[i].Id)
+	}
 }
 
 func TestDbInsert(t *testing.T) {
