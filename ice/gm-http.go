@@ -6,7 +6,10 @@
 
 package ice
 
-import "io"
+import (
+	"io"
+	"time"
+)
 
 type Http interface {
 	Get(url string) HttpBuilder
@@ -17,6 +20,17 @@ type Http interface {
 }
 
 type HttpBuilder interface {
+	SetTimeout(duration time.Duration) HttpBuilder
+
+	// disable security check (https)
+	InsecureSkipVerify(skip ...bool) HttpBuilder
+
+	// Example:
+	//	SetRetryCondition(func(resp ice.HttpResponse) bool {
+	//		return resp.Code() == http.StatusTooManyRequests
+	//	})
+	SetRetryCondition(condition func(resp HttpResponse) bool) HttpBuilder
+
 	EnableTrace(enable ...bool) HttpBuilder
 	SetHeaders(args map[string]string) HttpBuilder
 
@@ -75,4 +89,12 @@ type HttpBuilder interface {
 	SetFiles(files map[string]string) HttpBuilder
 
 	Call() (data []byte, code int, err error)
+}
+
+type HttpResponse interface {
+	Body() []byte
+	IsError() bool
+	IsSuccess() bool
+	Error() error
+	Code() int
 }

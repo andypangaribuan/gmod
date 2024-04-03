@@ -8,7 +8,6 @@ package http
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/go-resty/resty/v2"
 )
 
 func (*stuHttp) Get(url string) ice.HttpBuilder {
@@ -35,7 +34,6 @@ func newHttp(url, method string) ice.HttpBuilder {
 	return &stuHttpBuilder{
 		url:         url,
 		method:      method,
-		client:      resty.New(),
 		fileReaders: make([]*stuFileReader, 0),
 	}
 }

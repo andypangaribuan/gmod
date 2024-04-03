@@ -13,6 +13,10 @@ import (
 )
 
 func (*srUtil) concurrentProcess(total, max int, fn func(index int)) {
+	if total < 1 || max < 1 {
+		return
+	}
+
 	c := &srConcurrency{
 		active:        0,
 		total:         total,

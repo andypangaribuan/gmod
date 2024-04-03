@@ -11,7 +11,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/model"
+	"github.com/andypangaribuan/gmod/mdl"
 )
 
 func (slf *pgInstance) crw() (*srConnection, error) {
@@ -83,28 +83,10 @@ func (slf *pgInstance) NewTransaction() (ice.DbTx, error) {
 	return insx, err
 }
 
-func (slf *pgInstance) Execute(query string, args ...interface{}) (*model.DbExecReport, error) {
-	_, report, err := slf.execute(false, nil, query, args...)
-	return report, err
-}
-
-func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, *model.DbExecReport, error) {
-	return slf.execute(true, nil, query, args...)
-}
-
-func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...interface{}) (*model.DbExecReport, error) {
-	_, report, err := slf.execute(false, tx, query, args...)
-	return report, err
-}
-
-func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...interface{}) (*int64, *model.DbExecReport, error) {
-	return slf.execute(true, tx, query, args...)
-}
-
-func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}) (*model.DbExecReport, error) {
-	report := &model.DbExecReport{
+func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*model.DbExecReportHost, 0),
+		Hosts:     make([]*mdl.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -113,7 +95,7 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 		err  error
 	)
 
-	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
 	if slf.ro != nil {
@@ -137,10 +119,10 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 	return report, err
 }
 
-func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check *func() bool) (*model.DbExecReport, error) {
-	report := &model.DbExecReport{
+func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check *func() bool) (*mdl.DbExecReport, error) {
+	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*model.DbExecReportHost, 0),
+		Hosts:     make([]*mdl.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -149,7 +131,7 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 		err  error
 	)
 
-	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
 	if slf.ro != nil && check != nil {
@@ -177,7 +159,7 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	if check != nil {
 		c := *check
 		if !c() && slf.ro != nil {
-			reportHost := &model.DbExecReportHost{StartedAt: gm.Util.Timenow()}
+			reportHost := &mdl.DbExecReportHost{StartedAt: gm.Util.Timenow()}
 			report.Hosts = append(report.Hosts, reportHost)
 
 			conn, err = slf.crw()
@@ -193,10 +175,19 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	return report, err
 }
 
-func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args ...interface{}) (*model.DbExecReport, error) {
-	report := &model.DbExecReport{
+func (slf *pgInstance) Execute(query string, args ...interface{}) (*mdl.DbExecReport, error) {
+	_, report, err := slf.execute(false, nil, query, args...)
+	return report, err
+}
+
+func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+	return slf.execute(true, nil, query, args...)
+}
+
+func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*model.DbExecReportHost, 0),
+		Hosts:     make([]*mdl.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -211,7 +202,7 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args
 			err  error
 		)
 
-		reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+		reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
 		report.Hosts = append(report.Hosts, reportHost)
 
 		conn, err = slf.crw()
@@ -231,4 +222,13 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args
 	}
 
 	return report, errors.New("db: unknown tx transaction type")
+}
+
+func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+	_, report, err := slf.execute(false, tx, query, args...)
+	return report, err
+}
+
+func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+	return slf.execute(true, tx, query, args...)
 }

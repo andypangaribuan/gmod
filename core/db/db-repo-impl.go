@@ -47,6 +47,11 @@ func (slf *srRepo[T]) InsertRID(args ...interface{}) (*int64, error) {
 	return id, err
 }
 
+func (slf *srRepo[T]) Update(update *Update) error {
+	_, err := slf.update(nil, update)
+	return err
+}
+
 func (slf *srRepo[T]) TxFetch(tx ice.DbTx, condition string, args ...interface{}) (*T, error) {
 	models, _, err := slf.fetches(true, tx, condition, args)
 	return fm.PtrGetFirst(models), err
@@ -69,5 +74,10 @@ func (slf *srRepo[T]) TxInsertRID(tx ice.DbTx, args ...interface{}) (*int64, err
 
 func (slf *srRepo[T]) TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) error {
 	_, err := slf.bulkInsert(tx, entities, args, chunkSize...)
+	return err
+}
+
+func (slf *srRepo[T]) TxUpdate(tx ice.DbTx, update *Update) error {
+	_, err := slf.update(tx, update)
 	return err
 }

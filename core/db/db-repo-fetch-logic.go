@@ -11,7 +11,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/model"
+	"github.com/andypangaribuan/gmod/mdl"
 )
 
 func (slf *srRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *srReport, error) {
@@ -38,7 +38,7 @@ func (slf *srRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args 
 	var (
 		err        error
 		out        []*T
-		execReport *model.DbExecReport
+		execReport *mdl.DbExecReport
 	)
 
 	err = report.transform()

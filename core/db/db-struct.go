@@ -8,7 +8,7 @@ package db
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/model"
+	"github.com/andypangaribuan/gmod/mdl"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -24,7 +24,7 @@ type srRepo[T any] struct {
 }
 
 type srConnection struct {
-	conf       *model.DbConnection
+	conf       *mdl.DbConnection
 	sx         *sqlx.DB
 	driverName string
 }
@@ -48,7 +48,7 @@ type srReport struct {
 	insertArgSign string
 	query         string
 	args          []interface{}
-	execReport    *model.DbExecReport
+	execReport    *mdl.DbExecReport
 }
 
 type srUnsafe struct {

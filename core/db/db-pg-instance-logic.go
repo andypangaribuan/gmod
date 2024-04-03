@@ -12,15 +12,15 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/model"
+	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func updateReport(report *model.DbExecReport) {
+func updateReport(report *mdl.DbExecReport) {
 	report.FinishedAt = gm.Util.Timenow()
 	report.DurationMs = report.FinishedAt.Sub(report.StartedAt).Milliseconds()
 }
 
-func updateReportHost(conn *srConnection, reportHost *model.DbExecReportHost) {
+func updateReportHost(conn *srConnection, reportHost *mdl.DbExecReportHost) {
 	if conn != nil {
 		reportHost.Host = conn.conf.Host
 	}
@@ -28,10 +28,10 @@ func updateReportHost(conn *srConnection, reportHost *model.DbExecReportHost) {
 	reportHost.DurationMs = reportHost.FinishedAt.Sub(reportHost.StartedAt).Milliseconds()
 }
 
-func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...interface{}) (*int64, *model.DbExecReport, error) {
-	report := &model.DbExecReport{
+func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*model.DbExecReportHost, 0),
+		Hosts:     make([]*mdl.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -41,7 +41,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...inte
 		id   *int64
 	)
 
-	reportHost := &model.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 	defer updateReportHost(conn, reportHost)
 
@@ -64,7 +64,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...inte
 	return id, report, err
 }
 
-func (slf *pgInstance) execSelect(conn *srConnection, reportHost *model.DbExecReportHost, insTx *pgInstanceTx, out interface{}, query string, args []interface{}) (err error) {
+func (slf *pgInstance) execSelect(conn *srConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out interface{}, query string, args []interface{}) (err error) {
 	defer updateReportHost(conn, reportHost)
 
 	if insTx != nil {

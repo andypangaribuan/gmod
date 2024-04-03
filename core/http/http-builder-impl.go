@@ -8,15 +8,32 @@ package http
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/go-resty/resty/v2"
 )
+
+func (slf *stuHttpBuilder) SetTimeout(duration time.Duration) ice.HttpBuilder {
+	slf.timeout = &duration
+	return slf
+}
+
+func (slf *stuHttpBuilder) InsecureSkipVerify(skip ...bool) ice.HttpBuilder {
+	slf.insecureSkipVerify = *fm.GetFirst(skip, false)
+	return slf
+}
+
+func (slf *stuHttpBuilder) SetRetryCondition(condition func(resp ice.HttpResponse) bool) ice.HttpBuilder {
+	slf.retryCondition = &condition
+	return slf
+}
 
 func (slf *stuHttpBuilder) EnableTrace(enable ...bool) ice.HttpBuilder {
 	slf.enableTrace = *fm.GetFirst(enable, true)
@@ -63,43 +80,64 @@ func (slf *stuHttpBuilder) SetFiles(files map[string]string) ice.HttpBuilder {
 }
 
 func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
+	client := resty.New()
+
+	if slf.timeout != nil {
+		client.SetTimeout(*slf.timeout)
+	}
+
+	if slf.insecureSkipVerify {
+		client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: slf.insecureSkipVerify})
+	}
+
+	if slf.retryCondition != nil {
+		client.AddRetryCondition(func(resp *resty.Response, err error) bool {
+			stu := &stuRetryCondition{
+				resp: resp,
+				err:  err,
+			}
+
+			return (*slf.retryCondition)(stu)
+		})
+	}
+
 	var (
-		req  = slf.client.R()
+		req  = client.R()
 		resp *resty.Response
 	)
 
 	if slf.enableTrace {
-		req = req.EnableTrace()
+		req.EnableTrace()
 	}
 
 	if slf.headers != nil && len(*slf.headers) > 0 {
-		req = req.SetHeaders(*slf.headers)
+		req.SetHeaders(*slf.headers)
 	}
 
 	if slf.pathParams != nil && len(*slf.pathParams) > 0 {
-		req = req.SetPathParams(*slf.pathParams)
+		req.SetPathParams(*slf.pathParams)
 	}
 
 	if slf.queryParams != nil && len(*slf.queryParams) > 0 {
-		req = req.SetQueryParams(*slf.queryParams)
+		req.SetQueryParams(*slf.queryParams)
 	}
 
 	if slf.formData != nil && len(*slf.formData) > 0 {
-		req = req.SetFormData(*slf.formData)
+		req.SetFormData(*slf.formData)
 	}
 
 	if slf.body != nil {
-		req = req.SetBody(slf.body)
+		req.SetBody(slf.body)
 	}
 
 	if len(slf.fileReaders) > 0 {
 		for _, f := range slf.fileReaders {
-			req = req.SetFileReader(f.param, f.fileName, f.reader)
+			req.SetFileReader(f.param, f.fileName, f.reader)
 		}
 	}
 
 	if slf.files != nil && len(*slf.files) > 0 {
-		req = req.SetFiles(*slf.files)
+		req.SetFiles(*slf.files)
 	}
 
 	switch slf.method {

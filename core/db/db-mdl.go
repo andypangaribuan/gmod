@@ -15,3 +15,11 @@ type FetchOpt struct {
 	WithDeletedAtIsNull *bool
 	EndQuery            *string
 }
+
+type Update struct {
+	Set          string
+	Where        string
+	SetArgs      []interface{}
+	WhereArgs    []interface{}
+	WithUpdateAt *bool
+}
