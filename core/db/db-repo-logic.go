@@ -8,7 +8,7 @@ package db
 
 import "strings"
 
-func (*srRepo[T]) generateArgSign(column string) (argSign string) {
+func (*stuRepo[T]) generateArgSign(column string) (argSign string) {
 	if column != "" {
 		ls := strings.Split(column, ",")
 		for i := range ls {
@@ -24,7 +24,7 @@ func (*srRepo[T]) generateArgSign(column string) (argSign string) {
 	return
 }
 
-func (*srRepo[T]) formatInsertColumnArgs(val string) string {
+func (*stuRepo[T]) formatInsertColumnArgs(val string) string {
 	var (
 		maxOneLine = 5
 		fourSpace  = "    "
@@ -55,7 +55,7 @@ func (*srRepo[T]) formatInsertColumnArgs(val string) string {
 	return formatted
 }
 
-func (slf *srRepo[T]) getWhereQuery(condition string, args []interface{}) string {
+func (slf *stuRepo[T]) getWhereQuery(condition string, args []interface{}) string {
 	condition = strings.TrimSpace(condition)
 	var (
 		whereQuery          = ""
@@ -74,19 +74,15 @@ func (slf *srRepo[T]) getWhereQuery(condition string, args []interface{}) string
 	return whereQuery
 }
 
-func (slf *srRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
+func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
 	isWith := slf.withDeletedAtIsNull
 
 	for _, arg := range args {
-		switch v := arg.(type) {
-		case FetchOpt:
-			if v.WithDeletedAtIsNull != nil {
-				isWith = *v.WithDeletedAtIsNull
-			}
-
-		case *FetchOpt:
-			if v != nil && v.WithDeletedAtIsNull != nil {
-				isWith = *v.WithDeletedAtIsNull
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.withDeletedAtIsNull != nil {
+				isWith = *v.withDeletedAtIsNull
 			}
 		}
 	}
@@ -94,25 +90,18 @@ func (slf *srRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
 	return isWith
 }
 
-func (slf *srRepo[T]) getEndQuery(args []interface{}) string {
+func (slf *stuRepo[T]) getEndQuery(args []interface{}) string {
 	endQuery := ""
 
 	for _, arg := range args {
-		switch v := arg.(type) {
-		case FetchOpt:
-			if v.EndQuery != nil {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.endQuery != nil {
 				if endQuery != "" {
 					endQuery += " "
 				}
-				endQuery += strings.TrimSpace(*v.EndQuery)
-			}
-
-		case *FetchOpt:
-			if v != nil && v.EndQuery != nil {
-				if endQuery != "" {
-					endQuery += " "
-				}
-				endQuery += strings.TrimSpace(*v.EndQuery)
+				endQuery += strings.TrimSpace(*v.endQuery)
 			}
 		}
 	}
@@ -120,12 +109,12 @@ func (slf *srRepo[T]) getEndQuery(args []interface{}) string {
 	return strings.TrimSpace(endQuery)
 }
 
-func (slf *srRepo[T]) getArgs(args []interface{}) []interface{} {
+func (slf *stuRepo[T]) getArgs(args []interface{}) []interface{} {
 	filtered := make([]interface{}, 0)
 
 	for _, arg := range args {
 		switch arg.(type) {
-		case FetchOpt, *FetchOpt:
+		case FetchOptBuilder:
 			continue
 		default:
 			filtered = append(filtered, arg)

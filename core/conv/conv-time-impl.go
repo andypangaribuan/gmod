@@ -13,10 +13,10 @@ const (
 	layoutDT   = "yyyy-MM-dd HH:mm:ss TZ"
 )
 
-func (slf *srConvTime) ToStrFull(val time.Time) string {
+func (slf *stuConvTime) ToStrFull(val time.Time) string {
 	return slf.toStr(val, layoutFull)
 }
 
-func (slf *srConvTime) ToStrDT(val time.Time) string {
+func (slf *stuConvTime) ToStrDT(val time.Time) string {
 	return slf.toStr(val, layoutDT)
 }

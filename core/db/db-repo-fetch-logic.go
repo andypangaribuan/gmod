@@ -14,11 +14,11 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (slf *srRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *srReport, error) {
+func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *stuReport, error) {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
 		endQuery   = strings.TrimSpace(slf.getEndQuery(args) + fm.Ternary(isFetch, " LIMIT 1", ""))
-		report     = &srReport{
+		report     = &stuReport{
 			tableName:     slf.tableName,
 			insertColumn:  slf.insertColumn,
 			insertArgSign: slf.insertArgSign,

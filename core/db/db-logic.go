@@ -58,7 +58,7 @@ func getPgConnectionString(conf *mdl.DbConnection) string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s search_path=%s application_name=%s sslmode=disable", conf.Host, conf.Port, conf.Username, conf.Password, conf.Name, conf.Scheme, conf.AppName)
 }
 
-func (slf *srConnection) createConnection() error {
+func (slf *stuConnection) createConnection() error {
 	connStr := getPgConnectionString(slf.conf)
 	instance, err := sqlx.Connect(slf.driverName, connStr)
 	if err == nil {
@@ -76,7 +76,7 @@ func (slf *srConnection) createConnection() error {
 	return err
 }
 
-func (slf *srConnection) normalizeQueryArgs(query string, args []interface{}) (string, []interface{}) {
+func (slf *stuConnection) normalizeQueryArgs(query string, args []interface{}) (string, []interface{}) {
 	if len(args) == 1 {
 		switch val := args[0].(type) {
 		case []interface{}:
@@ -90,7 +90,7 @@ func (slf *srConnection) normalizeQueryArgs(query string, args []interface{}) (s
 	return query, args
 }
 
-func (slf *srConnection) execute(tx ice.DbTx, query string, args ...interface{}) (sql.Result, error) {
+func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...interface{}) (sql.Result, error) {
 	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
@@ -117,7 +117,7 @@ func (slf *srConnection) execute(tx ice.DbTx, query string, args ...interface{})
 	return res, err
 }
 
-func (slf *srConnection) executeRID(tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
+func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
 	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
@@ -154,7 +154,7 @@ func (slf *srConnection) executeRID(tx ice.DbTx, query string, args ...interface
 	return id, slf.conf.Host, err
 }
 
-func (slf *srConnection) printSql(startTime time.Time, query string, args []interface{}) {
+func (slf *stuConnection) printSql(startTime time.Time, query string, args []interface{}) {
 	if *slf.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()
 		if len(args) == 0 {

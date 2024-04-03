@@ -4,6 +4,9 @@
  * All Rights Reserved.
  */
 
-package net
+package conf
 
-type srNet struct{}
+type stuConf struct {
+	zxEnvName string
+	timezone  string
+}

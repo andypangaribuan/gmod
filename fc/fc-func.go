@@ -10,13 +10,14 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/shopspring/decimal"
 )
 
 func toDecimal(val interface{}) (decimal.Decimal, error) {
 	var d decimal.Decimal
 
-	if val == nil {
+	if fm.IsNil(val) {
 		return d, errors.New("val cannot nil")
 	}
 

@@ -7,6 +7,5 @@
 package gm
 
 func init() {
-	sr := &stuGM{}
-	iceGM = sr
+	iceGM = new(stuGM)
 }

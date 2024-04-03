@@ -16,9 +16,9 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (slf *srRepo[T]) insert(tx ice.DbTx, rid bool, args []interface{}) (*int64, *srReport, error) {
+func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []interface{}) (*int64, *stuReport, error) {
 	var (
-		report = &srReport{
+		report = &stuReport{
 			tableName:     slf.tableName,
 			insertColumn:  slf.insertColumn,
 			insertArgSign: slf.insertArgSign,
@@ -62,13 +62,13 @@ RETURNING id`
 	return id, report, err
 }
 
-func (slf *srRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) (*srReport, error) {
+func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) (*stuReport, error) {
 	if tx == nil {
 		return nil, errors.New("db: bulk insert only available via transaction")
 	}
 
 	var (
-		report = &srReport{
+		report = &stuReport{
 			tableName:     slf.tableName,
 			insertColumn:  slf.insertColumn,
 			insertArgSign: slf.insertArgSign,

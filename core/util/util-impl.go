@@ -19,7 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (*srUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
+func (*stuUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
 	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return false
@@ -36,20 +36,20 @@ func (*srUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
 	return true
 }
 
-func (slf *srUtil) Timenow(timezone ...string) time.Time {
+func (slf *stuUtil) Timenow(timezone ...string) time.Time {
 	location := slf.getTimeLocation(timezone...)
 	return time.Now().In(location)
 }
 
-func (slf *srUtil) ConcurrentProcess(total, max int, fn func(index int)) {
+func (slf *stuUtil) ConcurrentProcess(total, max int, fn func(index int)) {
 	slf.concurrentProcess(total, max, fn)
 }
 
-func (slf *srUtil) LiteUID() string {
+func (slf *stuUtil) LiteUID() string {
 	return slf.UID(3)
 }
 
-func (slf *srUtil) UID(addition ...int) string {
+func (slf *stuUtil) UID(addition ...int) string {
 	length := *fm.GetFirst(addition, 8)
 	length = fm.Ternary(length < 0, 0, length)
 
@@ -71,16 +71,16 @@ func (slf *srUtil) UID(addition ...int) string {
 	return id1 + id2 + id3 + id4 + randId
 }
 
-func (slf *srUtil) GetAlphabet(isUpper ...bool) string {
+func (slf *stuUtil) GetAlphabet(isUpper ...bool) string {
 	upper := *fm.GetFirst(isUpper, false)
 	return fm.Ternary(upper, alphabetUpper, alphabetLower)
 }
 
-func (slf *srUtil) GetNumeric() string {
+func (slf *stuUtil) GetNumeric() string {
 	return numeric
 }
 
-func (slf *srUtil) GetRandom(length int, value string) string {
+func (slf *stuUtil) GetRandom(length int, value string) string {
 	if length < 1 || length >= 100000 || len(value) == 0 {
 		return ""
 	}
@@ -106,7 +106,7 @@ func (slf *srUtil) GetRandom(length int, value string) string {
 	return res
 }
 
-func (slf *srUtil) DecodeUID(uid string, addition ...int) (rawId string, randId string, err error) {
+func (slf *stuUtil) DecodeUID(uid string, addition ...int) (rawId string, randId string, err error) {
 	length := *fm.GetFirst(addition, 8)
 	length = fm.Ternary(length < 0, 0, length)
 
@@ -148,7 +148,7 @@ func (slf *srUtil) DecodeUID(uid string, addition ...int) (rawId string, randId 
 	return rawId, randId, nil
 }
 
-func (slf *srUtil) ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string {
+func (slf *stuUtil) ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string {
 	if value == nil {
 		return value
 	}
@@ -161,7 +161,7 @@ func (slf *srUtil) ReplaceAll(value *string, replaceValue string, replaceKey ...
 	return &newValue
 }
 
-func (*srUtil) PanicCatcher(fn func()) (err error) {
+func (*stuUtil) PanicCatcher(fn func()) (err error) {
 	defer func() {
 		pv := recover()
 		if pv != nil {
@@ -182,7 +182,7 @@ func (*srUtil) PanicCatcher(fn func()) (err error) {
 	return
 }
 
-func (*srUtil) ReflectionGet(obj interface{}, fieldName string) (interface{}, error) {
+func (*stuUtil) ReflectionGet(obj interface{}, fieldName string) (interface{}, error) {
 	val := reflect.ValueOf(obj)
 	if val.Kind() != reflect.Ptr {
 		return nil, errors.New("obj must be a pointer")
@@ -217,7 +217,7 @@ func (*srUtil) ReflectionGet(obj interface{}, fieldName string) (interface{}, er
 	return nil, errors.New("not found")
 }
 
-func (slf *srUtil) ReflectionSet(obj interface{}, bind map[string]interface{}) error {
+func (slf *stuUtil) ReflectionSet(obj interface{}, bind map[string]interface{}) error {
 	val := reflect.ValueOf(obj)
 	if val.Kind() != reflect.Ptr {
 		return errors.New("obj must be a pointer")

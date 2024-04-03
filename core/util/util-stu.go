@@ -11,15 +11,15 @@ import (
 	"time"
 )
 
-type srUtil struct{}
+type stuUtil struct{}
 
-type srUtilEnv struct{}
+type stuUtilEnv struct{}
 
-type srUtilEnvAppEnv struct {
+type stuUtilEnvAppEnv struct {
 	val string
 }
 
-type srConcurrency struct {
+type stuConcurrency struct {
 	mx            sync.Mutex
 	max           int
 	total         int

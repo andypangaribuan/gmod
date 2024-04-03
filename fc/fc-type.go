@@ -38,7 +38,7 @@ func New(val interface{}) FCT {
 func SNew(val interface{}) (FCT, error) {
 	var fv FCT
 
-	if val == nil {
+	if fm.IsNil(val) {
 		return fv, errors.New("val cannot nil")
 	}
 
@@ -234,7 +234,7 @@ func (slf *FCT) PtrFloor(opt ...interface{}) *FCT {
 			}
 
 		case FCT:
-			if defaultValue == nil {
+			if fm.IsNil(defaultValue) {
 				defaultValue = fm.Ptr(v)
 			}
 		}
@@ -312,7 +312,7 @@ func (slf *FCT) PtrCeil(opt ...interface{}) *FCT {
 			}
 
 		case FCT:
-			if defaultValue == nil {
+			if fm.IsNil(defaultValue) {
 				defaultValue = fm.Ptr(v)
 			}
 		}
@@ -358,7 +358,7 @@ func (slf FCT) Truncate(places ...int) FCT {
 }
 
 func (slf *FCT) PtrTruncate(places ...int) *FCT {
-	if slf == nil {
+	if fm.IsNil(slf) {
 		return nil
 	}
 

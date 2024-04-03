@@ -12,7 +12,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func (slf *srReport) transform() error {
+func (slf *stuReport) transform() error {
 	slf.query = strings.ReplaceAll(slf.query, "::tableName", slf.tableName)
 	slf.query = strings.ReplaceAll(slf.query, "::insertColumn", slf.insertColumn)
 	slf.query = strings.ReplaceAll(slf.query, "::insertArgSign", slf.insertArgSign)

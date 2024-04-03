@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (*srNet) IsPortUsed(port int, host ...string) bool {
+func (*stuNet) IsPortUsed(port int, host ...string) bool {
 	var (
 		targetHost = "127.0.0.1"
 		timeout    = time.Second * 3

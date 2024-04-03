@@ -12,9 +12,9 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type srDb struct{}
+type stuDb struct{}
 
-type srRepo[T any] struct {
+type stuRepo[T any] struct {
 	ins                 ice.DbInstance
 	tableName           string
 	insertColumn        string
@@ -23,15 +23,15 @@ type srRepo[T any] struct {
 	rwFetchWhenNull     bool
 }
 
-type srConnection struct {
+type stuConnection struct {
 	conf       *mdl.DbConnection
 	sx         *sqlx.DB
 	driverName string
 }
 
 type pgInstance struct {
-	rw *srConnection
-	ro *srConnection
+	rw *stuConnection
+	ro *stuConnection
 }
 
 type pgInstanceTx struct {
@@ -42,7 +42,7 @@ type pgInstanceTx struct {
 	errCommit  error
 }
 
-type srReport struct {
+type stuReport struct {
 	tableName     string
 	insertColumn  string
 	insertArgSign string
@@ -51,9 +51,28 @@ type srReport struct {
 	execReport    *mdl.DbExecReport
 }
 
-type srUnsafe struct {
+type stuUnsafe struct {
 	query   string
 	args    []interface{}
 	message string
 	trace   string
+}
+
+type stuRepoOptBuilder struct {
+	withDeletedAtIsNull *bool
+	rwFetchWhenNull     *bool
+}
+
+type stuFetchOptBuilder struct {
+	withDeletedAtIsNull *bool
+	endQuery            *string
+}
+
+type stuUpdateBuilder struct {
+	withAutoUpdatedAt *bool
+	setQuery          *string
+	setArgs           *[]interface{}
+	setInn            *map[string]interface{}
+	whereQuery        *string
+	whereArgs         *[]interface{}
 }

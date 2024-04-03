@@ -13,13 +13,13 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func (slf *srUtilEnv) GetAppEnv(key string) ice.AppEnv {
-	return &srUtilEnvAppEnv{
+func (slf *stuUtilEnv) GetAppEnv(key string) ice.AppEnv {
+	return &stuUtilEnvAppEnv{
 		val: slf.GetString(key),
 	}
 }
 
-func (*srUtilEnv) GetString(key string, dval ...string) string {
+func (*stuUtilEnv) GetString(key string, dval ...string) string {
 	sval, val := getEnv(key, dval...)
 	if val != nil {
 		return *val
@@ -28,7 +28,7 @@ func (*srUtilEnv) GetString(key string, dval ...string) string {
 	return sval
 }
 
-func (slf *srUtilEnv) GetInt(key string, dval ...int) int {
+func (slf *stuUtilEnv) GetInt(key string, dval ...int) int {
 	sval, val := getEnv(key, dval...)
 	if val != nil {
 		return *val
@@ -39,7 +39,7 @@ func (slf *srUtilEnv) GetInt(key string, dval ...int) int {
 	return value
 }
 
-func (slf *srUtilEnv) GetInt32(key string, dval ...int32) int32 {
+func (slf *stuUtilEnv) GetInt32(key string, dval ...int32) int32 {
 	sval, val := getEnv(key, dval...)
 	if val != nil {
 		return *val
@@ -50,7 +50,7 @@ func (slf *srUtilEnv) GetInt32(key string, dval ...int32) int32 {
 	return int32(value)
 }
 
-func (slf *srUtilEnv) GetInt64(key string, dval ...int64) int64 {
+func (slf *stuUtilEnv) GetInt64(key string, dval ...int64) int64 {
 	sval, val := getEnv(key, dval...)
 	if val != nil {
 		return *val
@@ -61,7 +61,7 @@ func (slf *srUtilEnv) GetInt64(key string, dval ...int64) int64 {
 	return value
 }
 
-func (slf *srUtilEnv) GetBool(key string, dval ...bool) bool {
+func (slf *stuUtilEnv) GetBool(key string, dval ...bool) bool {
 	sval, val := getEnv(key, dval...)
 	if val != nil {
 		return *val

@@ -34,11 +34,11 @@ var timeReplacer = [][]string{
 	{"TZ", "-07:00"},
 }
 
-func (slf *srConvTime) toStr(val time.Time, layout string) string {
+func (slf *stuConvTime) toStr(val time.Time, layout string) string {
 	return val.Format(slf.replace(layout))
 }
 
-func (slf *srConvTime) replace(layout string) string {
+func (slf *stuConvTime) replace(layout string) string {
 	for _, arr := range timeReplacer {
 		layout = strings.Replace(layout, arr[0], arr[1], -1)
 	}

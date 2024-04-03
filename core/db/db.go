@@ -7,6 +7,5 @@
 package db
 
 func init() {
-	sr := new(srDb)
-	iceDb = sr
+	iceDb = new(stuDb)
 }

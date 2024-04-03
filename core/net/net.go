@@ -7,6 +7,5 @@
 package net
 
 func init() {
-	sr := new(srNet)
-	iceNet = sr
+	iceNet = new(stuNet)
 }

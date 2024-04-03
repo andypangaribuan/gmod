@@ -7,7 +7,7 @@
 package fm
 
 func GetDefault[T any](val *T, dval T) T {
-	if val == nil {
+	if IsNil(val) {
 		return dval
 	}
 

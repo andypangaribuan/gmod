@@ -6,27 +6,27 @@
 
 package util
 
-func (slf *srUtilEnvAppEnv) IsProd() bool {
+func (slf *stuUtilEnvAppEnv) IsProd() bool {
 	return slf.val == "prod" || slf.val == "production"
 }
 
-func (slf *srUtilEnvAppEnv) IsRC() bool {
+func (slf *stuUtilEnvAppEnv) IsRC() bool {
 	return slf.val == "rc" || slf.val == "release-candidate"
 }
 
-func (slf *srUtilEnvAppEnv) IsBox() bool {
+func (slf *stuUtilEnvAppEnv) IsBox() bool {
 	return slf.val == "box" || slf.val == "sbox" || slf.val == "sandbox"
 }
 
-func (slf *srUtilEnvAppEnv) IsStg() bool {
+func (slf *stuUtilEnvAppEnv) IsStg() bool {
 	return slf.val == "stg" || slf.val == "staging"
 }
 
-func (slf *srUtilEnvAppEnv) IsDev() bool {
+func (slf *stuUtilEnvAppEnv) IsDev() bool {
 	return slf.val == "dev" || slf.val == "development"
 }
 
-func (slf *srUtilEnvAppEnv) GetName() string {
+func (slf *stuUtilEnvAppEnv) GetName() string {
 	switch {
 	case slf.IsProd():
 		return "prod"
@@ -43,6 +43,6 @@ func (slf *srUtilEnvAppEnv) GetName() string {
 	return slf.val
 }
 
-func (slf *srUtilEnvAppEnv) IsRP() bool {
+func (slf *stuUtilEnvAppEnv) IsRP() bool {
 	return slf.IsRC() || slf.IsProd()
 }

@@ -4,8 +4,6 @@
  * All Rights Reserved.
  */
 
-package conv
+package net
 
-type srConv struct{}
-
-type srConvTime struct{}
+type stuNet struct{}

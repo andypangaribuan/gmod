@@ -7,6 +7,6 @@
 package server
 
 func init() {
-	sv := &srServer{}
+	sv := &stuServer{}
 	serverImpl = sv
 }

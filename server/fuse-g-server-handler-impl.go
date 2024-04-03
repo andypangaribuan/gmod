@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (slf *srGrpcServerHandler) unaryPanicHandler(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+func (slf *stuGrpcServerHandler) unaryPanicHandler(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	defer slf.crashHandler(func(r interface{}) {
 		err = slf.toPanicError(r)
 	})
@@ -25,7 +25,7 @@ func (slf *srGrpcServerHandler) unaryPanicHandler(ctx context.Context, req inter
 	return handler(ctx, req)
 }
 
-func (slf *srGrpcServerHandler) streamPanicHandler(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) (err error) {
+func (slf *stuGrpcServerHandler) streamPanicHandler(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) (err error) {
 	defer slf.crashHandler(func(r interface{}) {
 		err = slf.toPanicError(r)
 	})
@@ -33,18 +33,18 @@ func (slf *srGrpcServerHandler) streamPanicHandler(srv interface{}, stream grpc.
 	return handler(srv, stream)
 }
 
-func (slf *srGrpcServerHandler) toPanicError(r interface{}) error {
+func (slf *stuGrpcServerHandler) toPanicError(r interface{}) error {
 	return status.Errorf(codes.Internal, "panic: %v", r)
 }
 
-func (slf *srGrpcServerHandler) crashHandler(handler func(interface{})) {
+func (slf *stuGrpcServerHandler) crashHandler(handler func(interface{})) {
 	if r := recover(); r != nil {
 		handler(r)
 		slf.printPanic(r)
 	}
 }
 
-func (slf *srGrpcServerHandler) printPanic(r interface{}) {
+func (slf *stuGrpcServerHandler) printPanic(r interface{}) {
 	var callers []string
 
 	for i := 0; true; i++ {

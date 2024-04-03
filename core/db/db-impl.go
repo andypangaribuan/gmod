@@ -11,11 +11,11 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (*srDb) Postgres(conf mdl.DbConnection) ice.DbPostgresInstance {
+func (*stuDb) Postgres(conf mdl.DbConnection) ice.DbPostgresInstance {
 	setPgConfDVal(&conf)
 
 	instance := &pgInstance{
-		rw: &srConnection{
+		rw: &stuConnection{
 			conf:       &conf,
 			driverName: "postgres",
 		},
@@ -24,16 +24,16 @@ func (*srDb) Postgres(conf mdl.DbConnection) ice.DbPostgresInstance {
 	return instance
 }
 
-func (*srDb) PostgresRW(readConf mdl.DbConnection, writeConf mdl.DbConnection) ice.DbPostgresInstance {
+func (*stuDb) PostgresRW(readConf mdl.DbConnection, writeConf mdl.DbConnection) ice.DbPostgresInstance {
 	setPgConfDVal(&readConf)
 	setPgConfDVal(&writeConf)
 
 	instance := &pgInstance{
-		ro: &srConnection{
+		ro: &stuConnection{
 			conf:       &readConf,
 			driverName: "postgres",
 		},
-		rw: &srConnection{
+		rw: &stuConnection{
 			conf:       &writeConf,
 			driverName: "postgres",
 		},

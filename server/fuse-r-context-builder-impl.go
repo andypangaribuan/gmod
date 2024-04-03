@@ -6,8 +6,8 @@
 
 package server
 
-func (slf *srFuseContextBuilderR) Build() FuseContextR {
-	ctx := &srFuseContextR{
+func (slf *stuFuseContextBuilderR) Build() FuseContextR {
+	ctx := &stuFuseContextR{
 		fiberCtx:     slf.original.fiberCtx,
 		endpoint:     slf.original.endpoint,
 		isRegulator:  false,

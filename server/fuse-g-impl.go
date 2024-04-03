@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (slf *srServer) FuseG(grpcPort int, routes func(router RouterG)) {
+func (slf *stuServer) FuseG(grpcPort int, routes func(router RouterG)) {
 	if gm.Net.IsPortUsed(grpcPort) {
 		fmt.Printf("fuse server [grpc]%v: port %v already in use\n", slf.logSpace, grpcPort)
 		os.Exit(100)
@@ -28,7 +28,7 @@ func (slf *srServer) FuseG(grpcPort int, routes func(router RouterG)) {
 		os.Exit(100)
 	}
 
-	router := &srFuseRouterG{
+	router := &stuFuseRouterG{
 		withAutoRecover:     false,
 		stackTraceSkipLevel: 3,
 	}
@@ -38,7 +38,7 @@ func (slf *srServer) FuseG(grpcPort int, routes func(router RouterG)) {
 			if !router.withAutoRecover {
 				router.server = grpc.NewServer()
 			} else {
-				handler := &srGrpcServerHandler{
+				handler := &stuGrpcServerHandler{
 					stackTraceSkipLevel: router.stackTraceSkipLevel,
 				}
 

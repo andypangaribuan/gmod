@@ -11,32 +11,32 @@ import (
 	"google.golang.org/grpc"
 )
 
-type srServer struct {
+type stuServer struct {
 	logSpace string
 }
 
-type srGrpcServerHandler struct {
+type stuGrpcServerHandler struct {
 	stackTraceSkipLevel int
 }
 
-type srFuseRouterR struct {
+type stuFuseRouterR struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
 }
 
-type srFuseRouterG struct {
+type stuFuseRouterG struct {
 	server              *grpc.Server
 	withAutoRecover     bool
 	stackTraceSkipLevel int
 	fnGetServer         func() *grpc.Server
 }
 
-type srFuseContextR struct {
+type stuFuseContextR struct {
 	fiberCtx     *fiber.Ctx
 	endpoint     string
 	isRegulator  bool
-	regulatorCtx *srFuseContextRegulatorR
+	regulatorCtx *stuFuseContextRegulatorR
 	authObj      interface{}
 
 	controllers  []func(ctx FuseContextR)
@@ -44,12 +44,12 @@ type srFuseContextR struct {
 	responseObj  interface{}
 }
 
-type srFuseContextRegulatorR struct {
-	fuseContext              *srFuseContextR
+type stuFuseContextRegulatorR struct {
+	fuseContext              *stuFuseContextR
 	currentIndex             int
-	currentControllerContext *srFuseContextR
+	currentControllerContext *stuFuseContextR
 }
 
-type srFuseContextBuilderR struct {
-	original *srFuseContextR
+type stuFuseContextBuilderR struct {
+	original *stuFuseContextR
 }

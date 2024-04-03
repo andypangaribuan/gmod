@@ -14,7 +14,7 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (slf *pgInstance) crw() (*srConnection, error) {
+func (slf *pgInstance) crw() (*stuConnection, error) {
 	connWriteLocking.Lock()
 	defer connWriteLocking.Unlock()
 
@@ -28,7 +28,7 @@ func (slf *pgInstance) crw() (*srConnection, error) {
 	return slf.rw, nil
 }
 
-func (slf *pgInstance) cro() (*srConnection, error) {
+func (slf *pgInstance) cro() (*stuConnection, error) {
 	connReadLocking.Lock()
 	defer connReadLocking.Unlock()
 
@@ -91,7 +91,7 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 	defer updateReport(report)
 
 	var (
-		conn *srConnection
+		conn *stuConnection
 		err  error
 	)
 
@@ -127,7 +127,7 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	defer updateReport(report)
 
 	var (
-		conn *srConnection
+		conn *stuConnection
 		err  error
 	)
 
@@ -198,7 +198,7 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args
 	switch v := tx.(type) {
 	case *pgInstanceTx:
 		var (
-			conn *srConnection
+			conn *stuConnection
 			err  error
 		)
 

@@ -8,8 +8,8 @@ package conv
 
 func init() {
 	var (
-		conv     = new(srConv)
-		convTime = new(srConvTime)
+		conv     = new(stuConv)
+		convTime = new(stuConvTime)
 	)
 
 	iceConv = conv

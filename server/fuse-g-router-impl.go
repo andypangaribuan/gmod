@@ -8,10 +8,10 @@ package server
 
 import "google.golang.org/grpc"
 
-func (slf *srFuseRouterG) AutoRecover(autoRecover bool) {
+func (slf *stuFuseRouterG) AutoRecover(autoRecover bool) {
 	slf.withAutoRecover = autoRecover
 }
 
-func (slf *srFuseRouterG) Server() *grpc.Server {
+func (slf *stuFuseRouterG) Server() *grpc.Server {
 	return slf.fnGetServer()
 }

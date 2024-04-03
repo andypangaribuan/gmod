@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func (slf *srUtil) dvalTimezone() string {
+func (slf *stuUtil) dvalTimezone() string {
 	if !isGetDvalTimezone {
 		isGetDvalTimezone = true
 		val, err := slf.ReflectionGet(gm.Conf, "timezone")
@@ -30,7 +30,7 @@ func (slf *srUtil) dvalTimezone() string {
 	return dvalTimezone
 }
 
-func (slf *srUtil) getTimeLocation(timezone ...string) *time.Location {
+func (slf *stuUtil) getTimeLocation(timezone ...string) *time.Location {
 	zone := ""
 	if len(timezone) > 0 {
 		zone = timezone[0]
@@ -65,7 +65,7 @@ func (slf *srUtil) getTimeLocation(timezone ...string) *time.Location {
 	return timezones[zone]
 }
 
-func (slf *srUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj interface{}) (err error) {
+func (slf *stuUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj interface{}) (err error) {
 	switch rv.CanSet() {
 	case true:
 		err = slf.reflectionPublicSet(sf, rv, obj)
@@ -75,14 +75,14 @@ func (slf *srUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj i
 	return
 }
 
-func (slf *srUtil) reflectionPublicSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
+func (slf *stuUtil) reflectionPublicSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
 	err := slf.PanicCatcher(func() {
 		rv.Set(reflect.ValueOf(obj))
 	})
 	return slf.reflectionSetError(rs.Name, err)
 }
 
-func (slf *srUtil) reflectionPrivateSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
+func (slf *stuUtil) reflectionPrivateSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
 	var first rune
 	for _, c := range rs.Name {
 		first = c
@@ -102,7 +102,7 @@ func (slf *srUtil) reflectionPrivateSet(rs reflect.StructField, rv reflect.Value
 	return slf.reflectionSetError(rs.Name, err)
 }
 
-func (*srUtil) reflectionSetError(fieldName string, err error) error {
+func (*stuUtil) reflectionSetError(fieldName string, err error) error {
 	if err != nil {
 		return fmt.Errorf("%v\nfield name: %v", err, fieldName)
 	}

@@ -7,9 +7,7 @@
 package conf
 
 func init() {
-	sr := &srConf{
+	iceConf = &stuConf{
 		zxEnvName: "ZX_ENV",
 	}
-
-	iceConf = sr
 }

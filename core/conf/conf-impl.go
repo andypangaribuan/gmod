@@ -6,10 +6,10 @@
 
 package conf
 
-func (slf *srConf) SetZxEnvName(name string) {
+func (slf *stuConf) SetZxEnvName(name string) {
 	slf.zxEnvName = name
 }
 
-func (slf *srConf) SetTimeZone(timezone string) {
+func (slf *stuConf) SetTimeZone(timezone string) {
 	slf.timezone = timezone
 }

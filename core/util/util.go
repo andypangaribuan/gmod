@@ -8,8 +8,8 @@ package util
 
 func init() {
 	var (
-		util    = new(srUtil)
-		utilEnv = new(srUtilEnv)
+		util    = new(stuUtil)
+		utilEnv = new(stuUtilEnv)
 	)
 
 	iceUtil = util

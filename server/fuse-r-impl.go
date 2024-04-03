@@ -16,7 +16,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
+func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
 	if gm.Net.IsPortUsed(restPort) {
 		fmt.Printf("fuse server [restful]: port %v already in use\n", restPort)
 		os.Exit(100)
@@ -28,7 +28,7 @@ func (*srServer) FuseR(restPort int, routes func(router RouterR)) {
 		DisableStartupMessage: true,
 	})
 
-	router := &srFuseRouterR{
+	router := &stuFuseRouterR{
 		fiberApp:        fuseFiberApp,
 		withAutoRecover: false,
 		printOnError:    true,

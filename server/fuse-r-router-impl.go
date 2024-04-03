@@ -15,15 +15,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (slf *srFuseRouterR) AutoRecover(autoRecover bool) {
+func (slf *stuFuseRouterR) AutoRecover(autoRecover bool) {
 	slf.withAutoRecover = autoRecover
 }
 
-func (slf *srFuseRouterR) PrintOnError(printOnError bool) {
+func (slf *stuFuseRouterR) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *srFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, path, url string)) {
+func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, path, url string)) {
 	slf.fiberApp.Use(func(c *fiber.Ctx) error {
 		err := c.Next()
 
@@ -47,7 +47,7 @@ func (slf *srFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pat
 			}
 
 			if fe.Message == fmt.Sprintf("Cannot %v %v", method, path) {
-				ctx := &srFuseContextR{
+				ctx := &stuFuseContextR{
 					fiberCtx:    c,
 					endpoint:    endpoint,
 					isRegulator: false,
@@ -61,13 +61,13 @@ func (slf *srFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pat
 	})
 }
 
-func (slf *srFuseRouterR) Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR))) {
 	for endpoint, controller := range endpoints {
 		slf.Single(endpoint, controller...)
 	}
 }
 
-func (slf *srFuseRouterR) Single(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) Single(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -92,7 +92,7 @@ func (slf *srFuseRouterR) Single(endpoint string, controllers ...func() (isRegul
 	}
 }
 
-func (slf *srFuseRouterR) restProcess(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
 			controllerRegulator *func(ctx FuseContextR)
@@ -113,8 +113,8 @@ func (slf *srFuseRouterR) restProcess(endpoint string, controllers ...func() (is
 	}
 }
 
-func (slf *srFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, controllerRegulator *func(ctx FuseContextR), controllers ...func(ctx FuseContextR)) {
-	regulatorCtx := &srFuseContextR{
+func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, controllerRegulator *func(ctx FuseContextR), controllers ...func(ctx FuseContextR)) {
+	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
 		endpoint:    endpoint,
 		isRegulator: true,
@@ -129,7 +129,7 @@ func (slf *srFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, contro
 	}
 }
 
-func (slf *srFuseRouterR) defaultRegulatorController(ctx FuseContextR) {
+func (slf *stuFuseRouterR) defaultRegulatorController(ctx FuseContextR) {
 	var (
 		regulator     = ctx.Regulator()
 		controllerCtx FuseContextR

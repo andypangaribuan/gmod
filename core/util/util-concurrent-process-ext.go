@@ -12,12 +12,12 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (*srUtil) concurrentProcess(total, max int, fn func(index int)) {
+func (*stuUtil) concurrentProcess(total, max int, fn func(index int)) {
 	if total < 1 || max < 1 {
 		return
 	}
 
-	c := &srConcurrency{
+	c := &stuConcurrency{
 		active:        0,
 		total:         total,
 		max:           max,
@@ -28,7 +28,7 @@ func (*srUtil) concurrentProcess(total, max int, fn func(index int)) {
 	c.start()
 }
 
-func (slf *srConcurrency) start() {
+func (slf *stuConcurrency) start() {
 	n := 0
 	for i := 0; i < slf.total; i++ {
 		if slf.active >= slf.max {
@@ -54,17 +54,17 @@ func (slf *srConcurrency) start() {
 	}
 }
 
-func (slf *srConcurrency) execute(index int) {
+func (slf *stuConcurrency) execute(index int) {
 	slf.fn(index)
 	slf.addActive(-1)
 }
 
-func (slf *srConcurrency) addActive(add int) {
+func (slf *stuConcurrency) addActive(add int) {
 	slf.mx.Lock()
 	defer slf.mx.Unlock()
 	slf.active += add
 }
 
-func (slf *srConcurrency) sleep() {
+func (slf *stuConcurrency) sleep() {
 	time.Sleep(slf.sleepDuration)
 }

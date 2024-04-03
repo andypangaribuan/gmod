@@ -14,7 +14,6 @@ import (
 	_ "github.com/andypangaribuan/gmod"
 
 	"github.com/andypangaribuan/gmod/core/db"
-	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mdl"
@@ -24,7 +23,7 @@ import (
 
 var (
 	dbi       ice.DbInstance
-	repoTUid1 *srTUid1Repo
+	repoTUid1 *stuTUid1Repo
 )
 
 func initDb() {
@@ -51,7 +50,8 @@ func TestDbFetches(t *testing.T) {
 	initDb()
 
 	// models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
-	models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
+	// models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
+	models, err := repoTUid1.Fetches("", db.FetchOpt().WithDeletedAtIsNull(false).EndQuery("ORDER BY uid ASC"))
 	assert.Nil(t, err)
 
 	l3, _, _ := uidL3()
@@ -73,7 +73,7 @@ func TestDbInsert(t *testing.T) {
 
 	initDb()
 
-	model := &srTUid1Model{
+	model := &stuTUid1Model{
 		Uid: "AA9",
 	}
 
@@ -96,10 +96,10 @@ func TestUidL3Insert(t *testing.T) {
 	defer tx.Rollback()
 	assert.Nil(t, err)
 
-	models := make([]*srTUid1Model, len(l3))
+	models := make([]*stuTUid1Model, len(l3))
 
 	for i, uid := range l3 {
-		models[i] = &srTUid1Model{
+		models[i] = &stuTUid1Model{
 			Uid: uid,
 		}
 	}

@@ -11,14 +11,14 @@ import (
 	"os"
 )
 
-func (slf *srFuseContextR) Regulator() FuseContextRegulatorR {
+func (slf *stuFuseContextR) Regulator() FuseContextRegulatorR {
 	if !slf.isRegulator {
 		fmt.Printf("fuse server [restful]: you cannot call this function because you're not the regulator")
 		os.Exit(100)
 	}
 
 	if slf.regulatorCtx == nil {
-		slf.regulatorCtx = &srFuseContextRegulatorR{
+		slf.regulatorCtx = &stuFuseContextRegulatorR{
 			fuseContext:  slf,
 			currentIndex: -1,
 		}
@@ -27,11 +27,11 @@ func (slf *srFuseContextR) Regulator() FuseContextRegulatorR {
 	return slf.regulatorCtx
 }
 
-func (slf *srFuseContextR) GetResponse() (code int, obj interface{}) {
+func (slf *stuFuseContextR) GetResponse() (code int, obj interface{}) {
 	slf.regulatorCtx.currentControllerContext = slf
 	return slf.responseCode, slf.responseObj
 }
 
-func (slf *srFuseContextR) SetAuth(obj interface{}) {
+func (slf *stuFuseContextR) SetAuth(obj interface{}) {
 	slf.authObj = obj
 }

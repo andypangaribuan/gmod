@@ -30,11 +30,11 @@ func SCompare(v1 interface{}, operation string, v2 interface{}) (bool, error) {
 		return false, errors.New("fc.SCompare: invalid operation")
 	}
 
-	if v1 == nil {
+	if fm.IsNil(v1) {
 		return false, errors.New("v1 cannot nil")
 	}
 
-	if v2 == nil {
+	if fm.IsNil(v2) {
 		return false, errors.New("v2 cannot nil")
 	}
 

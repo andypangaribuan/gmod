@@ -20,7 +20,7 @@ func updateReport(report *mdl.DbExecReport) {
 	report.DurationMs = report.FinishedAt.Sub(report.StartedAt).Milliseconds()
 }
 
-func updateReportHost(conn *srConnection, reportHost *mdl.DbExecReportHost) {
+func updateReportHost(conn *stuConnection, reportHost *mdl.DbExecReportHost) {
 	if conn != nil {
 		reportHost.Host = conn.conf.Host
 	}
@@ -36,7 +36,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...inte
 	defer updateReport(report)
 
 	var (
-		conn *srConnection
+		conn *stuConnection
 		err  error
 		id   *int64
 	)
@@ -64,7 +64,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...inte
 	return id, report, err
 }
 
-func (slf *pgInstance) execSelect(conn *srConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out interface{}, query string, args []interface{}) (err error) {
+func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out interface{}, query string, args []interface{}) (err error) {
 	defer updateReportHost(conn, reportHost)
 
 	if insTx != nil {
@@ -74,7 +74,7 @@ func (slf *pgInstance) execSelect(conn *srConnection, reportHost *mdl.DbExecRepo
 	}
 
 	if err != nil && *conn.conf.UnsafeCompatibility {
-		unsafe := &srUnsafe{
+		unsafe := &stuUnsafe{
 			query:   query,
 			args:    args,
 			message: err.Error(),
@@ -93,7 +93,7 @@ func (slf *pgInstance) execSelect(conn *srConnection, reportHost *mdl.DbExecRepo
 	return
 }
 
-func (slf *pgInstance) onUnsafe(unsafe *srUnsafe) {
+func (slf *pgInstance) onUnsafe(unsafe *stuUnsafe) {
 	printUnsafeLog := false
 	if unsafe != nil {
 		if slf.ro != nil {

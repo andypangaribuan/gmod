@@ -85,7 +85,7 @@ func getEnv[T any](key string, dval ...T) (string, *T) {
 	return value, nil
 }
 
-func (*srUtilEnv) invalid(key string, sval string, typ string, err ...error) {
+func (*stuUtilEnv) invalid(key string, sval string, typ string, err ...error) {
 	if len(err) == 0 || err[0] != nil {
 		log.Fatalf(`env value "%v", from key env key "%v" is not a valid %v value`, sval, key, typ)
 	}

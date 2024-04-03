@@ -8,24 +8,24 @@ package server
 
 import "github.com/andypangaribuan/gmod/fm"
 
-func (slf *srFuseContextRegulatorR) Next() (canNext bool, ctrl func() func(ctx FuseContextR)) {
+func (slf *stuFuseContextRegulatorR) Next() (canNext bool, ctrl func() func(ctx FuseContextR)) {
 	slf.currentIndex++
 	return slf.currentIndex < len(slf.fuseContext.controllers), slf.getCtrl
 }
 
-func (slf *srFuseContextRegulatorR) getCtrl() func(ctx FuseContextR) {
+func (slf *stuFuseContextRegulatorR) getCtrl() func(ctx FuseContextR) {
 	return slf.fuseContext.controllers[slf.currentIndex]
 }
 
-func (slf *srFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
-	builder := &srFuseContextBuilderR{
+func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
+	builder := &stuFuseContextBuilderR{
 		original: slf.fuseContext,
 	}
 
 	return builder
 }
 
-func (slf *srFuseContextRegulatorR) Send() {
+func (slf *stuFuseContextRegulatorR) Send() {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentControllerContext.responseCode)
 
 	switch val := slf.currentControllerContext.responseObj.(type) {
