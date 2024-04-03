@@ -7,13 +7,8 @@
 package util
 
 func init() {
-	var (
-		util    = new(stuUtil)
-		utilEnv = new(stuUtilEnv)
-	)
-
-	iceUtil = util
-	iceUtilEnv = utilEnv
+	iceUtil = new(stuUtil)
+	iceUtilEnv = new(stuUtilEnv)
 
 	xinit()
 }

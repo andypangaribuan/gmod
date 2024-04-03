@@ -16,7 +16,6 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/http"
 	_ "github.com/andypangaribuan/gmod/core/json"
-	_ "github.com/andypangaribuan/gmod/core/net"
 	_ "github.com/andypangaribuan/gmod/core/util"
 
 	"github.com/andypangaribuan/gmod/ice"
@@ -30,7 +29,6 @@ var (
 	iceDb       ice.Db
 	iceHttp     ice.Http
 	iceJson     ice.Json
-	iceNet      ice.Net
 	iceUtil     ice.Util
 	iceUtilEnv  ice.UtilEnv
 )
@@ -43,6 +41,5 @@ func init() {
 	iceGM.SetDb(iceDb)
 	iceGM.SetHttp(iceHttp)
 	iceGM.SetJson(iceJson)
-	iceGM.SetNet(iceNet)
 	iceGM.SetUtil(iceUtil, iceUtilEnv)
 }

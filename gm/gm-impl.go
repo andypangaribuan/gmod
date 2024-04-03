@@ -27,10 +27,6 @@ func (*stuGM) SetHttp(http ice.Http) {
 	Http = http
 }
 
-func (*stuGM) SetNet(net ice.Net) {
-	Net = net
-}
-
 func (*stuGM) SetJson(json ice.Json) {
 	Json = json
 }

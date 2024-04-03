@@ -17,7 +17,7 @@ import (
 )
 
 func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
-	if gm.Net.IsPortUsed(restPort) {
+	if gm.Util.IsPortUsed(restPort) {
 		fmt.Printf("fuse server [restful]: port %v already in use\n", restPort)
 		os.Exit(100)
 	}
@@ -57,7 +57,7 @@ func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
 				break
 			}
 
-			if gm.Net.IsPortUsed(restPort) {
+			if gm.Util.IsPortUsed(restPort) {
 				fmt.Printf("fuse server [restful]: run at port %v\n", restPort)
 				break
 			}

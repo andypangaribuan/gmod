@@ -21,6 +21,5 @@ var (
 	Db   ice.Db
 	Http ice.Http
 	Json ice.Json
-	Net  ice.Net
 	Util *stuUtil
 )

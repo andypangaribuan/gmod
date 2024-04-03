@@ -17,7 +17,7 @@ import (
 )
 
 func (slf *stuServer) FuseG(grpcPort int, routes func(router RouterG)) {
-	if gm.Net.IsPortUsed(grpcPort) {
+	if gm.Util.IsPortUsed(grpcPort) {
 		fmt.Printf("fuse server [grpc]%v: port %v already in use\n", slf.logSpace, grpcPort)
 		os.Exit(100)
 	}
@@ -68,7 +68,7 @@ func (slf *stuServer) FuseG(grpcPort int, routes func(router RouterG)) {
 				break
 			}
 
-			if gm.Net.IsPortUsed(grpcPort) {
+			if gm.Util.IsPortUsed(grpcPort) {
 				fmt.Printf("fuse server [grpc]%v: run at port %v\n", slf.logSpace, grpcPort)
 				break
 			}

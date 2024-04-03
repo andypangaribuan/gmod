@@ -21,6 +21,8 @@ type Util interface {
 	DecodeUID(uid string, addition ...int) (rawId string, randId string, err error)
 	ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string
 
+	IsPortUsed(port int, host ...string) bool
+
 	PanicCatcher(fn func()) (err error)
 	ReflectionGet(obj interface{}, fieldName string) (interface{}, error)
 	ReflectionSet(obj interface{}, bind map[string]interface{}) error
