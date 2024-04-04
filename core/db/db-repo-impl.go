@@ -37,6 +37,11 @@ func (slf *stuRepo[T]) Fetches(condition string, args ...interface{}) ([]*T, err
 	return models, err
 }
 
+func (slf *stuRepo[T]) VFetches(condition string, args ...interface{}) ([]T, error) {
+	models, _, err := slf.vfetches(false, nil, condition, args)
+	return models, err
+}
+
 func (slf *stuRepo[T]) Insert(args ...interface{}) error {
 	_, _, err := slf.insert(nil, false, args)
 	return err
@@ -59,6 +64,11 @@ func (slf *stuRepo[T]) TxFetch(tx ice.DbTx, condition string, args ...interface{
 
 func (slf *stuRepo[T]) TxFetches(tx ice.DbTx, condition string, args ...interface{}) ([]*T, error) {
 	models, _, err := slf.fetches(false, tx, condition, args)
+	return models, err
+}
+
+func (slf *stuRepo[T]) TxVFetches(tx ice.DbTx, condition string, args ...interface{}) ([]T, error) {
+	models, _, err := slf.vfetches(false, tx, condition, args)
 	return models, err
 }
 

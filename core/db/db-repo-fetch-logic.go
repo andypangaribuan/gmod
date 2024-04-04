@@ -14,6 +14,17 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
+func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]T, *stuReport, error) {
+	entities, report, err := slf.fetches(isFetch, tx, condition, args)
+	ls := make([]T, len(entities))
+
+	for i, e := range entities {
+		ls[i] = *e
+	}
+
+	return ls, report, err
+}
+
 func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *stuReport, error) {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)

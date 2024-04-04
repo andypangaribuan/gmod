@@ -13,12 +13,14 @@ type Repo[T any] interface {
 
 	Fetch(condition string, args ...interface{}) (*T, error)
 	Fetches(condition string, args ...interface{}) ([]*T, error)
+	VFetches(condition string, args ...interface{}) ([]T, error)
 	Insert(args ...interface{}) error
 	InsertRID(args ...interface{}) (*int64, error)
 	Update(builder UpdateBuilder) error
 
 	TxFetch(tx ice.DbTx, condition string, args ...interface{}) (*T, error)
 	TxFetches(tx ice.DbTx, condition string, args ...interface{}) ([]*T, error)
+	TxVFetches(tx ice.DbTx, condition string, args ...interface{}) ([]T, error)
 	TxInsert(tx ice.DbTx, args ...interface{}) error
 	TxInsertRID(tx ice.DbTx, args ...interface{}) (*int64, error)
 	TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) error
