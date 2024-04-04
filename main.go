@@ -13,6 +13,7 @@ import (
 
 	_ "github.com/andypangaribuan/gmod/core/conf"
 	_ "github.com/andypangaribuan/gmod/core/conv"
+	_ "github.com/andypangaribuan/gmod/core/crypto"
 	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/http"
 	_ "github.com/andypangaribuan/gmod/core/json"
@@ -26,6 +27,7 @@ var (
 	iceConf     ice.Conf
 	iceConv     ice.Conv
 	iceConvTime ice.ConvTime
+	iceCrypto   ice.Crypto
 	iceDb       ice.Db
 	iceHttp     ice.Http
 	iceJson     ice.Json
@@ -38,6 +40,7 @@ func init() {
 
 	iceGM.SetConf(iceConf)
 	iceGM.SetConv(iceConv, iceConvTime)
+	iceGM.SetCrypto(iceCrypto)
 	iceGM.SetDb(iceDb)
 	iceGM.SetHttp(iceHttp)
 	iceGM.SetJson(iceJson)

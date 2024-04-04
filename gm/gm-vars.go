@@ -16,10 +16,11 @@ import (
 var iceGM ice.GM
 
 var (
-	Conf ice.Conf
-	Conv *stuConv
-	Db   ice.Db
-	Http ice.Http
-	Json ice.Json
-	Util *stuUtil
+	Conf   ice.Conf
+	Conv   *stuConv
+	Crypto ice.Crypto
+	Db     ice.Db
+	Http   ice.Http
+	Json   ice.Json
+	Util   *stuUtil
 )

@@ -22,7 +22,7 @@ func (*stuUtil) concurrentProcess(total, max int, fn func(index int)) {
 		total:         total,
 		max:           max,
 		fn:            fn,
-		sleepDuration: time.Millisecond * 10,
+		sleepDuration: time.Millisecond * 5,
 	}
 
 	c.start()

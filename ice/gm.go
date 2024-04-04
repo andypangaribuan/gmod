@@ -9,6 +9,7 @@ package ice
 type GM interface {
 	SetConf(conf Conf)
 	SetConv(conv Conv, tm ConvTime)
+	SetCrypto(crypto Crypto)
 	SetDb(db Db)
 	SetHttp(http Http)
 	SetJson(json Json)

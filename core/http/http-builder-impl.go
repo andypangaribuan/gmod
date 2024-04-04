@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strconv"
 	"time"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -30,8 +31,14 @@ func (slf *stuHttpBuilder) InsecureSkipVerify(skip ...bool) ice.HttpBuilder {
 	return slf
 }
 
-func (slf *stuHttpBuilder) SetRetryCondition(condition func(resp ice.HttpResponse) bool) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetRetryCondition(condition func(resp ice.HttpResponse, count int) bool) ice.HttpBuilder {
 	slf.retryCondition = &condition
+	return slf
+}
+
+func (slf *stuHttpBuilder) SetMaxRetry(max int) ice.HttpBuilder {
+	max = fm.Ternary(max < 0, -1, max)
+	slf.maxRetry = &max
 	return slf
 }
 
@@ -92,12 +99,7 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 
 	if slf.retryCondition != nil {
 		client.AddRetryCondition(func(resp *resty.Response, err error) bool {
-			stu := &stuRetryCondition{
-				resp: resp,
-				err:  err,
-			}
-
-			return (*slf.retryCondition)(stu)
+			return slf.callRetryCondition(resp, err)
 		})
 	}
 
@@ -140,21 +142,42 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 		req.SetFiles(*slf.files)
 	}
 
-	switch slf.method {
-	case "get":
-		resp, err = req.Get(slf.url)
+	for {
+		switch slf.method {
+		case "get":
+			resp, err = req.Get(slf.url)
 
-	case "post":
-		resp, err = req.Post(slf.url)
+		case "post":
+			resp, err = req.Post(slf.url)
 
-	case "put":
-		resp, err = req.Put(slf.url)
+		case "put":
+			resp, err = req.Put(slf.url)
 
-	case "patch":
-		resp, err = req.Patch(slf.url)
+		case "patch":
+			resp, err = req.Patch(slf.url)
 
-	case "delete":
-		resp, err = req.Delete(slf.url)
+		case "delete":
+			resp, err = req.Delete(slf.url)
+		}
+
+		if resp != nil {
+			code := strconv.Itoa(resp.StatusCode())
+			if code[:1] != "2" {
+				if !slf.callRetryCondition(resp, err) {
+					break
+				} else {
+					continue
+				}
+			}
+		}
+
+		if err == nil {
+			break
+		}
+
+		if !slf.callRetryCondition(resp, err) {
+			break
+		}
 	}
 
 	var (

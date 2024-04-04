@@ -29,7 +29,8 @@ type HttpBuilder interface {
 	//	SetRetryCondition(func(resp ice.HttpResponse) bool {
 	//		return resp.Code() == http.StatusTooManyRequests
 	//	})
-	SetRetryCondition(condition func(resp HttpResponse) bool) HttpBuilder
+	SetRetryCondition(condition func(resp HttpResponse, count int) bool) HttpBuilder
+	SetMaxRetry(max int) HttpBuilder
 
 	EnableTrace(enable ...bool) HttpBuilder
 	SetHeaders(args map[string]string) HttpBuilder
@@ -97,4 +98,7 @@ type HttpResponse interface {
 	IsSuccess() bool
 	Error() error
 	Code() int
+
+	IsTimeout() bool
+	IsConnectionReset() bool
 }

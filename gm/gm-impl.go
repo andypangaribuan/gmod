@@ -19,6 +19,10 @@ func (*stuGM) SetConv(conv ice.Conv, tm ice.ConvTime) {
 	}
 }
 
+func (*stuGM) SetCrypto(crypto ice.Crypto) {
+	Crypto = crypto
+}
+
 func (*stuGM) SetDb(db ice.Db) {
 	Db = db
 }

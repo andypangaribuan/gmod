@@ -21,7 +21,9 @@ type stuHttpBuilder struct {
 	method             string
 	timeout            *time.Duration
 	insecureSkipVerify bool
-	retryCondition     *func(resp ice.HttpResponse) bool
+	retryCondition     *func(resp ice.HttpResponse, count int) bool
+	maxRetry           *int
+	retryCount         int
 	enableTrace        bool
 	headers            *map[string]string
 	pathParams         *map[string]string
