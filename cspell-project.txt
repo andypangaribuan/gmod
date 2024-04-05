@@ -22,3 +22,5 @@ shopspring
 resty
 pkcs
 vfetches
+automaxprocs
+maxprocs

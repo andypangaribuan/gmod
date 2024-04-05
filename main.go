@@ -20,6 +20,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/util"
 
 	"github.com/andypangaribuan/gmod/ice"
+	"go.uber.org/automaxprocs/maxprocs"
 )
 
 var (
@@ -36,6 +37,7 @@ var (
 )
 
 func init() {
+	maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
 	iceGM.SetConf(iceConf)
