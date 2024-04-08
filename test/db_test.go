@@ -19,7 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/core/db"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +30,7 @@ var (
 )
 
 func initDb() {
-	conn := mdl.DbConnection{
+	conn := mol.DbConnection{
 		AppName:  gm.Util.Env.GetString("APP_NAME"),
 		Host:     gm.Util.Env.GetString("DBW_HOST"),
 		Port:     gm.Util.Env.GetInt("DBW_PORT"),

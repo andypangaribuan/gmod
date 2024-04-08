@@ -14,7 +14,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
 func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]T, *stuReport, error) {
@@ -52,7 +52,7 @@ func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args
 	var (
 		err        error
 		out        []*T
-		execReport *mdl.DbExecReport
+		execReport *mol.DbExecReport
 	)
 
 	err = report.transform()

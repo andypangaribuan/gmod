@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
 func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []any) (*int64, *stuReport, error) {
@@ -34,7 +34,7 @@ func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []any) (*int64, *stuRe
 		}
 		err        error
 		id         *int64
-		execReport *mdl.DbExecReport
+		execReport *mol.DbExecReport
 	)
 
 	if rid {
@@ -78,7 +78,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []
 			query: `INSERT INTO ::tableName (
 ::insertColumn
 ) VALUES `,
-			execReport: &mdl.DbExecReport{
+			execReport: &mol.DbExecReport{
 				StartedAt: gm.Util.Timenow(),
 			},
 		}

@@ -11,10 +11,10 @@ package db
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (*stuDb) Postgres(conf mdl.DbConnection) ice.DbPostgresInstance {
+func (*stuDb) Postgres(conf mol.DbConnection) ice.DbPostgresInstance {
 	setPgConfDVal(&conf)
 
 	instance := &pgInstance{
@@ -27,7 +27,7 @@ func (*stuDb) Postgres(conf mdl.DbConnection) ice.DbPostgresInstance {
 	return instance
 }
 
-func (*stuDb) PostgresRW(readConf mdl.DbConnection, writeConf mdl.DbConnection) ice.DbPostgresInstance {
+func (*stuDb) PostgresRW(readConf mol.DbConnection, writeConf mol.DbConnection) ice.DbPostgresInstance {
 	setPgConfDVal(&readConf)
 	setPgConfDVal(&writeConf)
 

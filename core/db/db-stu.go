@@ -11,7 +11,7 @@ package db
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -27,7 +27,7 @@ type stuRepo[T any] struct {
 }
 
 type stuConnection struct {
-	conf       *mdl.DbConnection
+	conf       *mol.DbConnection
 	sx         *sqlx.DB
 	driverName string
 }
@@ -51,7 +51,7 @@ type stuReport struct {
 	insertArgSign string
 	query         string
 	args          []any
-	execReport    *mdl.DbExecReport
+	execReport    *mol.DbExecReport
 }
 
 type stuUnsafe struct {

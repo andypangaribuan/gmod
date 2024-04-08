@@ -7,7 +7,7 @@
  * All Rights Reserved.
  */
 
-package mdl
+package mol
 
 import "time"
 

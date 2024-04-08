@@ -18,12 +18,12 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-func setPgConfDVal(conf *mdl.DbConnection) {
+func setPgConfDVal(conf *mol.DbConnection) {
 	if conf.AppName == "" {
 		log.Fatalf("db connection must have application name")
 	}
@@ -57,7 +57,7 @@ func setPgConfDVal(conf *mdl.DbConnection) {
 	conf.PrintSql = fm.Ternary(conf.PrintSql != nil, conf.PrintSql, dvalPrintSql)
 }
 
-func getPgConnectionString(conf *mdl.DbConnection) string {
+func getPgConnectionString(conf *mol.DbConnection) string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s search_path=%s application_name=%s sslmode=disable", conf.Host, conf.Port, conf.Username, conf.Password, conf.Name, conf.Scheme, conf.AppName)
 }
 

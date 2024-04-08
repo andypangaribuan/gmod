@@ -15,15 +15,15 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
-func updateReport(report *mdl.DbExecReport) {
+func updateReport(report *mol.DbExecReport) {
 	report.FinishedAt = gm.Util.Timenow()
 	report.DurationMs = report.FinishedAt.Sub(report.StartedAt).Milliseconds()
 }
 
-func updateReportHost(conn *stuConnection, reportHost *mdl.DbExecReportHost) {
+func updateReportHost(conn *stuConnection, reportHost *mol.DbExecReportHost) {
 	if conn != nil {
 		reportHost.Host = conn.conf.Host
 	}
@@ -31,10 +31,10 @@ func updateReportHost(conn *stuConnection, reportHost *mdl.DbExecReportHost) {
 	reportHost.DurationMs = reportHost.FinishedAt.Sub(reportHost.StartedAt).Milliseconds()
 }
 
-func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any) (*int64, *mdl.DbExecReport, error) {
-	report := &mdl.DbExecReport{
+func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any) (*int64, *mol.DbExecReport, error) {
+	report := &mol.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*mdl.DbExecReportHost, 0),
+		Hosts:     make([]*mol.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -44,7 +44,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any)
 		id   *int64
 	)
 
-	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 	defer updateReportHost(conn, reportHost)
 
@@ -67,7 +67,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any)
 	return id, report, err
 }
 
-func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out any, query string, args []any) (err error) {
+func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mol.DbExecReportHost, insTx *pgInstanceTx, out any, query string, args []any) (err error) {
 	defer updateReportHost(conn, reportHost)
 
 	if insTx != nil {

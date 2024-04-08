@@ -14,7 +14,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
 func (slf *pgInstance) crw() (*stuConnection, error) {
@@ -86,10 +86,10 @@ func (slf *pgInstance) NewTransaction() (ice.DbTx, error) {
 	return insx, err
 }
 
-func (slf *pgInstance) Select(out any, query string, args ...any) (*mdl.DbExecReport, error) {
-	report := &mdl.DbExecReport{
+func (slf *pgInstance) Select(out any, query string, args ...any) (*mol.DbExecReport, error) {
+	report := &mol.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*mdl.DbExecReportHost, 0),
+		Hosts:     make([]*mol.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -98,7 +98,7 @@ func (slf *pgInstance) Select(out any, query string, args ...any) (*mdl.DbExecRe
 		err  error
 	)
 
-	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
 	if slf.ro != nil {
@@ -122,10 +122,10 @@ func (slf *pgInstance) Select(out any, query string, args ...any) (*mdl.DbExecRe
 	return report, err
 }
 
-func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func() bool) (*mdl.DbExecReport, error) {
-	report := &mdl.DbExecReport{
+func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func() bool) (*mol.DbExecReport, error) {
+	report := &mol.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*mdl.DbExecReportHost, 0),
+		Hosts:     make([]*mol.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -134,7 +134,7 @@ func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func()
 		err  error
 	)
 
-	reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
+	reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
 	if slf.ro != nil && check != nil {
@@ -162,7 +162,7 @@ func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func()
 	if check != nil {
 		c := *check
 		if !c() && slf.ro != nil {
-			reportHost := &mdl.DbExecReportHost{StartedAt: gm.Util.Timenow()}
+			reportHost := &mol.DbExecReportHost{StartedAt: gm.Util.Timenow()}
 			report.Hosts = append(report.Hosts, reportHost)
 
 			conn, err = slf.crw()
@@ -178,19 +178,19 @@ func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func()
 	return report, err
 }
 
-func (slf *pgInstance) Execute(query string, args ...any) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) Execute(query string, args ...any) (*mol.DbExecReport, error) {
 	_, report, err := slf.execute(false, nil, query, args...)
 	return report, err
 }
 
-func (slf *pgInstance) ExecuteRID(query string, args ...any) (*int64, *mdl.DbExecReport, error) {
+func (slf *pgInstance) ExecuteRID(query string, args ...any) (*int64, *mol.DbExecReport, error) {
 	return slf.execute(true, nil, query, args...)
 }
 
-func (slf *pgInstance) TxSelect(tx ice.DbTx, out any, query string, args ...any) (*mdl.DbExecReport, error) {
-	report := &mdl.DbExecReport{
+func (slf *pgInstance) TxSelect(tx ice.DbTx, out any, query string, args ...any) (*mol.DbExecReport, error) {
+	report := &mol.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
-		Hosts:     make([]*mdl.DbExecReportHost, 0),
+		Hosts:     make([]*mol.DbExecReportHost, 0),
 	}
 	defer updateReport(report)
 
@@ -205,7 +205,7 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out any, query string, args ...any)
 			err  error
 		)
 
-		reportHost := &mdl.DbExecReportHost{StartedAt: report.StartedAt}
+		reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 		report.Hosts = append(report.Hosts, reportHost)
 
 		conn, err = slf.crw()
@@ -227,11 +227,11 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out any, query string, args ...any)
 	return report, errors.New("db: unknown tx transaction type")
 }
 
-func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...any) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...any) (*mol.DbExecReport, error) {
 	_, report, err := slf.execute(false, tx, query, args...)
 	return report, err
 }
 
-func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...any) (*int64, *mdl.DbExecReport, error) {
+func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...any) (*int64, *mol.DbExecReport, error) {
 	return slf.execute(true, tx, query, args...)
 }

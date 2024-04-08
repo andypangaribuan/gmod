@@ -9,11 +9,11 @@
 
 package ice
 
-import "github.com/andypangaribuan/gmod/mdl"
+import "github.com/andypangaribuan/gmod/mol"
 
 type Db interface {
-	Postgres(conf mdl.DbConnection) DbPostgresInstance
-	PostgresRW(readConf mdl.DbConnection, writeConf mdl.DbConnection) DbPostgresInstance
+	Postgres(conf mol.DbConnection) DbPostgresInstance
+	PostgresRW(readConf mol.DbConnection, writeConf mol.DbConnection) DbPostgresInstance
 }
 
 type DbTx interface {
@@ -30,12 +30,12 @@ type DbInstance interface {
 	PingRead() (string, error)
 	NewTransaction() (DbTx, error)
 
-	Select(out any, query string, args ...any) (*mdl.DbExecReport, error)
-	SelectR2(out any, query string, args []any, check *func() bool) (*mdl.DbExecReport, error)
-	Execute(query string, args ...any) (*mdl.DbExecReport, error)
-	ExecuteRID(query string, args ...any) (*int64, *mdl.DbExecReport, error)
+	Select(out any, query string, args ...any) (*mol.DbExecReport, error)
+	SelectR2(out any, query string, args []any, check *func() bool) (*mol.DbExecReport, error)
+	Execute(query string, args ...any) (*mol.DbExecReport, error)
+	ExecuteRID(query string, args ...any) (*int64, *mol.DbExecReport, error)
 
-	TxSelect(tx DbTx, out any, query string, args ...any) (*mdl.DbExecReport, error)
-	TxExecute(tx DbTx, query string, args ...any) (*mdl.DbExecReport, error)
-	TxExecuteRID(tx DbTx, query string, args ...any) (*int64, *mdl.DbExecReport, error)
+	TxSelect(tx DbTx, out any, query string, args ...any) (*mol.DbExecReport, error)
+	TxExecute(tx DbTx, query string, args ...any) (*mol.DbExecReport, error)
+	TxExecuteRID(tx DbTx, query string, args ...any) (*int64, *mol.DbExecReport, error)
 }

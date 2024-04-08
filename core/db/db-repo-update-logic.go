@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/andypangaribuan/gmod/mdl"
+	"github.com/andypangaribuan/gmod/mol"
 )
 
 func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuReport, error) {
@@ -28,7 +28,7 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuRepor
 			query:         `UPDATE ::tableName SET`,
 		}
 		err           error
-		execReport    *mdl.DbExecReport
+		execReport    *mol.DbExecReport
 		withUpdatedAt = fm.GetDefault(builder.withAutoUpdatedAt, true)
 		setQuery      = ""
 		setArgs       = make([]any, 0)
