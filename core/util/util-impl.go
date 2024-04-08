@@ -10,10 +10,13 @@
 package util
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"net"
 	"net/mail"
+	"os"
+	"path/filepath"
 	"reflect"
 	"strconv"
 	"strings"
@@ -21,6 +24,7 @@ import (
 	"unsafe"
 
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/joho/godotenv"
 )
 
 func (*stuUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
@@ -186,6 +190,38 @@ func (slf *stuUtil) IsPortUsed(port int, host ...string) bool {
 	}
 
 	return false
+}
+
+func (*stuUtil) ReadTextFile(filePath string) ([]string, error) {
+	readFile, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	defer readFile.Close()
+
+	fileScanner := bufio.NewScanner(readFile)
+	fileScanner.Split(bufio.ScanLines)
+	var lines []string
+
+	for fileScanner.Scan() {
+		lines = append(lines, fileScanner.Text())
+	}
+
+	return lines, nil
+}
+
+func (*stuUtil) LoadEnv(filePath ...string) error {
+	return godotenv.Load(filePath...)
+}
+
+func (*stuUtil) GetExecDir() (string, error) {
+	exec, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Dir(exec), nil
 }
 
 func (*stuUtil) PanicCatcher(fn func()) (err error) {

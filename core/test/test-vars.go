@@ -7,7 +7,7 @@
  * All Rights Reserved.
  */
 
-package gm
+package test
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
@@ -15,17 +15,5 @@ import (
 	_ "unsafe"
 )
 
-//go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
-var iceGM ice.GM
-
-var (
-	Box    ice.Box
-	Conf   ice.Conf
-	Conv   *stuConv
-	Crypto ice.Crypto
-	Db     ice.Db
-	Http   ice.Http
-	Json   ice.Json
-	Test   ice.Test
-	Util   *stuUtil
-)
+//go:linkname iceTest github.com/andypangaribuan/gmod.iceTest
+var iceTest ice.Test

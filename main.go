@@ -21,6 +21,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/http"
 	_ "github.com/andypangaribuan/gmod/core/json"
+	_ "github.com/andypangaribuan/gmod/core/test"
 	_ "github.com/andypangaribuan/gmod/core/util"
 
 	"github.com/andypangaribuan/gmod/ice"
@@ -38,6 +39,7 @@ var (
 	iceDb       ice.Db
 	iceHttp     ice.Http
 	iceJson     ice.Json
+	iceTest     ice.Test
 	iceUtil     ice.Util
 	iceUtilEnv  ice.UtilEnv
 )
@@ -45,13 +47,14 @@ var (
 func init() {
 	maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
-
-	iceGM.SetBox(iceBox)
-	iceGM.SetConf(iceConf)
-	iceGM.SetConv(iceConv, iceConvTime)
-	iceGM.SetCrypto(iceCrypto)
-	iceGM.SetDb(iceDb)
-	iceGM.SetHttp(iceHttp)
-	iceGM.SetJson(iceJson)
-	iceGM.SetUtil(iceUtil, iceUtilEnv)
+	iceGM.
+		SetBox(iceBox).
+		SetConf(iceConf).
+		SetConv(iceConv, iceConvTime).
+		SetCrypto(iceCrypto).
+		SetDb(iceDb).
+		SetHttp(iceHttp).
+		SetJson(iceJson).
+		SetTest(iceTest).
+		SetUtil(iceUtil, iceUtilEnv)
 }

@@ -11,40 +11,53 @@ package gm
 
 import "github.com/andypangaribuan/gmod/ice"
 
-func (*stuGM) SetBox(box ice.Box) {
+func (slf *stuGM) SetBox(box ice.Box) ice.GM {
 	Box = box
+	return slf
 }
 
-func (*stuGM) SetConf(conf ice.Conf) {
+func (slf *stuGM) SetConf(conf ice.Conf) ice.GM {
 	Conf = conf
+	return slf
 }
 
-func (*stuGM) SetConv(conv ice.Conv, tm ice.ConvTime) {
+func (slf *stuGM) SetConv(conv ice.Conv, tm ice.ConvTime) ice.GM {
 	Conv = &stuConv{
 		iceConv: conv,
 		Time:    tm,
 	}
+	return slf
 }
 
-func (*stuGM) SetCrypto(crypto ice.Crypto) {
+func (slf *stuGM) SetCrypto(crypto ice.Crypto) ice.GM {
 	Crypto = crypto
+	return slf
 }
 
-func (*stuGM) SetDb(db ice.Db) {
+func (slf *stuGM) SetDb(db ice.Db) ice.GM {
 	Db = db
+	return slf
 }
 
-func (*stuGM) SetHttp(http ice.Http) {
+func (slf *stuGM) SetHttp(http ice.Http) ice.GM {
 	Http = http
+	return slf
 }
 
-func (*stuGM) SetJson(json ice.Json) {
+func (slf *stuGM) SetJson(json ice.Json) ice.GM {
 	Json = json
+	return slf
 }
 
-func (*stuGM) SetUtil(util ice.Util, env ice.UtilEnv) {
+func (slf *stuGM) SetTest(test ice.Test) ice.GM {
+	Test = test
+	return slf
+}
+
+func (slf *stuGM) SetUtil(util ice.Util, env ice.UtilEnv) ice.GM {
 	Util = &stuUtil{
 		iceUtil: util,
 		Env:     env,
 	}
+	return slf
 }

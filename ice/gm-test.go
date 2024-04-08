@@ -9,14 +9,9 @@
 
 package ice
 
-type GM interface {
-	SetBox(box Box) GM
-	SetConf(conf Conf) GM
-	SetConv(conv Conv, tm ConvTime) GM
-	SetCrypto(crypto Crypto) GM
-	SetDb(db Db) GM
-	SetHttp(http Http) GM
-	SetJson(json Json) GM
-	SetTest(test Test) GM
-	SetUtil(util Util, env UtilEnv) GM
+import "testing"
+
+type Test interface {
+	Start(t *testing.T, fn func(t *testing.T))
+	Printf(t *testing.T, format string, args ...any)
 }

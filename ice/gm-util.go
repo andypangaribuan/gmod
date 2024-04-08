@@ -25,6 +25,9 @@ type Util interface {
 	ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string
 
 	IsPortUsed(port int, host ...string) bool
+	ReadTextFile(filePath string) ([]string, error)
+	LoadEnv(filePath ...string) error
+	GetExecDir() (string, error)
 
 	PanicCatcher(fn func()) (err error)
 	ReflectionGet(obj any, fieldName string) (any, error)

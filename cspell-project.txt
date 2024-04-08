@@ -24,3 +24,5 @@ pkcs
 vfetches
 automaxprocs
 maxprocs
+godotenv
+joho
