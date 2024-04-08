@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -14,6 +17,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTimeFormat(t *testing.T) {
@@ -61,4 +65,13 @@ func TestRandom(t *testing.T) {
 	alphabet = gm.Util.GetAlphabet(true) + gm.Util.GetAlphabet() + gm.Util.GetNumeric()
 	doTest("full-1: ", alphabet, 3, false)
 	doTest("full-2: ", alphabet, 3, true)
+}
+
+func TestZTime(t *testing.T) {
+	val := "2024-03-18T03:12:03Z"
+	format := "2006-01-02T15:04:05Z07:00"
+	tm, err := time.Parse(format, val)
+	require.Nil(t, err)
+
+	printLog(t, "%v\n", gm.Conv.Time.ToStrFull(tm))
 }

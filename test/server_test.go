@@ -7,11 +7,19 @@
  * All Rights Reserved.
  */
 
-package util
+package test
 
-func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
+import (
+	"fmt"
+	"testing"
 
-	xinit()
+	"github.com/andypangaribuan/gmod/server"
+)
+
+func TestServerGRPC(t *testing.T) {
+	server.FuseG(11011, func(router server.RouterG) {
+		router.AutoRecover(false)
+		router.Server()
+		fmt.Printf("grpc routes\n")
+	})
 }

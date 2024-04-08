@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -27,11 +30,11 @@ func (slf *stuFuseContextR) Regulator() FuseContextRegulatorR {
 	return slf.regulatorCtx
 }
 
-func (slf *stuFuseContextR) GetResponse() (code int, obj interface{}) {
+func (slf *stuFuseContextR) GetResponse() (code int, obj any) {
 	slf.regulatorCtx.currentControllerContext = slf
 	return slf.responseCode, slf.responseObj
 }
 
-func (slf *stuFuseContextR) SetAuth(obj interface{}) {
+func (slf *stuFuseContextR) SetAuth(obj any) {
 	slf.authObj = obj
 }

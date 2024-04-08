@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -11,7 +14,7 @@ import (
 )
 
 // Scan implements the sql.Scanner interface for database deserialization.
-func (slf *FCT) Scan(value interface{}) error {
+func (slf *FCT) Scan(value any) error {
 	err := slf.vd.Scan(value)
 	if err != nil {
 		return err

@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -18,7 +21,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func printLog(t *testing.T, format string, args ...interface{}) {
+func printLog(t *testing.T, format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
 	if t != nil {
 		t.Logf(message)
@@ -230,7 +233,7 @@ func numsAddZero(length int, v string) string {
 }
 
 func checkUnique(t *testing.T, ids []string) {
-	mids := make(map[string]interface{}, 0)
+	mids := make(map[string]any, 0)
 
 	for _, id := range ids {
 		if id == "" {

@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -14,7 +17,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func toDecimal(val interface{}) (decimal.Decimal, error) {
+func toDecimal(val any) (decimal.Decimal, error) {
 	var d decimal.Decimal
 
 	if fm.IsNil(val) {
@@ -60,7 +63,7 @@ func toDecimal(val interface{}) (decimal.Decimal, error) {
 	return d, errors.New("unknown type")
 }
 
-func isOperation(val interface{}) (string, bool) {
+func isOperation(val any) (string, bool) {
 	switch v := val.(type) {
 	case string:
 		if v == "+" || v == "-" || v == "*" || v == "/" || v == "%" {

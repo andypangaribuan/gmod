@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -47,13 +50,13 @@ type stuReport struct {
 	insertColumn  string
 	insertArgSign string
 	query         string
-	args          []interface{}
+	args          []any
 	execReport    *mdl.DbExecReport
 }
 
 type stuUnsafe struct {
 	query   string
-	args    []interface{}
+	args    []any
 	message string
 	trace   string
 }
@@ -71,8 +74,8 @@ type stuFetchOptBuilder struct {
 type stuUpdateBuilder struct {
 	withAutoUpdatedAt *bool
 	setQuery          *string
-	setArgs           *[]interface{}
-	setInn            *map[string]interface{}
+	setArgs           *[]any
+	setInn            *map[string]any
 	whereQuery        *string
-	whereArgs         *[]interface{}
+	whereArgs         *[]any
 }

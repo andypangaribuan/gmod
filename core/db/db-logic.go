@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -76,10 +79,10 @@ func (slf *stuConnection) createConnection() error {
 	return err
 }
 
-func (slf *stuConnection) normalizeQueryArgs(query string, args []interface{}) (string, []interface{}) {
+func (slf *stuConnection) normalizeQueryArgs(query string, args []any) (string, []any) {
 	if len(args) == 1 {
 		switch val := args[0].(type) {
-		case []interface{}:
+		case []any:
 			args = val
 		}
 	}
@@ -90,7 +93,7 @@ func (slf *stuConnection) normalizeQueryArgs(query string, args []interface{}) (
 	return query, args
 }
 
-func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...interface{}) (sql.Result, error) {
+func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...any) (sql.Result, error) {
 	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
@@ -117,7 +120,7 @@ func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...interface{}
 	return res, err
 }
 
-func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...interface{}) (*int64, string, error) {
+func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...any) (*int64, string, error) {
 	query, args = slf.normalizeQueryArgs(query, args)
 
 	if tx != nil {
@@ -154,7 +157,7 @@ func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...interfac
 	return id, slf.conf.Host, err
 }
 
-func (slf *stuConnection) printSql(startTime time.Time, query string, args []interface{}) {
+func (slf *stuConnection) printSql(startTime time.Time, query string, args []any) {
 	if *slf.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()
 		if len(args) == 0 {

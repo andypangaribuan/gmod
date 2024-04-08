@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -38,7 +41,7 @@ type HttpBuilder interface {
 	// Examples:
 	//
 	//	Get(".../users/{userId}/{subAccountId}/details").
-	//	SetPathParams(map[string]interface{}{
+	//	SetPathParams(map[string]any{
 	//		"userId": "sample@sample.com",
 	//		"subAccountId": "100002",
 	//	})
@@ -54,7 +57,7 @@ type HttpBuilder interface {
 	//		Password: "welcome2resty",
 	//	})
 	//
-	//	SetBody(map[string]interface{}{
+	//	SetBody(map[string]any{
 	//		"username": "jeeva@myjeeva.com",
 	//		"password": "welcome2resty",
 	//		"address": &Address{
@@ -70,7 +73,7 @@ type HttpBuilder interface {
 	//
 	//	SetBody([]byte("This is my raw request, sent as-is"))
 	//
-	SetBody(value interface{}) HttpBuilder
+	SetBody(value any) HttpBuilder
 
 	// Examples:
 	// profileImgBytes, _ := os.ReadFile("/andy/test-img.png")

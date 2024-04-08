@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -65,7 +68,7 @@ func (slf *stuUtil) getTimeLocation(timezone ...string) *time.Location {
 	return timezones[zone]
 }
 
-func (slf *stuUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj interface{}) (err error) {
+func (slf *stuUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj any) (err error) {
 	switch rv.CanSet() {
 	case true:
 		err = slf.reflectionPublicSet(sf, rv, obj)
@@ -75,14 +78,14 @@ func (slf *stuUtil) reflectionSet(sf reflect.StructField, rv reflect.Value, obj 
 	return
 }
 
-func (slf *stuUtil) reflectionPublicSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
+func (slf *stuUtil) reflectionPublicSet(rs reflect.StructField, rv reflect.Value, obj any) error {
 	err := slf.PanicCatcher(func() {
 		rv.Set(reflect.ValueOf(obj))
 	})
 	return slf.reflectionSetError(rs.Name, err)
 }
 
-func (slf *stuUtil) reflectionPrivateSet(rs reflect.StructField, rv reflect.Value, obj interface{}) error {
+func (slf *stuUtil) reflectionPrivateSet(rs reflect.StructField, rv reflect.Value, obj any) error {
 	var first rune
 	for _, c := range rs.Name {
 		first = c

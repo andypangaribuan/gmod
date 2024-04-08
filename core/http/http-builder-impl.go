@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -67,7 +70,7 @@ func (slf *stuHttpBuilder) SetFormData(args map[string]string) ice.HttpBuilder {
 	return slf
 }
 
-func (slf *stuHttpBuilder) SetBody(value interface{}) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetBody(value any) ice.HttpBuilder {
 	slf.body = value
 	return slf
 }

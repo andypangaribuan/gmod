@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -29,7 +32,7 @@ type stuHttpBuilder struct {
 	pathParams         *map[string]string
 	queryParams        *map[string]string
 	formData           *map[string]string
-	body               interface{}
+	body               any
 	fileReaders        []*stuFileReader
 	files              *map[string]string
 }

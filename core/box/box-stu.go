@@ -7,11 +7,11 @@
  * All Rights Reserved.
  */
 
-package util
+package box
 
-func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
+import "sync"
 
-	xinit()
+type stuBox struct {
+	mx  sync.RWMutex
+	box map[string]map[string]any
 }

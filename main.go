@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -11,6 +14,7 @@ import (
 
 	_ "github.com/andypangaribuan/gmod/gm"
 
+	_ "github.com/andypangaribuan/gmod/core/box"
 	_ "github.com/andypangaribuan/gmod/core/conf"
 	_ "github.com/andypangaribuan/gmod/core/conv"
 	_ "github.com/andypangaribuan/gmod/core/crypto"
@@ -24,7 +28,9 @@ import (
 )
 
 var (
-	iceGM       ice.GM
+	iceGM ice.GM
+
+	iceBox      ice.Box
 	iceConf     ice.Conf
 	iceConv     ice.Conv
 	iceConvTime ice.ConvTime
@@ -40,6 +46,7 @@ func init() {
 	maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
+	iceGM.SetBox(iceBox)
 	iceGM.SetConf(iceConf)
 	iceGM.SetConv(iceConv, iceConvTime)
 	iceGM.SetCrypto(iceCrypto)

@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -14,7 +17,7 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]T, *stuReport, error) {
+func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]T, *stuReport, error) {
 	entities, report, err := slf.fetches(isFetch, tx, condition, args)
 	ls := make([]T, len(entities))
 
@@ -25,7 +28,7 @@ func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, arg
 	return ls, report, err
 }
 
-func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []interface{}) ([]*T, *stuReport, error) {
+func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]*T, *stuReport, error) {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
 		endQuery   = strings.TrimSpace(slf.getEndQuery(args) + fm.Ternary(isFetch, " LIMIT 1", ""))

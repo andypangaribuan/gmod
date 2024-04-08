@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -29,13 +32,13 @@ func newTUid1Repo(dbi ice.DbInstance) *stuTUid1Repo {
 	return &sr
 }
 
-func (slf *stuTUid1Repo) getInsertColumn(e *stuTUid1Model) []interface{} {
-	return []interface{}{
+func (slf *stuTUid1Repo) getInsertColumn(e *stuTUid1Model) []any {
+	return []any{
 		e.Uid,
 	}
 }
 
-func (slf *stuTUid1Repo) Fetches(condition string, args ...interface{}) ([]*stuTUid1Model, error) {
+func (slf *stuTUid1Repo) Fetches(condition string, args ...any) ([]*stuTUid1Model, error) {
 	return slf.repo.Fetches(condition, args...)
 }
 

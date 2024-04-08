@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -12,7 +15,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func JsonCast[T any](value interface{}, links ...string) (*T, error) {
+func JsonCast[T any](value any, links ...string) (*T, error) {
 	if len(links) == 0 {
 		switch val := value.(type) {
 		case T:
@@ -22,7 +25,7 @@ func JsonCast[T any](value interface{}, links ...string) (*T, error) {
 			return val, nil
 
 		case []byte:
-			var out *map[string]interface{}
+			var out *map[string]any
 			err := gm.Json.UnMarshal(val, &out)
 			if err != nil {
 				return nil, err
@@ -41,7 +44,7 @@ func JsonCast[T any](value interface{}, links ...string) (*T, error) {
 
 	switch val := value.(type) {
 	case []byte:
-		var out *map[string]interface{}
+		var out *map[string]any
 		err := gm.Json.UnMarshal(val, &out)
 		if err != nil {
 			return nil, err
@@ -62,7 +65,7 @@ func JsonCast[T any](value interface{}, links ...string) (*T, error) {
 
 		return JsonCast[T](v, links[1:]...)
 
-	case map[string]interface{}:
+	case map[string]any:
 		v, ok := val[links[0]]
 		if !ok {
 			return nil, errors.New("doesn't have child " + links[0])
@@ -70,7 +73,7 @@ func JsonCast[T any](value interface{}, links ...string) (*T, error) {
 
 		return JsonCast[T](v, links[1:]...)
 
-	case *map[string]interface{}:
+	case *map[string]any:
 		if val == nil {
 			return nil, errors.New("cannot cast the value, value is nil")
 		}

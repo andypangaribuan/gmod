@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -37,7 +40,7 @@ func (slf *stuFuseContextRegulatorR) Send() {
 		ctx.Send(val)
 	case *[]byte:
 		ctx.Send(fm.GetDefault(val, []byte{}))
-	case interface{}:
+	case any:
 		ctx.JSON(val)
 	default:
 		ctx.SendString("invalid response object")

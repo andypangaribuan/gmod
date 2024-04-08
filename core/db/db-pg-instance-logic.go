@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -28,7 +31,7 @@ func updateReportHost(conn *stuConnection, reportHost *mdl.DbExecReportHost) {
 	reportHost.DurationMs = reportHost.FinishedAt.Sub(reportHost.StartedAt).Milliseconds()
 }
 
-func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any) (*int64, *mdl.DbExecReport, error) {
 	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*mdl.DbExecReportHost, 0),
@@ -64,7 +67,7 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...inte
 	return id, report, err
 }
 
-func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out interface{}, query string, args []interface{}) (err error) {
+func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mdl.DbExecReportHost, insTx *pgInstanceTx, out any, query string, args []any) (err error) {
 	defer updateReportHost(conn, reportHost)
 
 	if insTx != nil {

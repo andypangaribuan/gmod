@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -29,8 +32,8 @@ type RouterG interface {
 
 type FuseContextR interface {
 	Regulator() FuseContextRegulatorR
-	GetResponse() (code int, obj interface{})
-	SetAuth(val interface{})
+	GetResponse() (code int, obj any)
+	SetAuth(val any)
 }
 
 type FuseContextRegulatorR interface {

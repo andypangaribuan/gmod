@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -28,9 +31,9 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuRepor
 		execReport    *mdl.DbExecReport
 		withUpdatedAt = fm.GetDefault(builder.withAutoUpdatedAt, true)
 		setQuery      = ""
-		setArgs       = make([]interface{}, 0)
+		setArgs       = make([]any, 0)
 		whereQuery    = ""
-		whereArgs     = make([]interface{}, 0)
+		whereArgs     = make([]any, 0)
 	)
 
 	if withUpdatedAt {
@@ -51,7 +54,7 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuRepor
 	if builder.setInn != nil && len(*builder.setInn) > 0 {
 		var (
 			query = ""
-			args  = make([]interface{}, 0)
+			args  = make([]any, 0)
 			keys  = make([]string, 0, len(*builder.setInn))
 		)
 

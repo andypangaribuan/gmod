@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -83,7 +86,7 @@ func (slf *pgInstance) NewTransaction() (ice.DbTx, error) {
 	return insx, err
 }
 
-func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) Select(out any, query string, args ...any) (*mdl.DbExecReport, error) {
 	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*mdl.DbExecReportHost, 0),
@@ -119,7 +122,7 @@ func (slf *pgInstance) Select(out interface{}, query string, args ...interface{}
 	return report, err
 }
 
-func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{}, check *func() bool) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func() bool) (*mdl.DbExecReport, error) {
 	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*mdl.DbExecReportHost, 0),
@@ -175,16 +178,16 @@ func (slf *pgInstance) SelectR2(out interface{}, query string, args []interface{
 	return report, err
 }
 
-func (slf *pgInstance) Execute(query string, args ...interface{}) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) Execute(query string, args ...any) (*mdl.DbExecReport, error) {
 	_, report, err := slf.execute(false, nil, query, args...)
 	return report, err
 }
 
-func (slf *pgInstance) ExecuteRID(query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+func (slf *pgInstance) ExecuteRID(query string, args ...any) (*int64, *mdl.DbExecReport, error) {
 	return slf.execute(true, nil, query, args...)
 }
 
-func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) TxSelect(tx ice.DbTx, out any, query string, args ...any) (*mdl.DbExecReport, error) {
 	report := &mdl.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*mdl.DbExecReportHost, 0),
@@ -224,11 +227,11 @@ func (slf *pgInstance) TxSelect(tx ice.DbTx, out interface{}, query string, args
 	return report, errors.New("db: unknown tx transaction type")
 }
 
-func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...interface{}) (*mdl.DbExecReport, error) {
+func (slf *pgInstance) TxExecute(tx ice.DbTx, query string, args ...any) (*mdl.DbExecReport, error) {
 	_, report, err := slf.execute(false, tx, query, args...)
 	return report, err
 }
 
-func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...interface{}) (*int64, *mdl.DbExecReport, error) {
+func (slf *pgInstance) TxExecuteRID(tx ice.DbTx, query string, args ...any) (*int64, *mdl.DbExecReport, error) {
 	return slf.execute(true, tx, query, args...)
 }

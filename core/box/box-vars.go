@@ -7,11 +7,13 @@
  * All Rights Reserved.
  */
 
-package util
+package box
 
-func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
+import (
+	"github.com/andypangaribuan/gmod/ice"
 
-	xinit()
-}
+	_ "unsafe"
+)
+
+//go:linkname iceBox github.com/andypangaribuan/gmod.iceBox
+var iceBox ice.Box

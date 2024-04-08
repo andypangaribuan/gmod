@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -16,7 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/mdl"
 )
 
-func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []interface{}) (*int64, *stuReport, error) {
+func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []any) (*int64, *stuReport, error) {
 	var (
 		report = &stuReport{
 			tableName:     slf.tableName,
@@ -62,7 +65,7 @@ RETURNING id`
 	return id, report, err
 }
 
-func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) (*stuReport, error) {
+func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) (*stuReport, error) {
 	if tx == nil {
 		return nil, errors.New("db: bulk insert only available via transaction")
 	}
@@ -82,8 +85,8 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []
 		err             error
 		insertChunkSize = *fm.GetFirst(chunkSize, 100)
 		partSize        = make([]int, 0)
-		partArgs        = make([][]interface{}, 0)
-		part            = make([]interface{}, 0)
+		partArgs        = make([][]any, 0)
+		part            = make([]any, 0)
 		count           = 0
 	)
 
@@ -104,7 +107,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []
 			count = 0
 			partSize = append(partSize, len(part))
 			partArgs = append(partArgs, part)
-			part = make([]interface{}, 0)
+			part = make([]any, 0)
 		}
 	}
 

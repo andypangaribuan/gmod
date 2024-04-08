@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -55,7 +58,7 @@ func (*stuRepo[T]) formatInsertColumnArgs(val string) string {
 	return formatted
 }
 
-func (slf *stuRepo[T]) getWhereQuery(condition string, args []interface{}) string {
+func (slf *stuRepo[T]) getWhereQuery(condition string, args []any) string {
 	condition = strings.TrimSpace(condition)
 	var (
 		whereQuery          = ""
@@ -74,7 +77,7 @@ func (slf *stuRepo[T]) getWhereQuery(condition string, args []interface{}) strin
 	return whereQuery
 }
 
-func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
+func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []any) bool {
 	isWith := slf.withDeletedAtIsNull
 
 	for _, arg := range args {
@@ -90,7 +93,7 @@ func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []interface{}) bool {
 	return isWith
 }
 
-func (slf *stuRepo[T]) getEndQuery(args []interface{}) string {
+func (slf *stuRepo[T]) getEndQuery(args []any) string {
 	endQuery := ""
 
 	for _, arg := range args {
@@ -109,8 +112,8 @@ func (slf *stuRepo[T]) getEndQuery(args []interface{}) string {
 	return strings.TrimSpace(endQuery)
 }
 
-func (slf *stuRepo[T]) getArgs(args []interface{}) []interface{} {
-	filtered := make([]interface{}, 0)
+func (slf *stuRepo[T]) getArgs(args []any) []any {
+	filtered := make([]any, 0)
 
 	for _, arg := range args {
 		switch arg.(type) {

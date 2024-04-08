@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -15,11 +18,11 @@ import (
 )
 
 // supported operator: +, -, *, /, %
-func Cal(val ...interface{}) FCT {
+func Cal(val ...any) FCT {
 	fcv, err := SCal(val...)
 	if err != nil {
 		debug.PrintStack()
-		objects := []interface{}{err}
+		objects := []any{err}
 		objects = append(objects, val...)
 		log.Panicf("error: %+v\nval: %v", objects...)
 	}
@@ -28,7 +31,7 @@ func Cal(val ...interface{}) FCT {
 }
 
 // supported operator: +, -, *, /, %
-func SCal(val ...interface{}) (FCT, error) {
+func SCal(val ...any) (FCT, error) {
 	fv := FCT{
 		V1: "0",
 		V2: "0",
@@ -50,7 +53,7 @@ func SCal(val ...interface{}) (FCT, error) {
 		return fv, nil
 	}
 
-	lsv := make([]interface{}, 0)
+	lsv := make([]any, 0)
 
 	for i := 0; i < length; i++ {
 		if i%2 == 0 {

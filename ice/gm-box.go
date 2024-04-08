@@ -7,11 +7,10 @@
  * All Rights Reserved.
  */
 
-package util
+package ice
 
-func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
-
-	xinit()
+type Box interface {
+	Set(key, subKey string, val any)
+	GetValue(key, subKey string) any
+	GetSub(key string) map[string]any
 }

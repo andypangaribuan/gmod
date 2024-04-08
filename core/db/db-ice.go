@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -11,19 +14,19 @@ import "github.com/andypangaribuan/gmod/ice"
 type Repo[T any] interface {
 	SetInsertColumn(columns string)
 
-	Fetch(condition string, args ...interface{}) (*T, error)
-	Fetches(condition string, args ...interface{}) ([]*T, error)
-	VFetches(condition string, args ...interface{}) ([]T, error)
-	Insert(args ...interface{}) error
-	InsertRID(args ...interface{}) (*int64, error)
+	Fetch(condition string, args ...any) (*T, error)
+	Fetches(condition string, args ...any) ([]*T, error)
+	VFetches(condition string, args ...any) ([]T, error)
+	Insert(args ...any) error
+	InsertRID(args ...any) (*int64, error)
 	Update(builder UpdateBuilder) error
 
-	TxFetch(tx ice.DbTx, condition string, args ...interface{}) (*T, error)
-	TxFetches(tx ice.DbTx, condition string, args ...interface{}) ([]*T, error)
-	TxVFetches(tx ice.DbTx, condition string, args ...interface{}) ([]T, error)
-	TxInsert(tx ice.DbTx, args ...interface{}) error
-	TxInsertRID(tx ice.DbTx, args ...interface{}) (*int64, error)
-	TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []interface{}, chunkSize ...int) error
+	TxFetch(tx ice.DbTx, condition string, args ...any) (*T, error)
+	TxFetches(tx ice.DbTx, condition string, args ...any) ([]*T, error)
+	TxVFetches(tx ice.DbTx, condition string, args ...any) ([]T, error)
+	TxInsert(tx ice.DbTx, args ...any) error
+	TxInsertRID(tx ice.DbTx, args ...any) (*int64, error)
+	TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) error
 	TxUpdate(tx ice.DbTx, builder UpdateBuilder) error
 }
 
@@ -39,7 +42,7 @@ type FetchOptBuilder interface {
 
 type UpdateBuilder interface {
 	AutoUpdatedAt(val ...bool) UpdateBuilder
-	Set(query string, args ...interface{}) UpdateBuilder
-	SetIfNotNil(keyVal map[string]interface{}) UpdateBuilder
-	Where(query string, args ...interface{}) UpdateBuilder
+	Set(query string, args ...any) UpdateBuilder
+	SetIfNotNil(keyVal map[string]any) UpdateBuilder
+	Where(query string, args ...any) UpdateBuilder
 }

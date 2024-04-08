@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -25,7 +28,7 @@ type FCT struct {
 	V2 string
 }
 
-func New(val interface{}) FCT {
+func New(val any) FCT {
 	fv, err := SNew(val)
 	if err != nil {
 		debug.PrintStack()
@@ -35,7 +38,7 @@ func New(val interface{}) FCT {
 	return fv
 }
 
-func SNew(val interface{}) (FCT, error) {
+func SNew(val any) (FCT, error) {
 	var fv FCT
 
 	if fm.IsNil(val) {
@@ -68,7 +71,7 @@ func (slf *FCT) set(vd decimal.Decimal) {
 	slf.V2 = printer.Sprintf(format, slf.vd.InexactFloat64())
 }
 
-func (slf *FCT) GetDefault(val interface{}) FCT {
+func (slf *FCT) GetDefault(val any) FCT {
 	if slf != nil {
 		return *slf
 	}
@@ -105,7 +108,7 @@ func (slf FCT) Round(places int) FCT {
 	return New(slf.vd.Round(int32(places)))
 }
 
-func (slf *FCT) PtrRound(places int, defaultValue ...interface{}) *FCT {
+func (slf *FCT) PtrRound(places int, defaultValue ...any) *FCT {
 	if slf != nil {
 		return fm.Ptr(New(slf.vd.Round(int32(places))))
 	}
@@ -210,7 +213,7 @@ func (slf FCT) Floor(places ...int) FCT {
 
 // Places parameter using int/int32/int64 type.
 // DefaultValue using fc.FCT type.
-func (slf *FCT) PtrFloor(opt ...interface{}) *FCT {
+func (slf *FCT) PtrFloor(opt ...any) *FCT {
 	var (
 		places       = make([]int, 0)
 		defaultValue *FCT
@@ -288,7 +291,7 @@ func (slf FCT) Ceil(places ...int) FCT {
 
 // Places parameter using int/int32/int64 type.
 // DefaultValue using fc.FCT type.
-func (slf *FCT) PtrCeil(opt ...interface{}) *FCT {
+func (slf *FCT) PtrCeil(opt ...any) *FCT {
 	var (
 		places       = make([]int, 0)
 		defaultValue *FCT
@@ -329,14 +332,14 @@ func (slf *FCT) PtrCeil(opt ...interface{}) *FCT {
 	return nil
 }
 
-func (slf FCT) Pow(val interface{}) FCT {
+func (slf FCT) Pow(val any) FCT {
 	var fv FCT
 	p := New(val)
 	fv.set(slf.vd.Pow(p.vd))
 	return fv
 }
 
-func (slf FCT) SPow(val interface{}) (FCT, error) {
+func (slf FCT) SPow(val any) (FCT, error) {
 	var fv FCT
 
 	p, err := SNew(val)

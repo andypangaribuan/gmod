@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -28,7 +31,7 @@ type DbConnection struct {
 
 type DbExecReport struct {
 	Query      string
-	Args       []interface{}
+	Args       []any
 	StartedAt  time.Time
 	FinishedAt time.Time
 	DurationMs int64

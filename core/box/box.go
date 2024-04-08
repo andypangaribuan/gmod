@@ -7,11 +7,10 @@
  * All Rights Reserved.
  */
 
-package util
+package box
 
 func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
-
-	xinit()
+	iceBox = &stuBox{
+		box: make(map[string]map[string]any, 0),
+	}
 }

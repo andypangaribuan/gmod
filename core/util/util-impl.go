@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -206,7 +209,7 @@ func (*stuUtil) PanicCatcher(fn func()) (err error) {
 	return
 }
 
-func (*stuUtil) ReflectionGet(obj interface{}, fieldName string) (interface{}, error) {
+func (*stuUtil) ReflectionGet(obj any, fieldName string) (any, error) {
 	val := reflect.ValueOf(obj)
 	if val.Kind() != reflect.Ptr {
 		return nil, errors.New("obj must be a pointer")
@@ -241,7 +244,7 @@ func (*stuUtil) ReflectionGet(obj interface{}, fieldName string) (interface{}, e
 	return nil, errors.New("not found")
 }
 
-func (slf *stuUtil) ReflectionSet(obj interface{}, bind map[string]interface{}) error {
+func (slf *stuUtil) ReflectionSet(obj any, bind map[string]any) error {
 	val := reflect.ValueOf(obj)
 	if val.Kind() != reflect.Ptr {
 		return errors.New("obj must be a pointer")

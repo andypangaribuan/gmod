@@ -7,11 +7,12 @@
  * All Rights Reserved.
  */
 
-package util
+package test
+
+import (
+	_ "github.com/andypangaribuan/gmod"
+)
 
 func init() {
-	iceUtil = new(stuUtil)
-	iceUtilEnv = new(stuUtilEnv)
 
-	xinit()
 }

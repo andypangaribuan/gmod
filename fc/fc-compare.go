@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2024.
  * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
  * All Rights Reserved.
  */
 
@@ -15,7 +18,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func Compare(v1 interface{}, operation string, v2 interface{}) bool {
+func Compare(v1 any, operation string, v2 any) bool {
 	v, err := SCompare(v1, operation, v2)
 	if err != nil {
 		debug.PrintStack()
@@ -25,7 +28,7 @@ func Compare(v1 interface{}, operation string, v2 interface{}) bool {
 	return v
 }
 
-func SCompare(v1 interface{}, operation string, v2 interface{}) (bool, error) {
+func SCompare(v1 any, operation string, v2 any) (bool, error) {
 	if !fm.IfHaveIn(operation, "==", "!=", "<", "<=", ">=", ">") {
 		return false, errors.New("fc.SCompare: invalid operation")
 	}
