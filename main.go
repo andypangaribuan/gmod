@@ -39,6 +39,7 @@ var (
 	iceDb       ice.Db
 	iceHttp     ice.Http
 	iceJson     ice.Json
+	iceNet      ice.Net
 	iceTest     ice.Test
 	iceUtil     ice.Util
 	iceUtilEnv  ice.UtilEnv
@@ -55,6 +56,7 @@ func init() {
 		SetDb(iceDb).
 		SetHttp(iceHttp).
 		SetJson(iceJson).
+		SetNet(iceNet).
 		SetTest(iceTest).
 		SetUtil(iceUtil, iceUtilEnv)
 }

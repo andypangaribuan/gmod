@@ -17,6 +17,7 @@ type GM interface {
 	SetDb(db Db) GM
 	SetHttp(http Http) GM
 	SetJson(json Json) GM
+	SetNet(net Net) GM
 	SetTest(test Test) GM
 	SetUtil(util Util, env UtilEnv) GM
 }

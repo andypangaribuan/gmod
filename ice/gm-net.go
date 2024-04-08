@@ -7,8 +7,14 @@
  * All Rights Reserved.
  */
 
-package test
+package ice
 
-func init() {
-	iceTest = new(stuTest)
+import (
+	"github.com/andypangaribuan/gmod/mol"
+	"google.golang.org/grpc"
+)
+
+type Net interface {
+	IsPortUsed(port int, host ...string) bool
+	GrpcConnection(address string, opt ...mol.NetOpt) (grpc.ClientConnInterface, error)
 }

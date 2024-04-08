@@ -7,8 +7,13 @@
  * All Rights Reserved.
  */
 
-package test
+package mol
 
-func init() {
-	iceTest = new(stuTest)
+import "crypto/tls"
+
+type NetOpt struct {
+	UsingClientLB         *bool
+	TlsConfig             *tls.Config
+	TlsCertFile           *string
+	TlsServerNameOverride *string
 }

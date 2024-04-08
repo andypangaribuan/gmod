@@ -7,8 +7,8 @@
  * All Rights Reserved.
  */
 
-package test
+package net
 
 func init() {
-	iceTest = new(stuTest)
+	iceNet = new(stuNet)
 }

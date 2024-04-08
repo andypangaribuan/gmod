@@ -49,6 +49,11 @@ func (slf *stuGM) SetJson(json ice.Json) ice.GM {
 	return slf
 }
 
+func (slf *stuGM) SetNet(net ice.Net) ice.GM {
+	Net = net
+	return slf
+}
+
 func (slf *stuGM) SetTest(test ice.Test) ice.GM {
 	Test = test
 	return slf

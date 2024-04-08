@@ -7,8 +7,6 @@
  * All Rights Reserved.
  */
 
-package test
+package net
 
-func init() {
-	iceTest = new(stuTest)
-}
+type stuNet struct{}

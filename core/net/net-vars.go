@@ -7,7 +7,7 @@
  * All Rights Reserved.
  */
 
-package gm
+package net
 
 import (
 	"github.com/andypangaribuan/gmod/ice"
@@ -15,18 +15,5 @@ import (
 	_ "unsafe"
 )
 
-//go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
-var iceGM ice.GM
-
-var (
-	Box    ice.Box
-	Conf   ice.Conf
-	Conv   *stuConv
-	Crypto ice.Crypto
-	Db     ice.Db
-	Http   ice.Http
-	Json   ice.Json
-	Net    ice.Net
-	Test   ice.Test
-	Util   *stuUtil
-)
+//go:linkname iceNet github.com/andypangaribuan/gmod.iceNet
+var iceNet ice.Net
