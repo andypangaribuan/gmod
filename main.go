@@ -21,6 +21,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/http"
 	_ "github.com/andypangaribuan/gmod/core/json"
+	_ "github.com/andypangaribuan/gmod/core/net"
 	_ "github.com/andypangaribuan/gmod/core/test"
 	_ "github.com/andypangaribuan/gmod/core/util"
 
