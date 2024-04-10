@@ -18,6 +18,8 @@ import (
 //go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
 var iceGM ice.GM
 
+var initExecuted = false
+
 var (
 	Box    ice.Box
 	Conf   ice.Conf

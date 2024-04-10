@@ -15,11 +15,13 @@ import (
 	"golang.org/x/text/message"
 )
 
-var printer *message.Printer
-
 func init() {
-	printer = message.NewPrinter(language.English)
+	if initExecuted {
+		return
+	}
 
+	initExecuted = true
+	printer = message.NewPrinter(language.English)
 	decimal.MarshalJSONWithoutQuotes = true
 	decimal.DivisionPrecision = 25
 }

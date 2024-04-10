@@ -36,3 +36,17 @@ func GrpcCall[T any, R any](fn func(ctx context.Context, in *T, opts ...grpc.Cal
 
 	return fn(ctx, req)
 }
+
+func GrpcHeader(ctx context.Context) map[string]string {
+	header := make(map[string]string, 0)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		for key, val := range md {
+			if len(val) > 0 {
+				header[key] = val[0]
+			}
+		}
+	}
+
+	return header
+}

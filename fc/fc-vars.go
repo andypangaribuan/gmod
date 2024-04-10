@@ -7,13 +7,11 @@
  * All Rights Reserved.
  */
 
-package gm
+package fc
 
-func init() {
-	if initExecuted {
-		return
-	}
+import "golang.org/x/text/message"
 
-	initExecuted = true
-	iceGM = new(stuGM)
-}
+var (
+	printer      *message.Printer
+	initExecuted = false
+)

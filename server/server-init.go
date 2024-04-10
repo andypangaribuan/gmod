@@ -9,10 +9,11 @@
 
 package server
 
-import "github.com/gofiber/fiber/v2"
+func init() {
+	if initExecuted {
+		return
+	}
 
-var (
-	serverImpl          server
-	fuseFiberApp        *fiber.App
-	isFuseRPrintOnError bool
-)
+	initExecuted = true
+	serverImpl = new(stuServer)
+}
