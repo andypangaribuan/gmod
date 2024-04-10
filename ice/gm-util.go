@@ -28,7 +28,7 @@ type Util interface {
 	LoadEnv(filePath ...string) error
 	GetExecDir() (string, error)
 	GetExecPathFunc(skip ...int) (string, string)
-	Init(fn func())
+	SingleExec(fn func())
 
 	PanicCatcher(fn func()) (err error)
 	ReflectionGet(obj any, fieldName string) (any, error)

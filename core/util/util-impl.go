@@ -214,7 +214,7 @@ func (*stuUtil) GetExecPathFunc(skip ...int) (string, string) {
 	return fmt.Sprintf("%v:%v", frame.File, frame.Line), frame.Function
 }
 
-func (slf *stuUtil) Init(fn func()) {
+func (slf *stuUtil) SingleExec(fn func()) {
 	path, fname := slf.GetExecPathFunc(3)
 	key := fmt.Sprintf("%v:%v", path, fname)
 	slf.initFuncMx.Lock()
