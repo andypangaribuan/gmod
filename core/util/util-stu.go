@@ -14,7 +14,10 @@ import (
 	"time"
 )
 
-type stuUtil struct{}
+type stuUtil struct {
+	initFuncMx         sync.Mutex
+	initFuncExecuteMap map[string]any
+}
 
 type stuUtilEnv struct{}
 

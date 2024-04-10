@@ -26,3 +26,4 @@ automaxprocs
 maxprocs
 godotenv
 joho
+fname

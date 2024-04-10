@@ -27,6 +27,8 @@ type Util interface {
 	ReadTextFile(filePath string) ([]string, error)
 	LoadEnv(filePath ...string) error
 	GetExecDir() (string, error)
+	GetExecPathFunc(skip ...int) (string, string)
+	Init(fn func())
 
 	PanicCatcher(fn func()) (err error)
 	ReflectionGet(obj any, fieldName string) (any, error)

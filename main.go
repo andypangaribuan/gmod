@@ -29,6 +29,8 @@ import (
 	"go.uber.org/automaxprocs/maxprocs"
 )
 
+var initExecuted = false
+
 var (
 	iceGM ice.GM
 
@@ -47,8 +49,14 @@ var (
 )
 
 func init() {
+	if initExecuted {
+		return
+	}
+
+	initExecuted = true
 	maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+
 	iceGM.
 		SetBox(iceBox).
 		SetConf(iceConf).

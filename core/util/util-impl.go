@@ -18,6 +18,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"time"
 	"unsafe"
@@ -198,6 +199,36 @@ func (*stuUtil) GetExecDir() (string, error) {
 	}
 
 	return filepath.Dir(exec), nil
+}
+
+func (*stuUtil) GetExecPathFunc(skip ...int) (string, string) {
+	skipFrame := 1
+	if len(skip) > 0 && skip[0] > 0 {
+		skipFrame = skip[0]
+	}
+
+	pc := make([]uintptr, 10)
+	n := runtime.Callers(skipFrame, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	return fmt.Sprintf("%v:%v", frame.File, frame.Line), frame.Function
+}
+
+func (slf *stuUtil) Init(fn func()) {
+	path, fname := slf.GetExecPathFunc(3)
+	key := fmt.Sprintf("%v:%v", path, fname)
+	slf.initFuncMx.Lock()
+	defer slf.initFuncMx.Unlock()
+
+	if slf.initFuncExecuteMap == nil {
+		slf.initFuncExecuteMap = make(map[string]any, 0)
+	}
+
+	_, ok := slf.initFuncExecuteMap[key]
+	if !ok {
+		slf.initFuncExecuteMap[key] = nil
+		fn()
+	}
 }
 
 func (*stuUtil) PanicCatcher(fn func()) (err error) {
