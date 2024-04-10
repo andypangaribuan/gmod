@@ -88,5 +88,5 @@ func (slf *stuGrpcServerHandler) printPanic(r any) {
 	}
 	message += "\n\n"
 
-	fmt.Print(message)
+	log.Print(message)
 }
