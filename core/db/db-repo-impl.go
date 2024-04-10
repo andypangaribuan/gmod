@@ -30,6 +30,10 @@ func (slf *stuRepo[T]) SetInsertColumn(columns string) {
 	slf.insertArgSign = slf.formatInsertColumnArgs(slf.generateArgSign(columns))
 }
 
+func (slf *stuRepo[T]) SetInsertArgs(fn func(e *T) []any) {
+	slf.insertColumnFunc = fn
+}
+
 func (slf *stuRepo[T]) Fetch(condition string, args ...any) (*T, error) {
 	models, _, err := slf.fetches(true, nil, condition, args)
 	return fm.PtrGetFirst(models), err
@@ -43,6 +47,11 @@ func (slf *stuRepo[T]) Fetches(condition string, args ...any) ([]*T, error) {
 func (slf *stuRepo[T]) VFetches(condition string, args ...any) ([]T, error) {
 	models, _, err := slf.vfetches(false, nil, condition, args)
 	return models, err
+}
+
+func (slf *stuRepo[T]) XInsert(e *T) error {
+	_, _, err := slf.insert(nil, false, slf.insertColumnFunc(e))
+	return err
 }
 
 func (slf *stuRepo[T]) Insert(args ...any) error {

@@ -11,7 +11,4 @@ package fc
 
 import "golang.org/x/text/message"
 
-var (
-	printer      *message.Printer
-	initExecuted = false
-)
+var printer *message.Printer

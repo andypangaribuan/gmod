@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"log"
 	"runtime"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -63,9 +64,15 @@ func (slf *stuGrpcServerHandler) printPanic(r any) {
 		return
 	}
 
-	log.Printf("## recovered from panic\n")
-	log.Printf("## detail\n[[%#v]]\n", r)
-	log.Printf("## stacktrace:\n")
+	message := fmt.Sprintf(strings.TrimSpace(`
+## recovered from panic
+## detail\n[[%#v]]
+## stacktrace:
+`), r)
+
+	// log.Printf("## recovered from panic\n")
+	// log.Printf("## detail\n[[%#v]]\n", r)
+	// log.Printf("## stacktrace:\n")
 
 	startIndex := 0
 	if slf.stackTraceSkipLevel > 0 {
@@ -74,9 +81,12 @@ func (slf *stuGrpcServerHandler) printPanic(r any) {
 		}
 	}
 
+	message += "\n"
 	for i := startIndex; len(callers) > i; i++ {
-		log.Printf(" %v", callers[i])
+		message += callers[i]
+		// log.Printf(" %v", callers[i])
 	}
+	message += "\n\n"
 
-	fmt.Println()
+	fmt.Print(message)
 }

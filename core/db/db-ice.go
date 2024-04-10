@@ -13,10 +13,12 @@ import "github.com/andypangaribuan/gmod/ice"
 
 type Repo[T any] interface {
 	SetInsertColumn(columns string)
+	SetInsertArgs(fn func(e *T) []any)
 
 	Fetch(condition string, args ...any) (*T, error)
 	Fetches(condition string, args ...any) ([]*T, error)
 	VFetches(condition string, args ...any) ([]T, error)
+	XInsert(e *T) error
 	Insert(args ...any) error
 	InsertRID(args ...any) (*int64, error)
 	Update(builder UpdateBuilder) error

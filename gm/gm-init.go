@@ -10,10 +10,5 @@
 package gm
 
 func init() {
-	if initExecuted {
-		return
-	}
-
-	initExecuted = true
 	iceGM = new(stuGM)
 }

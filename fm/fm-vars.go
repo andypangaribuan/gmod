@@ -7,12 +7,6 @@
  * All Rights Reserved.
  */
 
-package server
+package fm
 
-import "github.com/gofiber/fiber/v2"
-
-var (
-	serverImpl          server
-	fuseFiberApp        *fiber.App
-	isFuseRPrintOnError bool
-)
+var orderedInitLs [][]any

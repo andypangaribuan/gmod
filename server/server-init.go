@@ -10,10 +10,5 @@
 package server
 
 func init() {
-	if initExecuted {
-		return
-	}
-
-	initExecuted = true
 	serverImpl = new(stuServer)
 }

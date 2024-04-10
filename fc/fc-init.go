@@ -16,11 +16,6 @@ import (
 )
 
 func init() {
-	if initExecuted {
-		return
-	}
-
-	initExecuted = true
 	printer = message.NewPrinter(language.English)
 	decimal.MarshalJSONWithoutQuotes = true
 	decimal.DivisionPrecision = 25

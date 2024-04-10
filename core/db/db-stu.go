@@ -24,6 +24,7 @@ type stuRepo[T any] struct {
 	insertArgSign       string
 	withDeletedAtIsNull bool
 	rwFetchWhenNull     bool
+	insertColumnFunc    func(e *T) []any
 }
 
 type stuConnection struct {
