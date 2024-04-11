@@ -161,9 +161,13 @@ func (slf *stuConnection) printSql(startTime time.Time, query string, args []any
 	if *slf.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()
 		if len(args) == 0 {
-			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nDUR: %vms\n---\n\n", slf.conf.Host, query, durationMs)
+			log.Printf("\nHOST: %v\nSQL : %v\nDUR : %v ms\n---\n\n", slf.conf.Host, query, durationMs)
 		} else {
-			log.Printf("\nHOST: \"%v\"\nSQL: \"%v\"\nARGS: %v\nDUR: %vms\n---\n\n", slf.conf.Host, query, args, durationMs)
+			var argsVal any = args
+			if v, err := gm.Json.Encode(args); err == nil {
+				argsVal = v
+			}
+			log.Printf("\nHOST: %v\nSQL : %v\nARGS: %v\nDUR : %v ms\n---\n\n", slf.conf.Host, query, argsVal, durationMs)
 		}
 	}
 }

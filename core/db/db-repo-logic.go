@@ -37,19 +37,22 @@ func (*stuRepo[T]) formatInsertColumnArgs(val string) string {
 	)
 
 	for i, v := range ls {
-		if count > maxOneLine {
+		if count >= maxOneLine {
 			count = 0
 		}
 		count++
 
 		if count == 1 {
+			if i > 0 {
+				formatted += "\n"
+			}
 			formatted += fourSpace
 		}
 		formatted += strings.TrimSpace(v)
 
 		if i < len(ls)-1 {
 			formatted += ","
-			if count <= maxOneLine {
+			if count < maxOneLine {
 				formatted += " "
 			}
 		}

@@ -21,6 +21,7 @@ func (slf *stuRepo[T]) SetInsertColumn(columns string) {
 	for {
 		columns = strings.ReplaceAll(columns, " ", "")
 		columns = strings.ReplaceAll(columns, "\n", "")
+		columns = strings.ReplaceAll(columns, "\t", "")
 		if !strings.Contains(columns, " ") && !strings.Contains(columns, "\n") {
 			break
 		}
