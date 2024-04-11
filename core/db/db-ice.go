@@ -12,8 +12,6 @@ package db
 import "github.com/andypangaribuan/gmod/ice"
 
 type Repo[T any] interface {
-	SetInsertColumn(columns string)
-	SetInsertArgs(fn func(e *T) []any)
 	SetInsert(columns string, fn func(e *T) []any)
 
 	Fetch(condition string, args ...any) (*T, error)

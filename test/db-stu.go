@@ -24,12 +24,18 @@ type stuTUid1Repo struct {
 }
 
 func newTUid1Repo(dbi ice.DbInstance) *stuTUid1Repo {
-	sr := stuTUid1Repo{}
-	sr.repo = db.NewRepo[stuTUid1Model](dbi, "temp_uid1", db.RepoOpt().WithDeletedAtIsNull(false))
+	repo := db.NewRepo[stuTUid1Model](dbi, "temp_uid1", db.RepoOpt().WithDeletedAtIsNull(false))
+	repo.SetInsert(
+		`uid`,
+		func(e *stuTUid1Model) []any {
+			return []any{
+				e.Uid,
+			}
+		})
 
-	sr.repo.SetInsertColumn(`uid`)
-
-	return &sr
+	return &stuTUid1Repo{
+		repo: repo,
+	}
 }
 
 func (slf *stuTUid1Repo) getInsertColumn(e *stuTUid1Model) []any {

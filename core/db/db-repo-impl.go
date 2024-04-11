@@ -16,25 +16,6 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func (slf *stuRepo[T]) SetInsertColumn(columns string) {
-	columns = strings.TrimSpace(columns)
-	for {
-		columns = strings.ReplaceAll(columns, " ", "")
-		columns = strings.ReplaceAll(columns, "\n", "")
-		columns = strings.ReplaceAll(columns, "\t", "")
-		if !strings.Contains(columns, " ") && !strings.Contains(columns, "\n") {
-			break
-		}
-	}
-
-	slf.insertColumn = slf.formatInsertColumnArgs(columns)
-	slf.insertArgSign = slf.formatInsertColumnArgs(slf.generateArgSign(columns))
-}
-
-func (slf *stuRepo[T]) SetInsertArgs(fn func(e *T) []any) {
-	slf.insertColumnFunc = fn
-}
-
 func (slf *stuRepo[T]) SetInsert(columns string, fn func(e *T) []any) {
 	columns = strings.TrimSpace(columns)
 	for {
