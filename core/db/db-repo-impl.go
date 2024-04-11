@@ -34,6 +34,21 @@ func (slf *stuRepo[T]) SetInsertArgs(fn func(e *T) []any) {
 	slf.insertColumnFunc = fn
 }
 
+func (slf *stuRepo[T]) SetInsert(columns string, fn func(e *T) []any) {
+	columns = strings.TrimSpace(columns)
+	for {
+		columns = strings.ReplaceAll(columns, " ", "")
+		columns = strings.ReplaceAll(columns, "\n", "")
+		if !strings.Contains(columns, " ") && !strings.Contains(columns, "\n") {
+			break
+		}
+	}
+
+	slf.insertColumn = slf.formatInsertColumnArgs(columns)
+	slf.insertArgSign = slf.formatInsertColumnArgs(slf.generateArgSign(columns))
+	slf.insertColumnFunc = fn
+}
+
 func (slf *stuRepo[T]) Fetch(condition string, args ...any) (*T, error) {
 	models, _, err := slf.fetches(true, nil, condition, args)
 	return fm.PtrGetFirst(models), err

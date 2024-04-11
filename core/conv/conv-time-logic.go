@@ -12,6 +12,8 @@ package conv
 import (
 	"strings"
 	"time"
+
+	"github.com/andypangaribuan/gmod/fm"
 )
 
 var timeReplacer = [][]string{
@@ -39,6 +41,11 @@ var timeReplacer = [][]string{
 
 func (slf *stuConvTime) toStr(val time.Time, layout string) string {
 	return val.Format(slf.replace(layout))
+}
+
+func (slf *stuConvTime) toTime(val string, layout string) (*time.Time, error) {
+	v, err := time.Parse(slf.replace(layout), val)
+	return fm.Ternary(err != nil, nil, &v), err
 }
 
 func (slf *stuConvTime) replace(layout string) string {

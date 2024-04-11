@@ -14,4 +14,7 @@ import "time"
 type ConvTime interface {
 	ToStrFull(val time.Time) string
 	ToStrDT(val time.Time) string
+
+	ToTimeFull(val string) (*time.Time, error)
+	ToTimeDT(val string) (*time.Time, error)
 }

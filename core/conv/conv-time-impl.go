@@ -23,3 +23,11 @@ func (slf *stuConvTime) ToStrFull(val time.Time) string {
 func (slf *stuConvTime) ToStrDT(val time.Time) string {
 	return slf.toStr(val, layoutDT)
 }
+
+func (slf *stuConvTime) ToTimeFull(val string) (*time.Time, error) {
+	return slf.toTime(val, layoutFull)
+}
+
+func (slf *stuConvTime) ToTimeDT(val string) (*time.Time, error) {
+	return slf.toTime(val, layoutDT)
+}
