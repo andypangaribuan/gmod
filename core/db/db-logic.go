@@ -13,6 +13,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -160,14 +161,15 @@ func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...any) (*i
 func (slf *stuConnection) printSql(startTime time.Time, query string, args []any) {
 	if *slf.conf.PrintSql {
 		durationMs := gm.Util.Timenow().Sub(startTime).Milliseconds()
+		sqlSpaceNL := fm.Ternary(strings.Contains(query, "\n"), "\n", " ")
 		if len(args) == 0 {
-			log.Printf("\nHOST: %v\nSQL : %v\nDUR : %v ms\n---\n\n", slf.conf.Host, query, durationMs)
+			log.Printf("\nHOST: %v\nSQL :%v%v\nDUR : %v ms\n---\n\n", slf.conf.Host, sqlSpaceNL, query, durationMs)
 		} else {
 			var argsVal any = args
 			if v, err := gm.Json.Encode(args); err == nil {
 				argsVal = v
 			}
-			log.Printf("\nHOST: %v\nSQL : %v\nARGS: %v\nDUR : %v ms\n---\n\n", slf.conf.Host, query, argsVal, durationMs)
+			log.Printf("\nHOST: %v\nSQL :%v%v\nARGS: %v\nDUR : %v ms\n---\n\n", slf.conf.Host, sqlSpaceNL, query, argsVal, durationMs)
 		}
 	}
 }

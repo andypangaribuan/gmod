@@ -96,26 +96,36 @@ func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []any) bool {
 	return isWith
 }
 
-func (slf *stuRepo[T]) getEndQuery(args []any) string {
-	endQuery := ""
+func (slf *stuRepo[T]) getQuery(typ string, args []any) string {
+	query := ""
 
 	for _, arg := range args {
 		switch val := arg.(type) {
 		case FetchOptBuilder:
 			v, ok := val.(*stuFetchOptBuilder)
-			if ok && v != nil && v.endQuery != nil {
-				if endQuery != "" {
-					endQuery += " "
+			if ok && v != nil {
+				switch typ {
+				case "end-query":
+					if v.endQuery != nil {
+						if query != "" {
+							query += " "
+						}
+						query += strings.TrimSpace(*v.endQuery)
+					}
+
+				case "full-query":
+					if v.fullQuery != nil {
+						if query != "" {
+							query += " "
+						}
+						query += strings.TrimSpace(*v.fullQuery)
+					}
 				}
-				endQuery += strings.TrimSpace(*v.endQuery)
 			}
 		}
 	}
 
-	return strings.TrimSpace(endQuery)
-}
-
-func (slf *stuRepo[T]) getQuery(typ string, args []any) string {
+	return strings.TrimSpace(query)
 }
 
 func (slf *stuRepo[T]) getArgs(args []any) []any {

@@ -31,7 +31,8 @@ func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, arg
 func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]*T, *stuReport, error) {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
-		endQuery   = strings.TrimSpace(slf.getEndQuery(args) + fm.Ternary(isFetch, " LIMIT 1", ""))
+		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isFetch, " LIMIT 1", ""))
+		fullQuery  = slf.getQuery("full-query", args)
 		report     = &stuReport{
 			tableName:     slf.tableName,
 			insertColumn:  slf.insertColumn,
@@ -49,7 +50,9 @@ func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args
 		report.query += " " + endQuery
 	}
 
-	
+	if fullQuery != "" {
+		report.query = fullQuery
+	}
 
 	var (
 		err        error
