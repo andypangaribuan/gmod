@@ -70,6 +70,7 @@ type stuRepoOptBuilder struct {
 type stuFetchOptBuilder struct {
 	withDeletedAtIsNull *bool
 	endQuery            *string
+	fullQuery           *string
 }
 
 type stuUpdateBuilder struct {

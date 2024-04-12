@@ -39,6 +39,7 @@ type RepoOptBuilder interface {
 type FetchOptBuilder interface {
 	WithDeletedAtIsNull(val ...bool) FetchOptBuilder
 	EndQuery(query string) FetchOptBuilder
+	FullQuery(query string) FetchOptBuilder
 }
 
 type UpdateBuilder interface {

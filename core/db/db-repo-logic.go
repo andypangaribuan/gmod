@@ -115,6 +115,9 @@ func (slf *stuRepo[T]) getEndQuery(args []any) string {
 	return strings.TrimSpace(endQuery)
 }
 
+func (slf *stuRepo[T]) getQuery(typ string, args []any) string {
+}
+
 func (slf *stuRepo[T]) getArgs(args []any) []any {
 	filtered := make([]any, 0)
 

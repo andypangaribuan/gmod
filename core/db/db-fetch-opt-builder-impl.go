@@ -20,3 +20,8 @@ func (slf *stuFetchOptBuilder) EndQuery(query string) FetchOptBuilder {
 	slf.endQuery = &query
 	return slf
 }
+
+func (slf *stuFetchOptBuilder) FullQuery(query string) FetchOptBuilder {
+	slf.fullQuery = &query
+	return slf
+}

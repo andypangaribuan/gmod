@@ -49,6 +49,8 @@ func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args
 		report.query += " " + endQuery
 	}
 
+	
+
 	var (
 		err        error
 		out        []*T
