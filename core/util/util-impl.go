@@ -202,9 +202,9 @@ func (*stuUtil) GetExecDir() (string, error) {
 }
 
 func (*stuUtil) GetExecPathFunc(skip ...int) (string, string) {
-	skipFrame := 1
+	skipFrame := 2
 	if len(skip) > 0 && skip[0] > 0 {
-		skipFrame = skip[0]
+		skipFrame += skip[0]
 	}
 
 	pc := make([]uintptr, 10)
@@ -327,4 +327,39 @@ func (slf *stuUtil) ReflectionSet(obj any, bind map[string]any) error {
 	}
 
 	return nil
+}
+
+func (slf *stuUtil) StackTrace(skip ...int) string {
+	var (
+		buf         = make([]byte, 1024)
+		stackTrace  string
+		rootRemoved = false
+		lines       = make([]string, 0)
+		skipFrame   = *fm.GetFirst(skip, 0)
+	)
+
+	runtime.Stack(buf, false)
+	stackTrace = string(buf)
+
+	ls := strings.Split(stackTrace, "\n")
+
+	for i := 0; i < len(ls); i++ {
+		line := ls[i]
+
+		if !rootRemoved && strings.Contains(line, "github.com/andypangaribuan/gmod/core/util.(*stuUtil).StackTrace") {
+			rootRemoved = true
+			i++
+			continue
+		}
+
+		if rootRemoved && skipFrame > 0 {
+			skipFrame--
+			i++
+			continue
+		}
+
+		lines = append(lines, line)
+	}
+
+	return strings.Join(lines, "\n")
 }

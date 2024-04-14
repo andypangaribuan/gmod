@@ -33,4 +33,5 @@ type Util interface {
 	PanicCatcher(fn func()) (err error)
 	ReflectionGet(obj any, fieldName string) (any, error)
 	ReflectionSet(obj any, bind map[string]any) error
+	StackTrace(skip ...int) string
 }
