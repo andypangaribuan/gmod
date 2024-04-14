@@ -14,18 +14,14 @@ import (
 	"math/rand"
 	"sync"
 	"time"
-
-	"github.com/andypangaribuan/gmod/gm"
 )
 
 func xinit() {
 	timezoneLocking = &sync.Mutex{}
 	timezones = make(map[string]*time.Location, 0)
 
-	val, err := iceUtil.ReflectionGet(gm.Conf, "timeZone")
-	if err == nil {
-		val, _ := val.(string)
-		dvalTimezone = val
+	mainUtilCallback = func() {
+		iceUtil.Timenow()
 	}
 
 	xRand = rand.New(rand.NewSource(time.Now().UnixNano()))

@@ -46,6 +46,14 @@ var (
 	iceUtilEnv  ice.UtilEnv
 )
 
+var (
+	mainConfCommit func()
+)
+
+var (
+	mainUtilCallback func()
+)
+
 func init() {
 	maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
@@ -61,4 +69,8 @@ func init() {
 		SetNet(iceNet).
 		SetTest(iceTest).
 		SetUtil(iceUtil, iceUtilEnv)
+
+	mainConfCommit = func() {
+		mainUtilCallback()
+	}
 }

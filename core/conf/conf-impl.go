@@ -9,10 +9,18 @@
 
 package conf
 
-func (slf *stuConf) SetZxEnvName(name string) {
+import "github.com/andypangaribuan/gmod/ice"
+
+func (slf *stuConf) SetZxEnvName(name string) ice.Conf {
 	slf.zxEnvName = name
+	return slf
 }
 
-func (slf *stuConf) SetTimeZone(timezone string) {
+func (slf *stuConf) SetTimeZone(timezone string) ice.Conf {
 	slf.timezone = timezone
+	return slf
+}
+
+func (slf *stuConf) Commit() {
+	mainConfCommit()
 }

@@ -10,6 +10,7 @@
 package ice
 
 type Conf interface {
-	SetZxEnvName(name string)
-	SetTimeZone(zone string)
+	SetZxEnvName(name string) Conf
+	SetTimeZone(timezone string) Conf
+	Commit()
 }

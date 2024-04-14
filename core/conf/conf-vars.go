@@ -17,3 +17,6 @@ import (
 
 //go:linkname iceConf github.com/andypangaribuan/gmod.iceConf
 var iceConf ice.Conf
+
+//go:linkname mainConfCommit github.com/andypangaribuan/gmod.mainConfCommit
+var mainConfCommit func()

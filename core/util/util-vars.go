@@ -25,6 +25,9 @@ var iceUtil ice.Util
 //go:linkname iceUtilEnv github.com/andypangaribuan/gmod.iceUtilEnv
 var iceUtilEnv ice.UtilEnv
 
+//go:linkname mainUtilCallback github.com/andypangaribuan/gmod.mainUtilCallback
+var mainUtilCallback func()
+
 const (
 	alphabetLower = "abcdefghijklmnopqrstuvwxyz"
 	alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

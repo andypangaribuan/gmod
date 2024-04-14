@@ -10,13 +10,22 @@
 package test
 
 import (
-	_ "github.com/andypangaribuan/gmod"
+	"testing"
+	"time"
+
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/stretchr/testify/require"
 )
 
-func init() {
-	gm.Conf.
-		SetTimeZone("Asia/Jakarta").
-		Commit()
+func TestJson(t *testing.T) {
+	stu := struct {
+		StartedAt time.Time `json:"started_at"`
+	}{
+		StartedAt: gm.Util.Timenow(),
+	}
 
+	jsonData, err := gm.Json.Encode(stu)
+	require.Nil(t, err)
+
+	printLog(t, "%v\n", jsonData)
 }
