@@ -21,9 +21,9 @@ import (
 )
 
 func TestTimeFormat(t *testing.T) {
-	// gm.Conf.SetTimeZone("Asia/Tokyo")
-	gm.Conf.SetTimeZone("Asia/Singapore")
-	// gm.Conf.SetTimeZone("Asia/Jakarta")
+	// gm.Conf.SetTimezone("Asia/Tokyo")
+	gm.Conf.SetTimezone("Asia/Singapore")
+	// gm.Conf.SetTimezone("Asia/Jakarta")
 
 	timenow := gm.Util.Timenow()
 	tmFull := gm.Conv.Time.ToStrFull(timenow)

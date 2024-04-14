@@ -16,7 +16,7 @@ func (slf *stuConf) SetZxEnvName(name string) ice.Conf {
 	return slf
 }
 
-func (slf *stuConf) SetTimeZone(timezone string) ice.Conf {
+func (slf *stuConf) SetTimezone(timezone string) ice.Conf {
 	slf.timezone = timezone
 	return slf
 }

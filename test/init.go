@@ -16,7 +16,7 @@ import (
 
 func init() {
 	gm.Conf.
-		SetTimeZone("Asia/Jakarta").
+		SetTimezone("Asia/Jakarta").
 		Commit()
 
 }
