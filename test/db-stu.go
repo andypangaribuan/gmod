@@ -38,12 +38,6 @@ func newTUid1Repo(dbi ice.DbInstance) *stuTUid1Repo {
 	}
 }
 
-func (slf *stuTUid1Repo) getInsertColumn(e *stuTUid1Model) []any {
-	return []any{
-		e.Uid,
-	}
-}
-
 func (slf *stuTUid1Repo) Fetches(condition string, args ...any) ([]*stuTUid1Model, error) {
 	return slf.repo.Fetches(condition, args...)
 }
@@ -53,9 +47,9 @@ func (slf *stuTUid1Repo) Insert(m *stuTUid1Model) error {
 }
 
 func (slf *stuTUid1Repo) TxInsert(tx ice.DbTx, m *stuTUid1Model) error {
-	return slf.repo.TxInsert(tx, m.Uid)
+	return slf.repo.TxInsert(tx, m)
 }
 
 func (slf *stuTUid1Repo) TxBulkInsert(tx ice.DbTx, models []*stuTUid1Model) error {
-	return slf.repo.TxBulkInsert(tx, models, slf.getInsertColumn, 1000)
+	return slf.repo.TxBulkInsert(tx, models, 1000)
 }
