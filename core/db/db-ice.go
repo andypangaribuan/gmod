@@ -26,7 +26,7 @@ type Repo[T any] interface {
 	TxVFetches(tx ice.DbTx, condition string, args ...any) ([]T, error)
 	TxInsert(tx ice.DbTx, e *T) error
 	TxInsertRID(tx ice.DbTx, e *T) (*int64, error)
-	TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) error
+	TxBulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) error
 	TxUpdate(tx ice.DbTx, builder UpdateBuilder) error
 }
 

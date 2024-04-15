@@ -65,7 +65,7 @@ RETURNING id`
 	return id, report, err
 }
 
-func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) (*stuReport, error) {
+func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) (*stuReport, error) {
 	if tx == nil {
 		return nil, errors.New("db: bulk insert only available via transaction")
 	}
@@ -97,7 +97,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []
 
 	for _, e := range entities {
 		count++
-		ar := args(e)
+		ar := slf.insertColumnFunc(e)
 		if len(ar) == 0 {
 			break
 		}

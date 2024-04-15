@@ -86,8 +86,8 @@ func (slf *stuRepo[T]) TxInsertRID(tx ice.DbTx, e *T) (*int64, error) {
 	return id, err
 }
 
-func (slf *stuRepo[T]) TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) error {
-	_, err := slf.bulkInsert(tx, entities, args, chunkSize...)
+func (slf *stuRepo[T]) TxBulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) error {
+	_, err := slf.bulkInsert(tx, entities, chunkSize...)
 	return err
 }
 
