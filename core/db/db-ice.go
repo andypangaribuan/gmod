@@ -18,14 +18,14 @@ type Repo[T any] interface {
 	Fetches(condition string, args ...any) ([]*T, error)
 	VFetches(condition string, args ...any) ([]T, error)
 	Insert(e *T) error
-	InsertRID(args ...any) (*int64, error)
+	InsertRID(e *T) (*int64, error)
 	Update(builder UpdateBuilder) error
 
 	TxFetch(tx ice.DbTx, condition string, args ...any) (*T, error)
 	TxFetches(tx ice.DbTx, condition string, args ...any) ([]*T, error)
 	TxVFetches(tx ice.DbTx, condition string, args ...any) ([]T, error)
-	TxInsert(tx ice.DbTx, args ...any) error
-	TxInsertRID(tx ice.DbTx, args ...any) (*int64, error)
+	TxInsert(tx ice.DbTx, e *T) error
+	TxInsertRID(tx ice.DbTx, e *T) (*int64, error)
 	TxBulkInsert(tx ice.DbTx, entities []*T, args func(e *T) []any, chunkSize ...int) error
 	TxUpdate(tx ice.DbTx, builder UpdateBuilder) error
 }

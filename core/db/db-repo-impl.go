@@ -51,8 +51,8 @@ func (slf *stuRepo[T]) Insert(e *T) error {
 	return err
 }
 
-func (slf *stuRepo[T]) InsertRID(args ...any) (*int64, error) {
-	id, _, err := slf.insert(nil, true, args)
+func (slf *stuRepo[T]) InsertRID(e *T) (*int64, error) {
+	id, _, err := slf.insert(nil, true, slf.insertColumnFunc(e))
 	return id, err
 }
 
@@ -76,13 +76,13 @@ func (slf *stuRepo[T]) TxVFetches(tx ice.DbTx, condition string, args ...any) ([
 	return models, err
 }
 
-func (slf *stuRepo[T]) TxInsert(tx ice.DbTx, args ...any) error {
-	_, _, err := slf.insert(tx, false, args)
+func (slf *stuRepo[T]) TxInsert(tx ice.DbTx, e *T) error {
+	_, _, err := slf.insert(tx, false, slf.insertColumnFunc(e))
 	return err
 }
 
-func (slf *stuRepo[T]) TxInsertRID(tx ice.DbTx, args ...any) (*int64, error) {
-	id, _, err := slf.insert(tx, true, args)
+func (slf *stuRepo[T]) TxInsertRID(tx ice.DbTx, e *T) (*int64, error) {
+	id, _, err := slf.insert(tx, true, slf.insertColumnFunc(e))
 	return id, err
 }
 
