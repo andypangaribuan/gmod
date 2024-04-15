@@ -17,8 +17,7 @@ type Repo[T any] interface {
 	Fetch(condition string, args ...any) (*T, error)
 	Fetches(condition string, args ...any) ([]*T, error)
 	VFetches(condition string, args ...any) ([]T, error)
-	XInsert(e *T) error
-	Insert(args ...any) error
+	Insert(e *T) error
 	InsertRID(args ...any) (*int64, error)
 	Update(builder UpdateBuilder) error
 

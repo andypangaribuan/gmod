@@ -49,7 +49,7 @@ func (slf *stuTUid1Repo) Fetches(condition string, args ...any) ([]*stuTUid1Mode
 }
 
 func (slf *stuTUid1Repo) Insert(m *stuTUid1Model) error {
-	return slf.repo.Insert(m.Uid)
+	return slf.repo.Insert(m)
 }
 
 func (slf *stuTUid1Repo) TxInsert(tx ice.DbTx, m *stuTUid1Model) error {

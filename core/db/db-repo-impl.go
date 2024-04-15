@@ -46,13 +46,8 @@ func (slf *stuRepo[T]) VFetches(condition string, args ...any) ([]T, error) {
 	return models, err
 }
 
-func (slf *stuRepo[T]) XInsert(e *T) error {
+func (slf *stuRepo[T]) Insert(e *T) error {
 	_, _, err := slf.insert(nil, false, slf.insertColumnFunc(e))
-	return err
-}
-
-func (slf *stuRepo[T]) Insert(args ...any) error {
-	_, _, err := slf.insert(nil, false, args)
 	return err
 }
 
