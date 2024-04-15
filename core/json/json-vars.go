@@ -17,3 +17,6 @@ import (
 
 //go:linkname iceJson github.com/andypangaribuan/gmod.iceJson
 var iceJson ice.Json
+
+//go:linkname mainJsonCallback github.com/andypangaribuan/gmod.mainJsonCallback
+var mainJsonCallback func()

@@ -52,6 +52,7 @@ var (
 
 var (
 	mainUtilCallback func()
+	mainJsonCallback func()
 )
 
 func init() {
@@ -72,5 +73,6 @@ func init() {
 
 	mainConfCommit = func() {
 		mainUtilCallback()
+		mainJsonCallback()
 	}
 }

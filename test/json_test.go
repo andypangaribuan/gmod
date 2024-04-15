@@ -18,14 +18,27 @@ import (
 )
 
 func TestJson(t *testing.T) {
-	stu := struct {
+	type stuX struct {
 		StartedAt time.Time `json:"started_at"`
-	}{
-		StartedAt: gm.Util.Timenow(),
 	}
 
-	jsonData, err := gm.Json.Encode(stu)
+	var (
+		// jsonStr = `{"started_at": "2024-04-14 10:10:00.000001"}` // error
+		// jsonStr = `{"started_at": "2024-04-14 10:10:00.000001 +07:00"}` // ok
+		jsonStr = `{"started_at": "2024-04-14 10:10:00 +09:00"}` // ok
+		x       *stuX
+	)
+
+	err := gm.Json.Decode(jsonStr, &x)
 	require.Nil(t, err)
 
+	x1 := stuX{StartedAt: x.StartedAt}
+	jsonData, err := gm.Json.Encode(x1)
+	require.Nil(t, err)
+	printLog(t, "%v\n", jsonData)
+
+	x2 := stuX{StartedAt: gm.Util.Timenow()}
+	jsonData, err = gm.Json.Encode(x2)
+	require.Nil(t, err)
 	printLog(t, "%v\n", jsonData)
 }
