@@ -39,7 +39,6 @@ func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
 
 	routes(router)
 
-	isFuseRPrintOnError = router.printOnError
 	if router.withAutoRecover {
 		fuseFiberApp.Use(recover.New())
 	}

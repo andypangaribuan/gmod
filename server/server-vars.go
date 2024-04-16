@@ -12,7 +12,6 @@ package server
 import "github.com/gofiber/fiber/v2"
 
 var (
-	serverImpl          server
-	fuseFiberApp        *fiber.App
-	isFuseRPrintOnError bool
+	serverImpl   server
+	fuseFiberApp *fiber.App
 )
