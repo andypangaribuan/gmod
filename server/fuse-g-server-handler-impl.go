@@ -70,10 +70,6 @@ func (slf *stuGrpcServerHandler) printPanic(r any) {
 ## stacktrace:
 `), r)
 
-	// log.Printf("## recovered from panic\n")
-	// log.Printf("## detail\n[[%#v]]\n", r)
-	// log.Printf("## stacktrace:\n")
-
 	startIndex := 0
 	if slf.stackTraceSkipLevel > 0 {
 		if slf.stackTraceSkipLevel < len(callers) {
@@ -84,7 +80,6 @@ func (slf *stuGrpcServerHandler) printPanic(r any) {
 	message += "\n"
 	for i := startIndex; len(callers) > i; i++ {
 		message += callers[i]
-		// log.Printf(" %v", callers[i])
 	}
 	message += "\n\n"
 

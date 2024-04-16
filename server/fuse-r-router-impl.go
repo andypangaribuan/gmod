@@ -64,13 +64,32 @@ func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pa
 	})
 }
 
-func (slf *stuFuseRouterR) Group(endpoints map[string][]func() (isRegulator bool, controller func(ctx FuseContextR))) {
-	for endpoint, controller := range endpoints {
-		slf.Single(endpoint, controller...)
+func (slf *stuFuseRouterR) Group(endpoints map[string][]func(ctx FuseContextR)) {
+	for path, handlers := range endpoints {
+		slf.Single(path, handlers...)
 	}
 }
 
-func (slf *stuFuseRouterR) Single(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) GroupWithAuth(auth func(ctx FuseContextR), endpoints map[string][]func(ctx FuseContextR)) {
+	for path, handlers := range endpoints {
+		ls := []func(ctx FuseContextR){auth}
+		slf.Single(path, append(ls, handlers...)...)
+	}
+}
+
+func (slf *stuFuseRouterR) Single(path string, handlers ...func(ctx FuseContextR)) {
+	ls := make([]func() (bool, func(FuseContextR)), len(handlers))
+
+	for i, handler := range handlers {
+		ls[i] = func() (bool, func(FuseContextR)) {
+			return false, handler
+		}
+	}
+
+	slf.rawSingle(path, ls...)
+}
+
+func (slf *stuFuseRouterR) rawSingle(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -133,22 +152,19 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, contr
 }
 
 func (slf *stuFuseRouterR) defaultRegulatorController(ctx FuseContextR) {
-	var (
-		regulator     = ctx.Regulator()
-		controllerCtx FuseContextR
-	)
+	regulator := ctx.Regulator()
 
 	for {
-		canNext, ctrl := regulator.Next()
+		canNext, handler := regulator.Next()
 		if !canNext {
 			break
 		}
 
 		builder := regulator.ContextBuilder()
-		controllerCtx = builder.Build()
-		ctrl()(controllerCtx)
+		ctx := builder.Build()
+		handler()(ctx)
 
-		code, _ := controllerCtx.GetResponse()
+		code, _ := ctx.GetResponse()
 		if code < 200 || code >= 300 {
 			break
 		}

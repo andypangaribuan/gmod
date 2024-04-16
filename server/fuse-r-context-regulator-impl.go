@@ -31,7 +31,7 @@ func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
 func (slf *stuFuseContextRegulatorR) Send() {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentControllerContext.responseCode)
 
-	switch val := slf.currentControllerContext.responseObj.(type) {
+	switch val := slf.currentControllerContext.responseVal.(type) {
 	case string:
 		ctx.SendString(val)
 	case *string:

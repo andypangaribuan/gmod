@@ -42,9 +42,11 @@ type stuFuseContextR struct {
 	regulatorCtx *stuFuseContextRegulatorR
 	authObj      any
 
-	controllers  []func(ctx FuseContextR)
-	responseCode int
-	responseObj  any
+	controllers      []func(ctx FuseContextR)
+	lastResponseCode int
+	lastResponseVal  any
+	responseCode     int
+	responseVal      any
 }
 
 type stuFuseContextRegulatorR struct {

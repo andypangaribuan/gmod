@@ -10,16 +10,54 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/andypangaribuan/gmod/server"
 )
 
-// go test -timeout 30s -run ^TestServerFuseR$ github.com/andypangaribuan/gmod/test -v
 // go test -v -run ^TestServerFuseR$
 func TestServerFuseR(t *testing.T) {
 	server.FuseR(env.AppRestPort, func(router server.RouterR) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
+
+		router.Group(map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-1": {serverFuseRAuth, serverFuseRPrivateStatus},
+			"GET: /private/status-2": {serverFuseRAuth, serverFuseRPrivateStatus},
+		})
+
+		router.Group(map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-3": {serverFuseRAuth, serverFuseRPrivateStatus},
+		})
+
+		router.GroupWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-4": {serverFuseRPrivateStatus},
+			"GET: /private/status-5": {serverFuseRPrivateStatus},
+		})
+
+		router.GroupWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-6": {serverFuseRPrivateStatus},
+		})
+
+		router.Single("GET: /private/status-7", serverFuseRAuth, serverFuseRPrivateStatus)
 	})
+}
+
+func serverFuseRAuth(ctx server.FuseContextR) {
+	ctx.SetAuth("Andy")
+	ctx.R200OK("Pangaribuan")
+}
+
+func serverFuseRPrivateStatus(ctx server.FuseContextR) {
+	auth := ctx.Auth().(string)
+	_, val := ctx.GetResponse()
+
+	data := struct {
+		From string `json:"from"`
+	}{
+		From: fmt.Sprintf("%v %v", auth, val),
+	}
+
+	ctx.R200OK(data)
 }
