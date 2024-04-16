@@ -15,7 +15,8 @@ import (
 )
 
 func init() {
+	loadEnv()
 	gm.Conf.
-		SetTimezone("Asia/Singapore").
+		SetTimezone(env.AppTimezone).
 		Commit()
 }

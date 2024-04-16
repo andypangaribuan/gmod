@@ -18,14 +18,12 @@ import (
 
 	"github.com/andypangaribuan/gmod/core/db"
 	"github.com/andypangaribuan/gmod/gm"
-	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mol"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	dbi       ice.DbInstance
 	repoTUid1 *stuTUid1Repo
 )
 
