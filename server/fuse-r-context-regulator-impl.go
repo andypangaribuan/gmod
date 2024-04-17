@@ -14,7 +14,6 @@ import (
 	"reflect"
 	"runtime"
 
-	"github.com/andypangaribuan/gmod/fm"
 	"github.com/pkg/errors"
 )
 
@@ -22,17 +21,13 @@ func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(ctx FuseCon
 	slf.currentIndex++
 	next = slf.currentIndex < len(slf.fuseContext.handlers)
 	if next {
-		handler = slf.fuseContext.handlers[slf.currentIndex]
+		handler = slf.currentHandler()
 	}
 	return
 }
 
-func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) error {
-	return slf.fuseContext.handlers[slf.currentIndex]
-}
-
 func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) error) bool {
-	v1 := runtime.FuncForPC(reflect.ValueOf(slf.getHandler()).Pointer()).Name()
+	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
@@ -74,24 +69,5 @@ func (slf *stuFuseContextRegulatorR) Recover() {
 	err := slf.send()
 	if slf.fuseContext.errorHandler != nil {
 		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
-	}
-}
-
-func (slf *stuFuseContextRegulatorR) send() error {
-	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
-
-	switch val := slf.currentHandlerContext.responseVal.(type) {
-	case string:
-		return ctx.SendString(val)
-	case *string:
-		return ctx.SendString(fm.GetDefault(val, ""))
-	case []byte:
-		return ctx.Send(val)
-	case *[]byte:
-		return ctx.Send(fm.GetDefault(val, []byte{}))
-	case any:
-		return ctx.JSON(val)
-	default:
-		return ctx.SendString("invalid response object")
 	}
 }
