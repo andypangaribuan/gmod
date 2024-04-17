@@ -46,7 +46,7 @@ func (slf *stuFuseContextR) Auth() any {
 	return slf.authObj
 }
 
-func (slf *stuFuseContextR) R200OK(obj any) any {
+func (slf *stuFuseContextR) R200OK(obj any) error {
 	slf.setResponse(200, obj)
 	return nil
 }

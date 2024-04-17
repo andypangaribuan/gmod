@@ -16,16 +16,16 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR) any) {
+func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR) error) {
 	slf.currentIndex++
 	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getHandler
 }
 
-func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) any {
+func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) error {
 	return slf.fuseContext.handlers[slf.currentIndex]
 }
 
-func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) any) bool {
+func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) error) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.getHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
@@ -39,7 +39,7 @@ func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
 	return builder
 }
 
-func (slf *stuFuseContextRegulatorR) Send() any {
+func (slf *stuFuseContextRegulatorR) Send() error {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {
