@@ -79,8 +79,8 @@ func sfrRegulator(regulator server.FuseContextRegulatorR) {
 			continue
 		}
 
-		code, _, err := regulator.Call(handler)
-		if regulator.OnError(err) {
+		code, _ := regulator.Call(handler)
+		if code == -1 {
 			return
 		}
 

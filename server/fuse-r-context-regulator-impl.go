@@ -37,7 +37,7 @@ func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) er
 	return v1 == v2
 }
 
-func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) (code int, res any, err error) {
+func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) (code int, res any) {
 	var (
 		builder = &stuFuseContextBuilderR{
 			original: slf.fuseContext,
@@ -45,16 +45,13 @@ func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) 
 		ctx = builder.build()
 	)
 
-	err = handler(ctx)
-	return ctx.responseCode, ctx.responseVal, err
-}
-
-func (slf *stuFuseContextRegulatorR) OnError(err error) bool {
+	err := handler(ctx)
 	if err != nil && slf.fuseContext.errorHandler != nil {
 		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
+		return -1, nil
 	}
 
-	return err != nil
+	return ctx.responseCode, ctx.responseVal
 }
 
 func (slf *stuFuseContextRegulatorR) Endpoint() string {

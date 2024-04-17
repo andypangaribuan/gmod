@@ -41,8 +41,7 @@ type FuseContextR interface {
 type FuseContextRegulatorR interface {
 	Next() (next bool, getHandler func(ctx FuseContextR) error)
 	IsHandler(handler func(ctx FuseContextR) error) bool
-	Call(handler func(ctx FuseContextR) error) (code int, res any, err error)
-	OnError(err error) bool
+	Call(handler func(ctx FuseContextR) error) (code int, res any)
 	Endpoint() string
 	Recover()
 }

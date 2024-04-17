@@ -147,8 +147,8 @@ func (slf *stuFuseRouterR) defaultHandlerRegulator(regulator FuseContextRegulato
 			break
 		}
 
-		code, _, err := regulator.Call(handler)
-		if regulator.OnError(err) {
+		code, _ := regulator.Call(handler)
+		if code == -1 {
 			return
 		}
 
