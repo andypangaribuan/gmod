@@ -29,19 +29,14 @@ func (slf *stuFuseContextR) regulator() FuseContextRegulatorR {
 	return slf.regulatorCtx
 }
 
-func (slf *stuFuseContextR) GetLastResponse() (code int, val any) {
+func (slf *stuFuseContextR) LastResponse() (code int, val any) {
 	return slf.lastResponseCode, slf.lastResponseVal
 }
 
-func (slf *stuFuseContextR) GetResponse() (code int, val any) {
-	return slf.responseCode, slf.responseVal
-}
-
-func (slf *stuFuseContextR) SetAuth(obj any) {
-	slf.authObj = obj
-}
-
-func (slf *stuFuseContextR) Auth() any {
+func (slf *stuFuseContextR) Auth(obj ...any) any {
+	if len(obj) > 0 {
+		slf.authObj = obj[0]
+	}
 	return slf.authObj
 }
 

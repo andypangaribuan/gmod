@@ -32,10 +32,8 @@ type RouterG interface {
 }
 
 type FuseContextR interface {
-	GetLastResponse() (code int, val any)
-	GetResponse() (code int, val any)
-	SetAuth(val any)
-	Auth() any
+	LastResponse() (code int, val any)
+	Auth(obj ...any) any
 
 	R200OK(val any) error
 }

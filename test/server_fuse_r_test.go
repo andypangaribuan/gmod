@@ -100,18 +100,18 @@ func sfrRegulator(regulator server.FuseContextRegulatorR) {
 }
 
 func sfrAuth(ctx server.FuseContextR) error {
-	ctx.SetAuth("Halo")
+	ctx.Auth("Halo")
 	return ctx.R200OK("Andy")
 }
 
 func sfrPrivateStatus1(ctx server.FuseContextR) error {
-	_, val := ctx.GetLastResponse()
+	_, val := ctx.LastResponse()
 	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
 }
 
 func sfrPrivateStatus2(ctx server.FuseContextR) error {
 	auth := ctx.Auth().(string)
-	_, val := ctx.GetLastResponse()
+	_, val := ctx.LastResponse()
 
 	data := struct {
 		Message string `json:"message"`
