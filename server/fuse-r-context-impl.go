@@ -11,13 +11,12 @@ package server
 
 import (
 	"fmt"
-	"os"
 )
 
 func (slf *stuFuseContextR) Regulator() FuseContextRegulatorR {
 	if !slf.isRegulator {
 		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
-		os.Exit(100)
+		return nil
 	}
 
 	if slf.regulatorCtx == nil {
