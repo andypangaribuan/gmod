@@ -22,27 +22,27 @@ func TestServerFuseR(t *testing.T) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
 
-		router.Endpoints(nil, nil, map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(nil, nil, map[string][]func(ctx server.FuseContextR) any{
 			"GET: /private/status-1": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 			"GET: /private/status-2": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 
-		router.Endpoints(nil, serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(nil, serverFuseRAuth, map[string][]func(ctx server.FuseContextR) any{
 			"GET: /private/status-3": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 			"GET: /private/status-4": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 
-		router.Endpoints(serverFuseRRegulator, nil, map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(serverFuseRRegulator, nil, map[string][]func(ctx server.FuseContextR) any{
 			"GET: /private/status-5": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 
-		router.Endpoints(serverFuseRRegulator, serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(serverFuseRRegulator, serverFuseRAuth, map[string][]func(ctx server.FuseContextR) any{
 			"GET: /private/status-6": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 	})
 }
 
-func serverFuseRRegulator(ctx server.FuseContextR) {
+func serverFuseRRegulator(ctx server.FuseContextR) any {
 	regulator := ctx.Regulator()
 
 	for {
@@ -65,20 +65,20 @@ func serverFuseRRegulator(ctx server.FuseContextR) {
 		}
 	}
 
-	regulator.Send()
+	return regulator.Send()
 }
 
-func serverFuseRAuth(ctx server.FuseContextR) {
+func serverFuseRAuth(ctx server.FuseContextR) any {
 	ctx.SetAuth("Halo")
-	ctx.R200OK("Andy")
+	return ctx.R200OK("Andy")
 }
 
-func serverRuseRPrivateStatus1(ctx server.FuseContextR) {
+func serverRuseRPrivateStatus1(ctx server.FuseContextR) any {
 	_, val := ctx.GetLastResponse()
-	ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
+	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
 }
 
-func serverFuseRPrivateStatus2(ctx server.FuseContextR) {
+func serverFuseRPrivateStatus2(ctx server.FuseContextR) any {
 	auth := ctx.Auth().(string)
 	_, val := ctx.GetLastResponse()
 
@@ -88,5 +88,5 @@ func serverFuseRPrivateStatus2(ctx server.FuseContextR) {
 		Message: fmt.Sprintf("%v %v", auth, val),
 	}
 
-	ctx.R200OK(data)
+	return ctx.R200OK(data)
 }

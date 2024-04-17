@@ -65,28 +65,28 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 	})
 }
 
-func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
+func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR) any, auth func(ctx FuseContextR) any, pathHandlers map[string][]func(ctx FuseContextR) any) {
 	for endpoint, handlers := range pathHandlers {
 		var (
 			cr = fm.Ternary(regulator == nil, 0, 1)
 			ca = fm.Ternary(auth == nil, 0, 1)
-			ls = make([]func() (bool, func(FuseContextR)), len(handlers)+cr+ca)
+			ls = make([]func() (bool, func(FuseContextR) any), len(handlers)+cr+ca)
 		)
 
 		if regulator != nil {
-			ls[0] = func() (bool, func(FuseContextR)) {
+			ls[0] = func() (bool, func(FuseContextR) any) {
 				return true, regulator
 			}
 		}
 
 		if auth != nil {
-			ls[cr] = func() (bool, func(FuseContextR)) {
+			ls[cr] = func() (bool, func(FuseContextR) any) {
 				return false, auth
 			}
 		}
 
 		for i, handler := range handlers {
-			ls[i+cr+ca] = func() (bool, func(FuseContextR)) {
+			ls[i+cr+ca] = func() (bool, func(FuseContextR) any) {
 				return false, handler
 			}
 		}
@@ -95,7 +95,7 @@ func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), auth func
 	}
 }
 
-func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) any)) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -120,11 +120,11 @@ func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegul
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR))) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) any)) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
-			handlerRegulator *func(ctx FuseContextR)
-			funcs               = make([]func(ctx FuseContextR), 0)
+			handlerRegulator *func(ctx FuseContextR) any
+			funcs               = make([]func(ctx FuseContextR) any, 0)
 		)
 
 		for _, fn := range handlers {
@@ -141,7 +141,7 @@ func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRe
 	}
 }
 
-func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handlerRegulator *func(ctx FuseContextR), handlers ...func(ctx FuseContextR)) {
+func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handlerRegulator *func(ctx FuseContextR) any, handlers ...func(ctx FuseContextR) any) {
 	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
 		endpoint:    endpoint,

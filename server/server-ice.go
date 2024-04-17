@@ -22,7 +22,7 @@ type RouterR interface {
 	PrintOnError(printOnError bool)
 	Unrouted(handler func(ctx FuseContextR, method, path, url string))
 
-	Endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR))
+	Endpoints(regulator func(ctx FuseContextR) any, auth func(ctx FuseContextR) any, pathHandlers map[string][]func(ctx FuseContextR) any)
 }
 
 type RouterG interface {
@@ -41,10 +41,10 @@ type FuseContextR interface {
 }
 
 type FuseContextRegulatorR interface {
-	Next() (canNext bool, ctrl func() func(ctx FuseContextR))
-	IsHandler(handler func(ctx FuseContextR)) bool
+	Next() (canNext bool, ctrl func() func(ctx FuseContextR) any)
+	IsHandler(handler func(ctx FuseContextR) any) bool
 	ContextBuilder() FuseContextBuilderR
-	Send()
+	Send() any
 }
 
 type FuseContextBuilderR interface {

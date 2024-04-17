@@ -16,16 +16,16 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR)) {
+func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR) any) {
 	slf.currentIndex++
 	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getHandler
 }
 
-func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) {
+func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) any {
 	return slf.fuseContext.handlers[slf.currentIndex]
 }
 
-func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR)) bool {
+func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) any) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.getHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
@@ -39,21 +39,21 @@ func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
 	return builder
 }
 
-func (slf *stuFuseContextRegulatorR) Send() {
+func (slf *stuFuseContextRegulatorR) Send() any {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {
 	case string:
-		ctx.SendString(val)
+		return ctx.SendString(val)
 	case *string:
-		ctx.SendString(fm.GetDefault(val, ""))
+		return ctx.SendString(fm.GetDefault(val, ""))
 	case []byte:
-		ctx.Send(val)
+		return ctx.Send(val)
 	case *[]byte:
-		ctx.Send(fm.GetDefault(val, []byte{}))
+		return ctx.Send(fm.GetDefault(val, []byte{}))
 	case any:
-		ctx.JSON(val)
+		return ctx.JSON(val)
 	default:
-		ctx.SendString("invalid response object")
+		return ctx.SendString("invalid response object")
 	}
 }
