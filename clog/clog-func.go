@@ -9,7 +9,11 @@
 
 package clog
 
-import "github.com/andypangaribuan/gmod/gm"
+import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/gm"
+)
 
 func New() Instance {
 	if client == nil {
@@ -19,4 +23,14 @@ func New() Instance {
 	return &stuInstance{
 		uid: gm.Util.UID(),
 	}
+}
+
+func getConfValue(name string) (value string) {
+	val, err := gm.Util.ReflectionGet(gm.Conf, name)
+	if err == nil {
+		if v, ok := val.(string); ok {
+			value = strings.TrimSpace(v)
+		}
+	}
+	return
 }

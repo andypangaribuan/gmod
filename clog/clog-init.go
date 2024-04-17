@@ -10,26 +10,25 @@
 package clog
 
 import (
-	"strings"
-
 	"github.com/andypangaribuan/gmod/fm"
-	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
 func xinit() {
 	mainCLogCallback = func() {
-		val, err := gm.Util.ReflectionGet(gm.Conf, "clogAddress")
-		if err == nil {
-			if v, ok := val.(string); ok {
-				v = strings.TrimSpace(v)
-				if v != "" {
-					c, err := fm.GrpcClient(v, sclog.NewCLogServiceClient)
-					if err == nil {
-						client = c
-					}
-				}
+		if val := getConfValue("clogAddress"); val != "" {
+			c, err := fm.GrpcClient(val, sclog.NewCLogServiceClient)
+			if err == nil {
+				client = c
 			}
+		}
+
+		if val := getConfValue("svcName"); val != "" {
+			svcName = val
+		}
+
+		if val := getConfValue("svcVersion"); val != "" {
+			svcVersion = val
 		}
 	}
 }

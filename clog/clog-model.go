@@ -14,8 +14,6 @@ import "time"
 type DbqV1 struct {
 	UserId       *string
 	PartnerId    *string
-	SvcName      string
-	SvcVersion   string
 	SqlQuery     string
 	SqlArgs      *string
 	Severity     string
@@ -29,4 +27,8 @@ type DbqV1 struct {
 	Duration2    *int
 	StartedAt    time.Time
 	FinishedAt   time.Time
+}
+
+type ServicePieceV1 struct {
+
 }

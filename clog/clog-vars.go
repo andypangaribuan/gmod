@@ -19,5 +19,7 @@ import (
 var mainCLogCallback func()
 
 var (
-	client sclog.CLogServiceClient
+	client     sclog.CLogServiceClient
+	svcName    string
+	svcVersion string
 )

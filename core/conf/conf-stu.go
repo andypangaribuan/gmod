@@ -13,4 +13,6 @@ type stuConf struct {
 	zxEnvName   string
 	timezone    string // accessed from reflection
 	clogAddress string // accessed from reflection
+	svcName     string // accessed from reflection
+	svcVersion  string // accessed from reflection
 }
