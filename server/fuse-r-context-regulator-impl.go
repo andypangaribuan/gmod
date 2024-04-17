@@ -13,11 +13,11 @@ import "github.com/andypangaribuan/gmod/fm"
 
 func (slf *stuFuseContextRegulatorR) Next() (canNext bool, ctrl func() func(ctx FuseContextR)) {
 	slf.currentIndex++
-	return slf.currentIndex < len(slf.fuseContext.controllers), slf.getCtrl
+	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getCtrl
 }
 
 func (slf *stuFuseContextRegulatorR) getCtrl() func(ctx FuseContextR) {
-	return slf.fuseContext.controllers[slf.currentIndex]
+	return slf.fuseContext.handlers[slf.currentIndex]
 }
 
 func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {

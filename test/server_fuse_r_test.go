@@ -23,30 +23,35 @@ func TestServerFuseR(t *testing.T) {
 		router.PrintOnError(env.AppServerPrintOnError)
 
 		router.Endpoints(map[string][]func(ctx server.FuseContextR){
-			"GET: /private/status-1": {serverFuseRAuth, serverFuseRPrivateStatus},
-			"GET: /private/status-2": {serverFuseRAuth, serverFuseRPrivateStatus},
+			"GET: /private/status-1": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
+			"GET: /private/status-2": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 
 		router.EndpointsWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
-			"GET: /private/status-3": {serverFuseRPrivateStatus},
-			"GET: /private/status-4": {serverFuseRPrivateStatus},
+			"GET: /private/status-3": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
+			"GET: /private/status-4": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 	})
 }
 
 func serverFuseRAuth(ctx server.FuseContextR) {
-	ctx.SetAuth("Andy")
-	ctx.R200OK("Pangaribuan")
+	ctx.SetAuth("Halo")
+	ctx.R200OK("Andy")
 }
 
-func serverFuseRPrivateStatus(ctx server.FuseContextR) {
+func serverRuseRPrivateStatus1(ctx server.FuseContextR) {
+	_, val := ctx.GetLastResponse()
+	ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
+}
+
+func serverFuseRPrivateStatus2(ctx server.FuseContextR) {
 	auth := ctx.Auth().(string)
-	_, val := ctx.GetResponse()
+	_, val := ctx.GetLastResponse()
 
 	data := struct {
-		From string `json:"from"`
+		Message string `json:"message"`
 	}{
-		From: fmt.Sprintf("%v %v", auth, val),
+		Message: fmt.Sprintf("%v %v", auth, val),
 	}
 
 	ctx.R200OK(data)

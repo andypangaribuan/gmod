@@ -15,6 +15,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -64,38 +65,75 @@ func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pa
 	})
 }
 
-func (slf *stuFuseRouterR) Endpoints(pathHandlers map[string][]func(ctx FuseContextR)) {
-	for path, handlers := range pathHandlers {
-		ls := make([]func() (bool, func(FuseContextR)), len(handlers))
+func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
+	// ir := fm.Ternary(regulator == nil, 0, 1)
 
-		for i, handler := range handlers {
-			ls[i] = func() (bool, func(FuseContextR)) {
-				return false, handler
-			}
-		}
+	for endpoint, handlers := range pathHandlers {
+		slf.endpoints(regulator, nil, endpoint, handlers)
+		// ls := make([]func() (bool, func(FuseContextR)), len(handlers)+ir)
+		// if regulator != nil {
+		// 	ls[0] = func() (bool, func(FuseContextR)) {
+		// 		return true, regulator
+		// 	}
+		// }
 
-		slf.rawSingle(path, ls...)
+		// for i, handler := range handlers {
+		// 	ls[i+ir] = func() (bool, func(FuseContextR)) {
+		// 		return false, handler
+		// 	}
+		// }
+
+		// slf.register(path, ls...)
 	}
 }
 
 func (slf *stuFuseRouterR) EndpointsWithAuth(auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
-	for path, handlers := range pathHandlers {
-		ls := make([]func() (bool, func(FuseContextR)), len(handlers) + 1)
-		ls[0] = func() (bool, func(FuseContextR)) {
-			return false, auth
-		}
+	for endpoint, handlers := range pathHandlers {
+		slf.endpoints(nil, auth, endpoint, handlers)
+		// ls := make([]func() (bool, func(FuseContextR)), len(handlers)+1)
+		// ls[0] = func() (bool, func(FuseContextR)) {
+		// 	return false, auth
+		// }
 
-		for i, handler := range handlers {
-			ls[i+1] = func() (bool, func(FuseContextR)) {
-				return false, handler
-			}
-		}
+		// for i, handler := range handlers {
+		// 	ls[i+1] = func() (bool, func(FuseContextR)) {
+		// 		return false, handler
+		// 	}
+		// }
 
-		slf.rawSingle(path, ls...)
+		// slf.register(path, ls...)
 	}
 }
 
-func (slf *stuFuseRouterR) rawSingle(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), endpoint string, handlers []func(ctx FuseContextR)) {
+	var (
+		cr = fm.Ternary(regulator == nil, 0, 1)
+		ca = fm.Ternary(auth == nil, 0, 1)
+		ls = make([]func() (bool, func(FuseContextR)), len(handlers)+cr+ca)
+	)
+
+	if regulator != nil {
+		ls[0] = func() (bool, func(FuseContextR)) {
+			return true, regulator
+		}
+	}
+
+	if auth != nil {
+		ls[cr] = func() (bool, func(FuseContextR)) {
+			return false, auth
+		}
+	}
+
+	for i, handler := range handlers {
+		ls[i+cr+ca] = func() (bool, func(FuseContextR)) {
+			return false, handler
+		}
+	}
+
+	slf.register(endpoint, ls...)
+}
+
+func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -106,28 +144,28 @@ func (slf *stuFuseRouterR) rawSingle(endpoint string, controllers ...func() (isR
 
 	switch method {
 	case "GET":
-		slf.fiberApp.Get(path, slf.restProcess(endpoint, controllers...))
+		slf.fiberApp.Get(path, slf.restProcess(endpoint, handlers...))
 	case "POS":
-		slf.fiberApp.Post(path, slf.restProcess(endpoint, controllers...))
+		slf.fiberApp.Post(path, slf.restProcess(endpoint, handlers...))
 	case "DEL":
-		slf.fiberApp.Delete(path, slf.restProcess(endpoint, controllers...))
+		slf.fiberApp.Delete(path, slf.restProcess(endpoint, handlers...))
 	case "PUT":
-		slf.fiberApp.Put(path, slf.restProcess(endpoint, controllers...))
+		slf.fiberApp.Put(path, slf.restProcess(endpoint, handlers...))
 	case "PAT":
-		slf.fiberApp.Patch(path, slf.restProcess(endpoint, controllers...))
+		slf.fiberApp.Patch(path, slf.restProcess(endpoint, handlers...))
 	default:
 		log.Fatalln("fuse server [restful]: only support method GET, POS, DEL, PUT or PAT")
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, controller func(ctx FuseContextR))) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
 			controllerRegulator *func(ctx FuseContextR)
 			funcs               = make([]func(ctx FuseContextR), 0)
 		)
 
-		for _, fn := range controllers {
+		for _, fn := range handlers {
 			isRegulator, controller := fn()
 			if isRegulator && controllerRegulator == nil {
 				controllerRegulator = &controller
@@ -141,12 +179,12 @@ func (slf *stuFuseRouterR) restProcess(endpoint string, controllers ...func() (i
 	}
 }
 
-func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, controllerRegulator *func(ctx FuseContextR), controllers ...func(ctx FuseContextR)) {
+func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, controllerRegulator *func(ctx FuseContextR), handlers ...func(ctx FuseContextR)) {
 	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
 		endpoint:    endpoint,
 		isRegulator: true,
-		controllers: controllers,
+		handlers:    handlers,
 	}
 
 	if controllerRegulator != nil {
