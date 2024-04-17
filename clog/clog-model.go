@@ -30,5 +30,16 @@ type DbqV1 struct {
 }
 
 type ServicePieceV1 struct {
-
+	SvcParent        *string
+	SvcParentVersion *string
+	Endpoint         string
+	Url              string
+	ReqVersion       *string
+	ReqHeader        *string
+	ReqParam         *string
+	ReqQuery         *string
+	ReqForm          *string
+	ReqBody          *string
+	ClientIp         string
+	StartedAt        time.Time
 }

@@ -40,3 +40,26 @@ func (slf *stuInstance) DbqV1(mol DbqV1) error {
 	_, err := fm.GrpcCall(client.DbqV1, req)
 	return err
 }
+
+func (slf *stuInstance) ServicePieceV1(mol ServicePieceV1) error {
+	req := &sclog.RequestServicePieceV1{
+		Uid:              slf.uid,
+		SvcName:          svcName,
+		SvcVersion:       svcVersion,
+		SvcParent:        fm.PbwString(mol.SvcParent),
+		SvcParentVersion: fm.PbwString(mol.SvcParentVersion),
+		Endpoint:         mol.Endpoint,
+		Url:              mol.Url,
+		ReqVersion:       fm.PbwString(mol.ReqVersion),
+		ReqHeader:        fm.PbwString(mol.ReqHeader),
+		ReqParam:         fm.PbwString(mol.ReqParam),
+		ReqQuery:         fm.PbwString(mol.ReqQuery),
+		ReqForm:          fm.PbwString(mol.ReqForm),
+		ReqBody:          fm.PbwString(mol.ReqBody),
+		ClientIp:         mol.ClientIp,
+		StartedAt:        gm.Conv.Time.ToStrFull(mol.StartedAt),
+	}
+
+	_, err := fm.GrpcCall(client.ServicePieceV1, req)
+	return err
+}
