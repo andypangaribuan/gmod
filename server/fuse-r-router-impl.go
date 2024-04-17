@@ -156,6 +156,4 @@ func (slf *stuFuseRouterR) defaultHandlerRegulator(regulator FuseContextRegulato
 			break
 		}
 	}
-
-	regulator.Send()
 }

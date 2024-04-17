@@ -52,7 +52,6 @@ func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) 
 func (slf *stuFuseContextRegulatorR) OnError(err error) bool {
 	if err != nil && slf.fuseContext.errorHandler != nil {
 		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
-		slf.Send()
 	}
 
 	return err != nil
@@ -73,11 +72,15 @@ func (slf *stuFuseContextRegulatorR) Recover() {
 		}
 
 		slf.fuseContext.errorHandler(slf.currentHandlerContext, err)
-		slf.Send()
+	}
+
+	err := slf.send()
+	if slf.fuseContext.errorHandler != nil {
+		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
 	}
 }
 
-func (slf *stuFuseContextRegulatorR) Send() error {
+func (slf *stuFuseContextRegulatorR) send() error {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {

@@ -45,7 +45,6 @@ type FuseContextRegulatorR interface {
 	OnError(err error) bool
 	Endpoint() string
 	Recover()
-	Send() error
 }
 
 type FuseContextBuilderR interface {

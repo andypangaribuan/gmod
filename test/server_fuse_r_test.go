@@ -48,6 +48,16 @@ func TestServerFuseR(t *testing.T) {
 			"GET: /private/status-12": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-13": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
+
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+			"GET: /private/status-14": {sfrPrivateStatus1, sfrPrivateStatusPanic, sfrPrivateStatus2},
+			"GET: /private/status-15": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusPanic},
+		})
+
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+			"GET: /private/status-16": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
+			"GET: /private/status-17": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
+		})
 	})
 }
 
@@ -78,8 +88,6 @@ func sfrRegulator(regulator server.FuseContextRegulatorR) {
 			break
 		}
 	}
-
-	regulator.Send()
 }
 
 func sfrAuth(ctx server.FuseContextR) error {
