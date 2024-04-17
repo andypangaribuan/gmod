@@ -27,7 +27,7 @@ func (slf *stuFuseRouterR) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, path, url string)) {
+func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path, url string)) {
 	slf.fiberApp.Use(func(c *fiber.Ctx) error {
 		err := c.Next()
 
@@ -57,7 +57,7 @@ func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pa
 					isRegulator: false,
 				}
 
-				controller(ctx, method, path, url)
+				handler(ctx, method, path, url)
 			}
 		}
 
@@ -95,7 +95,7 @@ func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), auth func
 	}
 }
 
-func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
+func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR))) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -120,28 +120,28 @@ func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegul
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, controller func(ctx FuseContextR))) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR))) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
-			controllerRegulator *func(ctx FuseContextR)
+			handlerRegulator *func(ctx FuseContextR)
 			funcs               = make([]func(ctx FuseContextR), 0)
 		)
 
 		for _, fn := range handlers {
-			isRegulator, controller := fn()
-			if isRegulator && controllerRegulator == nil {
-				controllerRegulator = &controller
+			isRegulator, handler := fn()
+			if isRegulator && handlerRegulator == nil {
+				handlerRegulator = &handler
 			} else {
-				funcs = append(funcs, controller)
+				funcs = append(funcs, handler)
 			}
 		}
 
-		slf.regulator(fiberCtx, endpoint, controllerRegulator, funcs...)
+		slf.regulator(fiberCtx, endpoint, handlerRegulator, funcs...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, controllerRegulator *func(ctx FuseContextR), handlers ...func(ctx FuseContextR)) {
+func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handlerRegulator *func(ctx FuseContextR), handlers ...func(ctx FuseContextR)) {
 	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
 		endpoint:    endpoint,
@@ -149,15 +149,15 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, contr
 		handlers:    handlers,
 	}
 
-	if controllerRegulator != nil {
-		controller := *controllerRegulator
-		controller(regulatorCtx)
+	if handlerRegulator != nil {
+		handler := *handlerRegulator
+		handler(regulatorCtx)
 	} else {
-		slf.defaultRegulatorController(regulatorCtx)
+		slf.defaultHandlerRegulator(regulatorCtx)
 	}
 }
 
-func (slf *stuFuseRouterR) defaultRegulatorController(ctx FuseContextR) {
+func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
 	regulator := ctx.Regulator()
 
 	for {

@@ -50,9 +50,9 @@ type stuFuseContextR struct {
 }
 
 type stuFuseContextRegulatorR struct {
-	fuseContext              *stuFuseContextR
-	currentIndex             int
-	currentControllerContext *stuFuseContextR
+	fuseContext           *stuFuseContextR
+	currentIndex          int
+	currentHandlerContext *stuFuseContextR
 }
 
 type stuFuseContextBuilderR struct {

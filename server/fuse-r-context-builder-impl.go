@@ -18,14 +18,14 @@ func (slf *stuFuseContextBuilderR) Build() FuseContextR {
 		authObj:      slf.original.authObj,
 	}
 
-	if slf.original.regulatorCtx.currentControllerContext != nil {
-		ctx.lastResponseCode = slf.original.regulatorCtx.currentControllerContext.responseCode
-		ctx.lastResponseVal = slf.original.regulatorCtx.currentControllerContext.responseVal
+	if slf.original.regulatorCtx.currentHandlerContext != nil {
+		ctx.lastResponseCode = slf.original.regulatorCtx.currentHandlerContext.responseCode
+		ctx.lastResponseVal = slf.original.regulatorCtx.currentHandlerContext.responseVal
 	}
 
-	currentControllerContext := slf.original.regulatorCtx.currentControllerContext
-	if currentControllerContext != nil {
-		ctx.authObj = currentControllerContext.authObj
+	currentHandlerContext := slf.original.regulatorCtx.currentHandlerContext
+	if currentHandlerContext != nil {
+		ctx.authObj = currentHandlerContext.authObj
 	}
 
 	return ctx
