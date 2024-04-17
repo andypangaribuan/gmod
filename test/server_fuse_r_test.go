@@ -22,12 +22,12 @@ func TestServerFuseR(t *testing.T) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
 
-		router.Endpoints(map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(nil, nil, map[string][]func(ctx server.FuseContextR){
 			"GET: /private/status-1": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 			"GET: /private/status-2": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
 
-		router.EndpointsWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(nil, serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
 			"GET: /private/status-3": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 			"GET: /private/status-4": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})

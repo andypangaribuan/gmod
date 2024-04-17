@@ -22,8 +22,7 @@ type RouterR interface {
 	PrintOnError(printOnError bool)
 	Unrouted(controller func(ctx FuseContextR, method, path, url string))
 
-	Endpoints(regulator func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR))
-	EndpointsWithAuth(auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR))
+	Endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR))
 }
 
 type RouterG interface {

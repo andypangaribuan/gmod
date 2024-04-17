@@ -65,72 +65,34 @@ func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pa
 	})
 }
 
-func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
-	// ir := fm.Ternary(regulator == nil, 0, 1)
-
+func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
 	for endpoint, handlers := range pathHandlers {
-		slf.endpoints(regulator, nil, endpoint, handlers)
-		// ls := make([]func() (bool, func(FuseContextR)), len(handlers)+ir)
-		// if regulator != nil {
-		// 	ls[0] = func() (bool, func(FuseContextR)) {
-		// 		return true, regulator
-		// 	}
-		// }
+		var (
+			cr = fm.Ternary(regulator == nil, 0, 1)
+			ca = fm.Ternary(auth == nil, 0, 1)
+			ls = make([]func() (bool, func(FuseContextR)), len(handlers)+cr+ca)
+		)
 
-		// for i, handler := range handlers {
-		// 	ls[i+ir] = func() (bool, func(FuseContextR)) {
-		// 		return false, handler
-		// 	}
-		// }
-
-		// slf.register(path, ls...)
-	}
-}
-
-func (slf *stuFuseRouterR) EndpointsWithAuth(auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
-	for endpoint, handlers := range pathHandlers {
-		slf.endpoints(nil, auth, endpoint, handlers)
-		// ls := make([]func() (bool, func(FuseContextR)), len(handlers)+1)
-		// ls[0] = func() (bool, func(FuseContextR)) {
-		// 	return false, auth
-		// }
-
-		// for i, handler := range handlers {
-		// 	ls[i+1] = func() (bool, func(FuseContextR)) {
-		// 		return false, handler
-		// 	}
-		// }
-
-		// slf.register(path, ls...)
-	}
-}
-
-func (slf *stuFuseRouterR) endpoints(regulator func(ctx FuseContextR), auth func(ctx FuseContextR), endpoint string, handlers []func(ctx FuseContextR)) {
-	var (
-		cr = fm.Ternary(regulator == nil, 0, 1)
-		ca = fm.Ternary(auth == nil, 0, 1)
-		ls = make([]func() (bool, func(FuseContextR)), len(handlers)+cr+ca)
-	)
-
-	if regulator != nil {
-		ls[0] = func() (bool, func(FuseContextR)) {
-			return true, regulator
+		if regulator != nil {
+			ls[0] = func() (bool, func(FuseContextR)) {
+				return true, regulator
+			}
 		}
-	}
 
-	if auth != nil {
-		ls[cr] = func() (bool, func(FuseContextR)) {
-			return false, auth
+		if auth != nil {
+			ls[cr] = func() (bool, func(FuseContextR)) {
+				return false, auth
+			}
 		}
-	}
 
-	for i, handler := range handlers {
-		ls[i+cr+ca] = func() (bool, func(FuseContextR)) {
-			return false, handler
+		for i, handler := range handlers {
+			ls[i+cr+ca] = func() (bool, func(FuseContextR)) {
+				return false, handler
+			}
 		}
-	}
 
-	slf.register(endpoint, ls...)
+		slf.register(endpoint, ls...)
+	}
 }
 
 func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
