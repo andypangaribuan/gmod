@@ -43,6 +43,7 @@ type FuseContextRegulatorR interface {
 	IsHandler(handler func(ctx FuseContextR) error) bool
 	Call(handler func(ctx FuseContextR) error) (code int, res any, err error)
 	OnError(err error) bool
+	Endpoint() string
 	Recover()
 	Send() error
 }

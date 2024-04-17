@@ -58,6 +58,10 @@ func (slf *stuFuseContextRegulatorR) OnError(err error) bool {
 	return err != nil
 }
 
+func (slf *stuFuseContextRegulatorR) Endpoint() string {
+	return slf.fuseContext.endpoint
+}
+
 func (slf *stuFuseContextRegulatorR) Recover() {
 	v := recover()
 	if v != nil && slf.fuseContext.errorHandler != nil {
