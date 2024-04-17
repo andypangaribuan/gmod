@@ -41,9 +41,18 @@ func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
 	return builder
 }
 
+func (slf *stuFuseContextRegulatorR) OnError(err error) bool {
+	if err != nil && slf.fuseContext.errorHandler != nil {
+		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
+		slf.Send()
+	}
+
+	return err != nil
+}
+
 func (slf *stuFuseContextRegulatorR) Recover() {
 	v := recover()
-	if v != nil && slf.fuseContext.panicCatcher != nil {
+	if v != nil && slf.fuseContext.errorHandler != nil {
 		err, ok := v.(error)
 		if ok {
 			err = errors.WithStack(err)
@@ -51,7 +60,7 @@ func (slf *stuFuseContextRegulatorR) Recover() {
 			err = errors.New(fmt.Sprintf("%+v", v))
 		}
 
-		slf.fuseContext.panicCatcher(slf.currentHandlerContext, err)
+		slf.fuseContext.errorHandler(slf.currentHandlerContext, err)
 		slf.Send()
 	}
 }

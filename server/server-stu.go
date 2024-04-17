@@ -26,7 +26,7 @@ type stuFuseRouterR struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
-	panicCatcher    func(ctx FuseContextR, err error) error
+	errorHandler    func(ctx FuseContextR, err error) error
 }
 
 type stuFuseRouterG struct {
@@ -43,7 +43,7 @@ type stuFuseContextR struct {
 	regulatorCtx *stuFuseContextRegulatorR
 	authObj      any
 
-	panicCatcher func(ctx FuseContextR, err error) error
+	errorHandler func(ctx FuseContextR, err error) error
 
 	handlers         []func(ctx FuseContextR) error
 	lastResponseCode int

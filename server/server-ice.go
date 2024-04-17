@@ -20,9 +20,9 @@ type server interface {
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Unrouted(handler func(ctx FuseContextR, method, path, url string))
+	Unrouted(handler func(ctx FuseContextR, method, path, url string) error)
 
-	PanicCatcher(catcher func(ctx FuseContextR, err error) error)
+	ErrorHandler(catcher func(ctx FuseContextR, err error) error)
 	Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error)
 }
 
@@ -32,7 +32,6 @@ type RouterG interface {
 }
 
 type FuseContextR interface {
-	Regulator() FuseContextRegulatorR
 	GetLastResponse() (code int, val any)
 	GetResponse() (code int, val any)
 	SetAuth(val any)
@@ -45,6 +44,7 @@ type FuseContextRegulatorR interface {
 	Next() (next bool, getHandler func() func(ctx FuseContextR) error)
 	IsHandler(handler func(ctx FuseContextR) error) bool
 	ContextBuilder() FuseContextBuilderR
+	OnError(err error) bool
 	Recover()
 	Send() error
 }

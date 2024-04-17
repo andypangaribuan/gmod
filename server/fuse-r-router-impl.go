@@ -28,7 +28,7 @@ func (slf *stuFuseRouterR) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path, url string)) {
+func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path, url string) error) {
 	slf.fiberApp.Use(func(c *fiber.Ctx) error {
 		err := c.Next()
 
@@ -58,7 +58,7 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 					isRegulator: false,
 				}
 
-				handler(ctx, method, path, url)
+				err = handler(ctx, method, path, url)
 			}
 		}
 
@@ -66,34 +66,30 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 	})
 }
 
-func (slf *stuFuseRouterR) PanicCatcher(catcher func(ctx FuseContextR, err error) error) {
-	slf.panicCatcher = catcher
+func (slf *stuFuseRouterR) ErrorHandler(catcher func(ctx FuseContextR, err error) error) {
+	slf.errorHandler = catcher
 }
 
 func (slf *stuFuseRouterR) Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error) {
 	for endpoint, handlers := range pathHandlers {
 		var (
 			ca = fm.Ternary(auth == nil, 0, 1)
-			ls = make([]func() (bool, func(FuseContextR) error), len(handlers)+ca)
+			ls = make([]func(FuseContextR) error, len(handlers)+ca)
 		)
 
 		if auth != nil {
-			ls[0] = func() (bool, func(FuseContextR) error) {
-				return false, auth
-			}
+			ls[0] = auth
 		}
 
 		for i, handler := range handlers {
-			ls[i+ca] = func() (bool, func(FuseContextR) error) {
-				return false, handler
-			}
+			ls[i+ca] = handler
 		}
 
 		slf.register(endpoint, regulator, ls...)
 	}
 }
 
-func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) {
+func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -118,23 +114,9 @@ func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextR
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
-		var (
-			handlerRegulator func(ctx FuseContextR) error
-			funcs            = make([]func(ctx FuseContextR) error, 0)
-		)
-
-		for _, fn := range handlers {
-			isRegulator, handler := fn()
-			if isRegulator && handlerRegulator == nil {
-				handlerRegulator = handler
-			} else {
-				funcs = append(funcs, handler)
-			}
-		}
-
-		slf.execRegulator(fiberCtx, endpoint, regulator, funcs...)
+		slf.execRegulator(fiberCtx, endpoint, regulator, handlers...)
 		return nil
 	}
 }
@@ -146,23 +128,17 @@ func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, r
 		isRegulator: true,
 		handlers:    handlers,
 
-		panicCatcher: slf.panicCatcher,
+		errorHandler: slf.errorHandler,
 	}
 
 	if regulator != nil {
-		regulator(regulatorCtx.Regulator())
+		regulator(regulatorCtx.regulator())
 	} else {
-		slf.defaultHandlerRegulator(regulatorCtx)
+		slf.defaultHandlerRegulator(regulatorCtx.regulator())
 	}
 }
 
-func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
-	var (
-		regulator  = ctx.Regulator()
-		builder    FuseContextBuilderR
-		handlerCtx FuseContextR
-	)
-
+func (slf *stuFuseRouterR) defaultHandlerRegulator(regulator FuseContextRegulatorR) {
 	defer regulator.Recover()
 
 	for {
@@ -171,12 +147,14 @@ func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
 			break
 		}
 
-		builder = regulator.ContextBuilder()
-		handlerCtx = builder.Build()
+		builder := regulator.ContextBuilder()
+		ctx := builder.Build()
+		err := handler()(ctx)
+		if regulator.OnError(err) {
+			return
+		}
 
-		handler()(handlerCtx)
-
-		code, _ := handlerCtx.GetResponse()
+		code, _ := ctx.GetResponse()
 		if code < 200 || code >= 300 {
 			break
 		}
