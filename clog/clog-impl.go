@@ -63,3 +63,37 @@ func (slf *stuInstance) ServicePieceV1(mol ServicePieceV1) error {
 	_, err := fm.GrpcCall(client.ServicePieceV1, req)
 	return err
 }
+
+func (slf *stuInstance) ServiceV1(mol ServiceV1) error {
+	req := &sclog.RequestServiceV1{
+		Uid:              slf.uid,
+		UserId:           fm.PbwString(mol.UserId),
+		PartnerId:        fm.PbwString(mol.PartnerId),
+		SvcName:          svcName,
+		SvcVersion:       svcVersion,
+		SvcParent:        fm.PbwString(mol.SvcParent),
+		SvcParentVersion: fm.PbwString(mol.SvcParentVersion),
+		Endpoint:         mol.Endpoint,
+		Url:              mol.Url,
+		Severity:         mol.Severity,
+		ExecPath:         mol.ExecPath,
+		ExecFunction:     mol.ExecFunction,
+		ReqVersion:       fm.PbwString(mol.ReqVersion),
+		ReqHeader:        fm.PbwString(mol.ReqHeader),
+		ReqParam:         fm.PbwString(mol.ReqParam),
+		ReqQuery:         fm.PbwString(mol.ReqQuery),
+		ReqForm:          fm.PbwString(mol.ReqForm),
+		ReqFiles:         fm.PbwString(mol.ReqFiles),
+		ReqBody:          fm.PbwString(mol.ReqBody),
+		ResData:          fm.PbwString(mol.ResData),
+		ResCode:          int32(mol.ResCode),
+		ErrMessage:       fm.PbwString(mol.ErrMessage),
+		StackTrace:       fm.PbwString(mol.StackTrace),
+		ClientIp:         mol.ClientIp,
+		StartedAt:        gm.Conv.Time.ToStrFull(mol.StartedAt),
+		FinishedAt:       gm.Conv.Time.ToStrFull(mol.FinishedAt),
+	}
+
+	_, err := fm.GrpcCall(client.ServiceV1, req)
+	return err
+}

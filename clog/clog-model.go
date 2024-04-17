@@ -43,3 +43,29 @@ type ServicePieceV1 struct {
 	ClientIp         string
 	StartedAt        time.Time
 }
+
+type ServiceV1 struct {
+	UserId           *string
+	PartnerId        *string
+	SvcParent        *string
+	SvcParentVersion *string
+	Endpoint         string
+	Url              string
+	Severity         string
+	ExecPath         string
+	ExecFunction     string
+	ReqVersion       *string
+	ReqHeader        *string
+	ReqParam         *string
+	ReqQuery         *string
+	ReqForm          *string
+	ReqFiles         *string
+	ReqBody          *string
+	ResData          *string
+	ResCode          int
+	ErrMessage       *string
+	StackTrace       *string
+	ClientIp         string
+	StartedAt        time.Time
+	FinishedAt       time.Time
+}
