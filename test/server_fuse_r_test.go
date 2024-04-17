@@ -56,8 +56,8 @@ func serverFuseRPanicCatcher(ctx server.FuseContextR, err error) error {
 	return ctx.R200OK(message)
 }
 
-func serverFuseRRegulator(ctx server.FuseContextR) error {
-	regulator := ctx.Regulator()
+func serverFuseRRegulator(regulator server.FuseContextRegulatorR) {
+	// regulator := ctx.Regulator()
 	defer regulator.Recover()
 
 	for {
@@ -80,7 +80,7 @@ func serverFuseRRegulator(ctx server.FuseContextR) error {
 		}
 	}
 
-	return regulator.Send()
+	regulator.Send()
 }
 
 func serverFuseRAuth(ctx server.FuseContextR) error {

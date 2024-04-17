@@ -23,7 +23,7 @@ type RouterR interface {
 	Unrouted(handler func(ctx FuseContextR, method, path, url string))
 
 	PanicCatcher(catcher func(ctx FuseContextR, err error) error)
-	Endpoints(regulator func(ctx FuseContextR) error, auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error)
+	Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error)
 }
 
 type RouterG interface {

@@ -70,37 +70,30 @@ func (slf *stuFuseRouterR) PanicCatcher(catcher func(ctx FuseContextR, err error
 	slf.panicCatcher = catcher
 }
 
-func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR) error, auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error) {
+func (slf *stuFuseRouterR) Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error) {
 	for endpoint, handlers := range pathHandlers {
 		var (
-			cr = fm.Ternary(regulator == nil, 0, 1)
 			ca = fm.Ternary(auth == nil, 0, 1)
-			ls = make([]func() (bool, func(FuseContextR) error), len(handlers)+cr+ca)
+			ls = make([]func() (bool, func(FuseContextR) error), len(handlers)+ca)
 		)
 
-		if regulator != nil {
-			ls[0] = func() (bool, func(FuseContextR) error) {
-				return true, regulator
-			}
-		}
-
 		if auth != nil {
-			ls[cr] = func() (bool, func(FuseContextR) error) {
+			ls[0] = func() (bool, func(FuseContextR) error) {
 				return false, auth
 			}
 		}
 
 		for i, handler := range handlers {
-			ls[i+cr+ca] = func() (bool, func(FuseContextR) error) {
+			ls[i+ca] = func() (bool, func(FuseContextR) error) {
 				return false, handler
 			}
 		}
 
-		slf.register(endpoint, ls...)
+		slf.register(endpoint, regulator, ls...)
 	}
 }
 
-func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) {
+func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -111,42 +104,42 @@ func (slf *stuFuseRouterR) register(endpoint string, handlers ...func() (isRegul
 
 	switch method {
 	case "GET":
-		slf.fiberApp.Get(path, slf.restProcess(endpoint, handlers...))
+		slf.fiberApp.Get(path, slf.restProcess(endpoint, regulator, handlers...))
 	case "POS":
-		slf.fiberApp.Post(path, slf.restProcess(endpoint, handlers...))
+		slf.fiberApp.Post(path, slf.restProcess(endpoint, regulator, handlers...))
 	case "DEL":
-		slf.fiberApp.Delete(path, slf.restProcess(endpoint, handlers...))
+		slf.fiberApp.Delete(path, slf.restProcess(endpoint, regulator, handlers...))
 	case "PUT":
-		slf.fiberApp.Put(path, slf.restProcess(endpoint, handlers...))
+		slf.fiberApp.Put(path, slf.restProcess(endpoint, regulator, handlers...))
 	case "PAT":
-		slf.fiberApp.Patch(path, slf.restProcess(endpoint, handlers...))
+		slf.fiberApp.Patch(path, slf.restProcess(endpoint, regulator, handlers...))
 	default:
 		log.Fatalln("fuse server [restful]: only support method GET, POS, DEL, PUT or PAT")
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func() (isRegulator bool, handler func(ctx FuseContextR) error)) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
-			handlerRegulator *func(ctx FuseContextR) error
+			handlerRegulator func(ctx FuseContextR) error
 			funcs            = make([]func(ctx FuseContextR) error, 0)
 		)
 
 		for _, fn := range handlers {
 			isRegulator, handler := fn()
 			if isRegulator && handlerRegulator == nil {
-				handlerRegulator = &handler
+				handlerRegulator = handler
 			} else {
 				funcs = append(funcs, handler)
 			}
 		}
 
-		slf.regulator(fiberCtx, endpoint, handlerRegulator, funcs...)
+		slf.execRegulator(fiberCtx, endpoint, regulator, funcs...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handlerRegulator *func(ctx FuseContextR) error, handlers ...func(ctx FuseContextR) error) {
+func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) {
 	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
 		endpoint:    endpoint,
@@ -156,9 +149,8 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handl
 		panicCatcher: slf.panicCatcher,
 	}
 
-	if handlerRegulator != nil {
-		handler := *handlerRegulator
-		handler(regulatorCtx)
+	if regulator != nil {
+		regulator(regulatorCtx.Regulator())
 	} else {
 		slf.defaultHandlerRegulator(regulatorCtx)
 	}
@@ -166,8 +158,8 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handl
 
 func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
 	var (
-		regulator = ctx.Regulator()
-		builder FuseContextBuilderR
+		regulator  = ctx.Regulator()
+		builder    FuseContextBuilderR
 		handlerCtx FuseContextR
 	)
 
