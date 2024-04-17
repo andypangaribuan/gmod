@@ -31,7 +31,41 @@ func TestServerFuseR(t *testing.T) {
 			"GET: /private/status-3": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 			"GET: /private/status-4": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
+
+		router.Endpoints(serverFuseRRegulator, nil, map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-5": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
+		})
+
+		router.Endpoints(serverFuseRRegulator, serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-6": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
+		})
 	})
+}
+
+func serverFuseRRegulator(ctx server.FuseContextR) {
+	regulator := ctx.Regulator()
+
+	for {
+		next, handler := regulator.Next()
+		if !next {
+			break
+		}
+
+		if regulator.IsHandler(serverRuseRPrivateStatus1) {
+			continue
+		}
+
+		builder := regulator.ContextBuilder()
+		ctx := builder.Build()
+		handler()(ctx)
+
+		code, _ := ctx.GetResponse()
+		if code < 200 || code >= 300 {
+			break
+		}
+	}
+
+	regulator.Send()
 }
 
 func serverFuseRAuth(ctx server.FuseContextR) {

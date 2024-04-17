@@ -42,6 +42,7 @@ type FuseContextR interface {
 
 type FuseContextRegulatorR interface {
 	Next() (canNext bool, ctrl func() func(ctx FuseContextR))
+	IsHandler(handler func(ctx FuseContextR)) bool
 	ContextBuilder() FuseContextBuilderR
 	Send()
 }

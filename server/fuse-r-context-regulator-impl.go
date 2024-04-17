@@ -9,15 +9,26 @@
 
 package server
 
-import "github.com/andypangaribuan/gmod/fm"
+import (
+	"reflect"
+	"runtime"
 
-func (slf *stuFuseContextRegulatorR) Next() (canNext bool, ctrl func() func(ctx FuseContextR)) {
+	"github.com/andypangaribuan/gmod/fm"
+)
+
+func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR)) {
 	slf.currentIndex++
-	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getCtrl
+	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getHandler
 }
 
-func (slf *stuFuseContextRegulatorR) getCtrl() func(ctx FuseContextR) {
+func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) {
 	return slf.fuseContext.handlers[slf.currentIndex]
+}
+
+func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR)) bool {
+	v1 := runtime.FuncForPC(reflect.ValueOf(slf.getHandler()).Pointer()).Name()
+	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
+	return v1 == v2
 }
 
 func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {

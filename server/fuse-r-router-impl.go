@@ -161,8 +161,8 @@ func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
 	regulator := ctx.Regulator()
 
 	for {
-		canNext, handler := regulator.Next()
-		if !canNext {
+		next, handler := regulator.Next()
+		if !next {
 			break
 		}
 
