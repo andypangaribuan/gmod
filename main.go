@@ -12,6 +12,7 @@ package gmod
 import (
 	"log"
 
+	_ "github.com/andypangaribuan/gmod/clog"
 	_ "github.com/andypangaribuan/gmod/gm"
 
 	_ "github.com/andypangaribuan/gmod/core/box"
@@ -33,6 +34,7 @@ var (
 	iceGM ice.GM
 
 	iceBox      ice.Box
+	iceClog     ice.Clog
 	iceConf     ice.Conf
 	iceConv     ice.Conv
 	iceConvTime ice.ConvTime
@@ -47,12 +49,14 @@ var (
 )
 
 var (
-	mainConfCommit func()
+	mainConfCommit func() // accessed through unsafe
 )
 
 var (
 	mainUtilCallback func()
 	mainJsonCallback func()
+
+	mainCLogCallback func()
 )
 
 func init() {
@@ -61,6 +65,7 @@ func init() {
 
 	iceGM.
 		SetBox(iceBox).
+		SetClog(iceClog).
 		SetConf(iceConf).
 		SetConv(iceConv, iceConvTime).
 		SetCrypto(iceCrypto).
@@ -74,5 +79,7 @@ func init() {
 	mainConfCommit = func() {
 		mainUtilCallback()
 		mainJsonCallback()
+
+		mainCLogCallback()
 	}
 }

@@ -12,5 +12,6 @@ package ice
 type Conf interface {
 	SetZxEnvName(name string) Conf
 	SetTimezone(timezone string) Conf
+	SetCLogAddress(address string) Conf
 	Commit()
 }

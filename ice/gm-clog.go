@@ -7,10 +7,8 @@
  * All Rights Reserved.
  */
 
-package conf
+package ice
 
-type stuConf struct {
-	zxEnvName   string
-	timezone    string // accessed from reflection
-	clogAddress string // accessed from reflection
+type Clog interface {
+	Info() error
 }

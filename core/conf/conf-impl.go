@@ -21,6 +21,11 @@ func (slf *stuConf) SetTimezone(timezone string) ice.Conf {
 	return slf
 }
 
+func (slf *stuConf) SetCLogAddress(address string) ice.Conf {
+	slf.clogAddress = address
+	return slf
+}
+
 func (slf *stuConf) Commit() {
 	mainConfCommit()
 }

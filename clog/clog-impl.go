@@ -7,10 +7,14 @@
  * All Rights Reserved.
  */
 
-package conf
+package clog
 
-type stuConf struct {
-	zxEnvName   string
-	timezone    string // accessed from reflection
-	clogAddress string // accessed from reflection
+import "github.com/pkg/errors"
+
+func (*stuClog) Info() error {
+	if client == nil {
+		return errors.New("clog client not available")
+	}
+	
+	return nil
 }

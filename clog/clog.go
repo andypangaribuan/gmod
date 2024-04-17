@@ -7,10 +7,10 @@
  * All Rights Reserved.
  */
 
-package conf
+package clog
 
-type stuConf struct {
-	zxEnvName   string
-	timezone    string // accessed from reflection
-	clogAddress string // accessed from reflection
+func init() {
+	iceClog = new(stuClog)
+
+	xinit()
 }
