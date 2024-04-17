@@ -86,14 +86,11 @@ func sfrRegulator(regulator server.FuseContextRegulatorR) {
 			continue
 		}
 
-		builder := regulator.ContextBuilder()
-		ctx := builder.Build()
-		err := handler()(ctx)
+		code, _, err := regulator.Call(handler)
 		if regulator.OnError(err) {
 			return
 		}
 
-		code, _ := ctx.GetResponse()
 		if code < 200 || code >= 300 {
 			break
 		}

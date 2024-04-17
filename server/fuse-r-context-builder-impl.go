@@ -9,7 +9,7 @@
 
 package server
 
-func (slf *stuFuseContextBuilderR) Build() FuseContextR {
+func (slf *stuFuseContextBuilderR) build() *stuFuseContextR {
 	ctx := &stuFuseContextR{
 		fiberCtx:     slf.original.fiberCtx,
 		endpoint:     slf.original.endpoint,

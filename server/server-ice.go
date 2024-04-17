@@ -41,9 +41,9 @@ type FuseContextR interface {
 }
 
 type FuseContextRegulatorR interface {
-	Next() (next bool, getHandler func() func(ctx FuseContextR) error)
+	Next() (next bool, getHandler func(ctx FuseContextR) error)
 	IsHandler(handler func(ctx FuseContextR) error) bool
-	ContextBuilder() FuseContextBuilderR
+	Call(handler func(ctx FuseContextR) error) (code int, res any, err error)
 	OnError(err error) bool
 	Recover()
 	Send() error

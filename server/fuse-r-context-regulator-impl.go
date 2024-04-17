@@ -18,9 +18,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR) error) {
+func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(ctx FuseContextR) error) {
 	slf.currentIndex++
-	return slf.currentIndex < len(slf.fuseContext.handlers), slf.getHandler
+	next = slf.currentIndex < len(slf.fuseContext.handlers)
+	if next {
+		handler = slf.fuseContext.handlers[slf.currentIndex]
+	}
+	return
 }
 
 func (slf *stuFuseContextRegulatorR) getHandler() func(ctx FuseContextR) error {
@@ -33,12 +37,16 @@ func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) er
 	return v1 == v2
 }
 
-func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
-	builder := &stuFuseContextBuilderR{
-		original: slf.fuseContext,
-	}
+func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) (code int, res any, err error) {
+	var (
+		builder = &stuFuseContextBuilderR{
+			original: slf.fuseContext,
+		}
+		ctx = builder.build()
+	)
 
-	return builder
+	err = handler(ctx)
+	return ctx.responseCode, ctx.responseVal, err
 }
 
 func (slf *stuFuseContextRegulatorR) OnError(err error) bool {
