@@ -12,11 +12,11 @@ package test
 import "github.com/andypangaribuan/gmod/ice"
 
 type stuEnv struct {
-	AppName        string
-	AppEnv         ice.AppEnv
-	AppTimezone    string
-	AppRestPort    int
-	AppAutoRecover bool
+	AppName               string
+	AppEnv                ice.AppEnv
+	AppTimezone           string
+	AppRestPort           int
+	AppAutoRecover        bool
 	AppServerPrintOnError bool
 
 	DbHost string
