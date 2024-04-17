@@ -10,10 +10,12 @@
 package server
 
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/pkg/errors"
 )
 
 func (slf *stuFuseContextRegulatorR) Next() (next bool, getHandler func() func(ctx FuseContextR) error) {
@@ -37,6 +39,21 @@ func (slf *stuFuseContextRegulatorR) ContextBuilder() FuseContextBuilderR {
 	}
 
 	return builder
+}
+
+func (slf *stuFuseContextRegulatorR) Recover() {
+	v := recover()
+	if v != nil && slf.fuseContext.panicCatcher != nil {
+		err, ok := v.(error)
+		if ok {
+			err = errors.WithStack(err)
+		} else {
+			err = errors.New(fmt.Sprintf("%+v", v))
+		}
+
+		slf.fuseContext.panicCatcher(slf.currentHandlerContext, err)
+		slf.Send()
+	}
 }
 
 func (slf *stuFuseContextRegulatorR) Send() error {

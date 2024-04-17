@@ -10,10 +10,11 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/gofiber/fiber/v2"
@@ -63,6 +64,10 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 
 		return err
 	})
+}
+
+func (slf *stuFuseRouterR) PanicCatcher(catcher func(ctx FuseContextR, err error) error) {
+	slf.panicCatcher = catcher
 }
 
 func (slf *stuFuseRouterR) Endpoints(regulator func(ctx FuseContextR) error, auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error) {
@@ -124,7 +129,7 @@ func (slf *stuFuseRouterR) restProcess(endpoint string, handlers ...func() (isRe
 	return func(fiberCtx *fiber.Ctx) error {
 		var (
 			handlerRegulator *func(ctx FuseContextR) error
-			funcs               = make([]func(ctx FuseContextR) error, 0)
+			funcs            = make([]func(ctx FuseContextR) error, 0)
 		)
 
 		for _, fn := range handlers {
@@ -147,6 +152,8 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handl
 		endpoint:    endpoint,
 		isRegulator: true,
 		handlers:    handlers,
+
+		panicCatcher: slf.panicCatcher,
 	}
 
 	if handlerRegulator != nil {
@@ -158,7 +165,13 @@ func (slf *stuFuseRouterR) regulator(fiberCtx *fiber.Ctx, endpoint string, handl
 }
 
 func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
-	regulator := ctx.Regulator()
+	var (
+		regulator = ctx.Regulator()
+		builder FuseContextBuilderR
+		handlerCtx FuseContextR
+	)
+
+	defer regulator.Recover()
 
 	for {
 		next, handler := regulator.Next()
@@ -166,11 +179,12 @@ func (slf *stuFuseRouterR) defaultHandlerRegulator(ctx FuseContextR) {
 			break
 		}
 
-		builder := regulator.ContextBuilder()
-		ctx := builder.Build()
-		handler()(ctx)
+		builder = regulator.ContextBuilder()
+		handlerCtx = builder.Build()
 
-		code, _ := ctx.GetResponse()
+		handler()(handlerCtx)
+
+		code, _ := handlerCtx.GetResponse()
 		if code < 200 || code >= 300 {
 			break
 		}

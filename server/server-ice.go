@@ -22,6 +22,7 @@ type RouterR interface {
 	PrintOnError(printOnError bool)
 	Unrouted(handler func(ctx FuseContextR, method, path, url string))
 
+	PanicCatcher(catcher func(ctx FuseContextR, err error) error)
 	Endpoints(regulator func(ctx FuseContextR) error, auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error)
 }
 
@@ -41,9 +42,10 @@ type FuseContextR interface {
 }
 
 type FuseContextRegulatorR interface {
-	Next() (canNext bool, ctrl func() func(ctx FuseContextR) error)
+	Next() (next bool, getHandler func() func(ctx FuseContextR) error)
 	IsHandler(handler func(ctx FuseContextR) error) bool
 	ContextBuilder() FuseContextBuilderR
+	Recover()
 	Send() error
 }
 

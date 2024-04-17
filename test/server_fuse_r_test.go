@@ -21,6 +21,7 @@ func TestServerFuseR(t *testing.T) {
 	server.FuseR(env.AppRestPort, func(router server.RouterR) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
+		router.PanicCatcher(serverFuseRPanicCatcher)
 
 		router.Endpoints(nil, nil, map[string][]func(ctx server.FuseContextR) error{
 			"GET: /private/status-1": {serverFuseRAuth, serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
@@ -39,11 +40,25 @@ func TestServerFuseR(t *testing.T) {
 		router.Endpoints(serverFuseRRegulator, serverFuseRAuth, map[string][]func(ctx server.FuseContextR) error{
 			"GET: /private/status-6": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2},
 		})
+
+		router.Endpoints(nil, serverFuseRAuth, map[string][]func(ctx server.FuseContextR) error{
+			"GET: /private/status-7": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2, serverFuseRPrivateStatusErr},
+		})
+
+		router.Endpoints(serverFuseRRegulator, serverFuseRAuth, map[string][]func(ctx server.FuseContextR) error{
+			"GET: /private/status-8": {serverRuseRPrivateStatus1, serverFuseRPrivateStatus2, serverFuseRPrivateStatusErr},
+		})
 	})
+}
+
+func serverFuseRPanicCatcher(ctx server.FuseContextR, err error) error {
+	message := fmt.Sprintf("something went wrong: %+v", err)
+	return ctx.R200OK(message)
 }
 
 func serverFuseRRegulator(ctx server.FuseContextR) error {
 	regulator := ctx.Regulator()
+	defer regulator.Recover()
 
 	for {
 		next, handler := regulator.Next()
@@ -89,4 +104,9 @@ func serverFuseRPrivateStatus2(ctx server.FuseContextR) error {
 	}
 
 	return ctx.R200OK(data)
+}
+
+func serverFuseRPrivateStatusErr(ctx server.FuseContextR) error {
+	auth := ctx.Auth().(int) // panic error
+	return ctx.R200OK(auth)
 }

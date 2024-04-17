@@ -34,7 +34,6 @@ func (slf *stuFuseContextR) GetLastResponse() (code int, val any) {
 }
 
 func (slf *stuFuseContextR) GetResponse() (code int, val any) {
-	slf.regulatorCtx.currentHandlerContext = slf
 	return slf.responseCode, slf.responseVal
 }
 
