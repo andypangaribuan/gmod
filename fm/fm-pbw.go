@@ -93,3 +93,19 @@ func PbwGet[T any](obj any, dval ...T) (*T, bool) {
 	val, ok := objVal.(T)
 	return &val, ok
 }
+
+func PbwString(val *string) *wrapperspb.StringValue {
+	if val == nil {
+		return nil
+	}
+
+	return &wrapperspb.StringValue{Value: *val}
+}
+
+func PbwInt32(val *int) *wrapperspb.Int32Value {
+	if val == nil {
+		return nil
+	}
+
+	return &wrapperspb.Int32Value{Value: int32(*val)}
+}

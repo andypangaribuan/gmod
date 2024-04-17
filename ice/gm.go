@@ -11,7 +11,6 @@ package ice
 
 type GM interface {
 	SetBox(box Box) GM
-	SetClog(clog Clog) GM
 	SetConf(conf Conf) GM
 	SetConv(conv Conv, tm ConvTime) GM
 	SetCrypto(crypto Crypto) GM

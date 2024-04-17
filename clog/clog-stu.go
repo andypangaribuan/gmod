@@ -9,4 +9,6 @@
 
 package clog
 
-type stuClog struct{}
+type stuInstance struct {
+	uid string
+}

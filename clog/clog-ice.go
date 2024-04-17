@@ -9,6 +9,6 @@
 
 package clog
 
-func init() {
-	xinit()
+type Instance interface {
+	DbqV1(mol DbqV1) error
 }

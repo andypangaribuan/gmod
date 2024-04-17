@@ -16,11 +16,6 @@ func (slf *stuGM) SetBox(box ice.Box) ice.GM {
 	return slf
 }
 
-func (slf *stuGM) SetClog(clog ice.Clog) ice.GM {
-	Clog = clog
-	return slf
-}
-
 func (slf *stuGM) SetConf(conf ice.Conf) ice.GM {
 	Conf = conf
 	return slf

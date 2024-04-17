@@ -13,11 +13,7 @@ import (
 	_ "unsafe"
 
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
-	"github.com/andypangaribuan/gmod/ice"
 )
-
-//go:linkname iceClog github.com/andypangaribuan/gmod.iceClog
-var iceClog ice.Clog
 
 //go:linkname mainCLogCallback github.com/andypangaribuan/gmod.mainCLogCallback
 var mainCLogCallback func()

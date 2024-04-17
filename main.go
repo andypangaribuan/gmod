@@ -34,7 +34,6 @@ var (
 	iceGM ice.GM
 
 	iceBox      ice.Box
-	iceClog     ice.Clog
 	iceConf     ice.Conf
 	iceConv     ice.Conv
 	iceConvTime ice.ConvTime
@@ -65,7 +64,6 @@ func init() {
 
 	iceGM.
 		SetBox(iceBox).
-		SetClog(iceClog).
 		SetConf(iceConf).
 		SetConv(iceConv, iceConvTime).
 		SetCrypto(iceCrypto).

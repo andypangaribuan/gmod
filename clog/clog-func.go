@@ -7,8 +7,16 @@
  * All Rights Reserved.
  */
 
-package ice
+package clog
 
-type Clog interface {
-	Info() error
+import "github.com/andypangaribuan/gmod/gm"
+
+func New() Instance {
+	if client == nil {
+		return nil
+	}
+
+	return &stuInstance{
+		uid: gm.Util.UID(),
+	}
 }

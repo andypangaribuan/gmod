@@ -7,8 +7,13 @@
  * All Rights Reserved.
  */
 
-package clog
+package fm
 
-func init() {
-	xinit()
+func Val[T any](condition bool, fn func() T) *T {
+	if !condition {
+		return nil
+	}
+
+	val := fn()
+	return &val
 }
