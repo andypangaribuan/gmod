@@ -22,25 +22,15 @@ func TestServerFuseR(t *testing.T) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
 
-		router.Group(map[string][]func(ctx server.FuseContextR){
+		router.Endpoints(map[string][]func(ctx server.FuseContextR){
 			"GET: /private/status-1": {serverFuseRAuth, serverFuseRPrivateStatus},
 			"GET: /private/status-2": {serverFuseRAuth, serverFuseRPrivateStatus},
 		})
 
-		router.Group(map[string][]func(ctx server.FuseContextR){
-			"GET: /private/status-3": {serverFuseRAuth, serverFuseRPrivateStatus},
-		})
-
-		router.GroupWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+		router.EndpointsWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
+			"GET: /private/status-3": {serverFuseRPrivateStatus},
 			"GET: /private/status-4": {serverFuseRPrivateStatus},
-			"GET: /private/status-5": {serverFuseRPrivateStatus},
 		})
-
-		router.GroupWithAuth(serverFuseRAuth, map[string][]func(ctx server.FuseContextR){
-			"GET: /private/status-6": {serverFuseRPrivateStatus},
-		})
-
-		router.Single("GET: /private/status-7", serverFuseRAuth, serverFuseRPrivateStatus)
 	})
 }
 

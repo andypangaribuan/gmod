@@ -64,29 +64,35 @@ func (slf *stuFuseRouterR) Unrouted(controller func(ctx FuseContextR, method, pa
 	})
 }
 
-func (slf *stuFuseRouterR) Group(endpoints map[string][]func(ctx FuseContextR)) {
-	for path, handlers := range endpoints {
-		slf.Single(path, handlers...)
-	}
-}
+func (slf *stuFuseRouterR) Endpoints(pathHandlers map[string][]func(ctx FuseContextR)) {
+	for path, handlers := range pathHandlers {
+		ls := make([]func() (bool, func(FuseContextR)), len(handlers))
 
-func (slf *stuFuseRouterR) GroupWithAuth(auth func(ctx FuseContextR), endpoints map[string][]func(ctx FuseContextR)) {
-	for path, handlers := range endpoints {
-		ls := []func(ctx FuseContextR){auth}
-		slf.Single(path, append(ls, handlers...)...)
-	}
-}
-
-func (slf *stuFuseRouterR) Single(path string, handlers ...func(ctx FuseContextR)) {
-	ls := make([]func() (bool, func(FuseContextR)), len(handlers))
-
-	for i, handler := range handlers {
-		ls[i] = func() (bool, func(FuseContextR)) {
-			return false, handler
+		for i, handler := range handlers {
+			ls[i] = func() (bool, func(FuseContextR)) {
+				return false, handler
+			}
 		}
-	}
 
-	slf.rawSingle(path, ls...)
+		slf.rawSingle(path, ls...)
+	}
+}
+
+func (slf *stuFuseRouterR) EndpointsWithAuth(auth func(ctx FuseContextR), pathHandlers map[string][]func(ctx FuseContextR)) {
+	for path, handlers := range pathHandlers {
+		ls := make([]func() (bool, func(FuseContextR)), len(handlers) + 1)
+		ls[0] = func() (bool, func(FuseContextR)) {
+			return false, auth
+		}
+
+		for i, handler := range handlers {
+			ls[i+1] = func() (bool, func(FuseContextR)) {
+				return false, handler
+			}
+		}
+
+		slf.rawSingle(path, ls...)
+	}
 }
 
 func (slf *stuFuseRouterR) rawSingle(endpoint string, controllers ...func() (isRegulator bool, controller func(ctx FuseContextR))) {
