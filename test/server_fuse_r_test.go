@@ -62,7 +62,7 @@ func TestServerFuseR(t *testing.T) {
 }
 
 func sfrErrorHandler(ctx server.FuseContextR, err error) error {
-	message := fmt.Sprintf("something went wrong: %+v", err)
+	message := fmt.Sprintf("something went wrong: %v\n%+v", err.Error(), err)
 	return ctx.R200OK(message)
 }
 

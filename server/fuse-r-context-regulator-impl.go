@@ -67,7 +67,7 @@ func (slf *stuFuseContextRegulatorR) Recover() {
 	}
 
 	err := slf.send()
-	if slf.fuseContext.errorHandler != nil {
+	if err != nil && slf.fuseContext.errorHandler != nil {
 		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
 	}
 }
