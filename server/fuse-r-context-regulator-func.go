@@ -9,9 +9,12 @@
 
 package server
 
-import "github.com/andypangaribuan/gmod/fm"
+import (
+	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/fm"
+)
 
-func (slf *stuFuseContextRegulatorR) currentHandler() func(ctx FuseContextR) error {
+func (slf *stuFuseContextRegulatorR) currentHandler() func(clog.Instance, FuseContextR) error {
 	return slf.fuseContext.handlers[slf.currentIndex]
 }
 

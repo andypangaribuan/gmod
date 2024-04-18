@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/server"
 )
 
@@ -24,49 +25,49 @@ func TestServerFuseR(t *testing.T) {
 		router.PrintOnError(env.AppServerPrintOnError)
 		router.ErrorHandler(sfrErrorHandler)
 
-		router.Endpoints(nil, nil, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(nil, nil, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-1": {sfrPrivateStatus1},
 		})
 
-		router.Endpoints(nil, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-2": {sfrPrivateStatus1},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-3": {sfrPrivateStatus1},
 			"GET: /private/status-4": {sfrPrivateStatus1, sfrPrivateStatus2},
 			"GET: /private/status-5": {sfrPrivateStatus1, sfrPrivateStatus2},
 		})
 
 		// error or panic
-		router.Endpoints(nil, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-10": {sfrPrivateStatus1, sfrPrivateStatusPanic, sfrPrivateStatus2},
 			"GET: /private/status-11": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusPanic},
 		})
 
-		router.Endpoints(nil, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-12": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-13": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-14": {sfrPrivateStatus1, sfrPrivateStatusPanic, sfrPrivateStatus2},
 			"GET: /private/status-15": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusPanic},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(ctx server.FuseContextR) error{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseContextR) error{
 			"GET: /private/status-16": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-17": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
 	})
 }
 
-func sfrErrorHandler(ctx server.FuseContextR, err error) error {
+func sfrErrorHandler(clog clog.Instance, ctx server.FuseContextR, err error) error {
 	message := fmt.Sprintf("something went wrong: %v\n%+v", err.Error(), err)
 	return ctx.R200OK(message)
 }
 
-func sfrRegulator(regulator server.FuseContextRegulatorR) {
+func sfrRegulator(clog clog.Instance, regulator server.FuseRegulatorR) {
 	defer regulator.Recover()
 
 	for {
@@ -90,17 +91,17 @@ func sfrRegulator(regulator server.FuseContextRegulatorR) {
 	}
 }
 
-func sfrAuth(ctx server.FuseContextR) error {
+func sfrAuth(clog clog.Instance, ctx server.FuseContextR) error {
 	ctx.Auth("Halo")
 	return ctx.R200OK("Andy")
 }
 
-func sfrPrivateStatus1(ctx server.FuseContextR) error {
+func sfrPrivateStatus1(clog clog.Instance, ctx server.FuseContextR) error {
 	_, val := ctx.LastResponse()
 	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
 }
 
-func sfrPrivateStatus2(ctx server.FuseContextR) error {
+func sfrPrivateStatus2(clog clog.Instance, ctx server.FuseContextR) error {
 	auth := ctx.Auth().(string)
 	_, val := ctx.LastResponse()
 
@@ -113,11 +114,11 @@ func sfrPrivateStatus2(ctx server.FuseContextR) error {
 	return ctx.R200OK(data)
 }
 
-func sfrPrivateStatusPanic(ctx server.FuseContextR) error {
+func sfrPrivateStatusPanic(clog clog.Instance, ctx server.FuseContextR) error {
 	auth := ctx.Auth().(int) // panic error
 	return ctx.R200OK(auth)
 }
 
-func sfrPrivateStatusErr(ctx server.FuseContextR) error {
+func sfrPrivateStatusErr(clog clog.Instance, ctx server.FuseContextR) error {
 	return errors.New("test error")
 }

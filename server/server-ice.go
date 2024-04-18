@@ -9,7 +9,10 @@
 
 package server
 
-import "google.golang.org/grpc"
+import (
+	"github.com/andypangaribuan/gmod/clog"
+	"google.golang.org/grpc"
+)
 
 type server interface {
 	FuseG(grpcPort int, routes func(router RouterG))
@@ -20,10 +23,10 @@ type server interface {
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Unrouted(handler func(ctx FuseContextR, method, path, url string) error)
+	Unrouted(handler func(clog clog.Instance, ctx FuseContextR, method, path, url string) error)
 
-	ErrorHandler(catcher func(ctx FuseContextR, err error) error)
-	Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error)
+	ErrorHandler(catcher func(clog clog.Instance, ctx FuseContextR, err error) error)
+	Endpoints(regulator func(clog clog.Instance, regulator FuseRegulatorR), auth func(clog.Instance, FuseContextR) error, pathHandlers map[string][]func(clog.Instance, FuseContextR) error)
 }
 
 type RouterG interface {
@@ -38,10 +41,10 @@ type FuseContextR interface {
 	R200OK(val any) error
 }
 
-type FuseContextRegulatorR interface {
-	Next() (next bool, handler func(ctx FuseContextR) error)
-	IsHandler(handler func(ctx FuseContextR) error) bool
-	Call(handler func(ctx FuseContextR) error) (code int, res any)
+type FuseRegulatorR interface {
+	Next() (next bool, handler func(clog clog.Instance, ctx FuseContextR) error)
+	IsHandler(handler func(clog clog.Instance, ctx FuseContextR) error) bool
+	Call(handler func(clog clog.Instance, ctx FuseContextR) error) (code int, res any)
 	Endpoint() string
 	Recover()
 }

@@ -17,5 +17,5 @@ import (
 var (
 	serverImpl   server
 	fuseFiberApp *fiber.App
-	clogNew func() clog.Instance
+	clogNew      func() clog.Instance
 )

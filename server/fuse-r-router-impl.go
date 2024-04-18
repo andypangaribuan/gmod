@@ -16,6 +16,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,7 +29,7 @@ func (slf *stuFuseRouterR) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path, url string) error) {
+func (slf *stuFuseRouterR) Unrouted(handler func(clog clog.Instance, ctx FuseContextR, method, path, url string) error) {
 	slf.fiberApp.Use(func(c *fiber.Ctx) error {
 		err := c.Next()
 
@@ -58,7 +59,7 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 					isRegulator: false,
 				}
 
-				err = handler(ctx, method, path, url)
+				err = handler(clogNew(), ctx, method, path, url)
 			}
 		}
 
@@ -66,15 +67,15 @@ func (slf *stuFuseRouterR) Unrouted(handler func(ctx FuseContextR, method, path,
 	})
 }
 
-func (slf *stuFuseRouterR) ErrorHandler(catcher func(ctx FuseContextR, err error) error) {
+func (slf *stuFuseRouterR) ErrorHandler(catcher func(clog clog.Instance, ctx FuseContextR, err error) error) {
 	slf.errorHandler = catcher
 }
 
-func (slf *stuFuseRouterR) Endpoints(regulator func(regulator FuseContextRegulatorR), auth func(ctx FuseContextR) error, pathHandlers map[string][]func(ctx FuseContextR) error) {
+func (slf *stuFuseRouterR) Endpoints(regulator func(clog clog.Instance, regulator FuseRegulatorR), auth func(clog.Instance, FuseContextR) error, pathHandlers map[string][]func(clog.Instance, FuseContextR) error) {
 	for endpoint, handlers := range pathHandlers {
 		var (
 			ca = fm.Ternary(auth == nil, 0, 1)
-			ls = make([]func(FuseContextR) error, len(handlers)+ca)
+			ls = make([]func(clog.Instance, FuseContextR) error, len(handlers)+ca)
 		)
 
 		if auth != nil {
@@ -89,7 +90,7 @@ func (slf *stuFuseRouterR) Endpoints(regulator func(regulator FuseContextRegulat
 	}
 }
 
-func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) {
+func (slf *stuFuseRouterR) register(endpoint string, regulator func(clog.Instance, FuseRegulatorR), handlers ...func(clog.Instance, FuseContextR) error) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -114,16 +115,17 @@ func (slf *stuFuseRouterR) register(endpoint string, regulator func(FuseContextR
 	}
 }
 
-func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) func(*fiber.Ctx) error {
+func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(clog.Instance, FuseRegulatorR), handlers ...func(clog.Instance, FuseContextR) error) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		slf.execRegulator(fiberCtx, endpoint, regulator, handlers...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, regulator func(FuseContextRegulatorR), handlers ...func(ctx FuseContextR) error) {
+func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRegulatorR), handlers ...func(clog.Instance, FuseContextR) error) {
 	regulatorCtx := &stuFuseContextR{
 		fiberCtx:    fiberCtx,
+		clog:        clogNew(),
 		endpoint:    endpoint,
 		isRegulator: true,
 		handlers:    handlers,
@@ -132,13 +134,13 @@ func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, r
 	}
 
 	if regulator != nil {
-		regulator(regulatorCtx.regulator())
+		regulator(regulatorCtx.clog, regulatorCtx.regulator())
 	} else {
 		slf.defaultHandlerRegulator(regulatorCtx.regulator())
 	}
 }
 
-func (slf *stuFuseRouterR) defaultHandlerRegulator(regulator FuseContextRegulatorR) {
+func (slf *stuFuseRouterR) defaultHandlerRegulator(regulator FuseRegulatorR) {
 	defer regulator.Recover()
 
 	for {

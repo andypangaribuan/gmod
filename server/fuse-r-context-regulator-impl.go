@@ -14,10 +14,11 @@ import (
 	"reflect"
 	"runtime"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(ctx FuseContextR) error) {
+func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(clog clog.Instance, ctx FuseContextR) error) {
 	slf.currentIndex++
 	next = slf.currentIndex < len(slf.fuseContext.handlers)
 	if next {
@@ -26,13 +27,13 @@ func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(ctx FuseCon
 	return
 }
 
-func (slf *stuFuseContextRegulatorR) IsHandler(handler func(ctx FuseContextR) error) bool {
+func (slf *stuFuseContextRegulatorR) IsHandler(handler func(clog clog.Instance, ctx FuseContextR) error) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
 
-func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) (code int, res any) {
+func (slf *stuFuseContextRegulatorR) Call(handler func(clog clog.Instance, ctx FuseContextR) error) (code int, res any) {
 	var (
 		builder = &stuFuseContextBuilderR{
 			original: slf.fuseContext,
@@ -40,9 +41,9 @@ func (slf *stuFuseContextRegulatorR) Call(handler func(ctx FuseContextR) error) 
 		ctx = builder.build()
 	)
 
-	err := handler(ctx)
+	err := handler(slf.clog, ctx)
 	if err != nil && slf.fuseContext.errorHandler != nil {
-		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
+		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 		return -1, nil
 	}
 
@@ -63,11 +64,11 @@ func (slf *stuFuseContextRegulatorR) Recover() {
 			err = errors.New(fmt.Sprintf("%+v", v))
 		}
 
-		slf.fuseContext.errorHandler(slf.currentHandlerContext, err)
+		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, err)
 	}
 
 	err := slf.send()
 	if err != nil && slf.fuseContext.errorHandler != nil {
-		slf.fuseContext.errorHandler(slf.currentHandlerContext, errors.WithStack(err))
+		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 	}
 }

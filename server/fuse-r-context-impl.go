@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-func (slf *stuFuseContextR) regulator() FuseContextRegulatorR {
+func (slf *stuFuseContextR) regulator() FuseRegulatorR {
 	if !slf.isRegulator {
 		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
 		return nil
@@ -21,6 +21,7 @@ func (slf *stuFuseContextR) regulator() FuseContextRegulatorR {
 
 	if slf.regulatorCtx == nil {
 		slf.regulatorCtx = &stuFuseContextRegulatorR{
+			clog:         slf.clog,
 			fuseContext:  slf,
 			currentIndex: -1,
 		}

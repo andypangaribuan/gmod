@@ -10,6 +10,7 @@
 package server
 
 import (
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
 )
@@ -26,7 +27,7 @@ type stuFuseRouterR struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
-	errorHandler    func(ctx FuseContextR, err error) error
+	errorHandler    func(clog.Instance, FuseContextR, error) error
 }
 
 type stuFuseRouterG struct {
@@ -38,14 +39,15 @@ type stuFuseRouterG struct {
 
 type stuFuseContextR struct {
 	fiberCtx     *fiber.Ctx
+	clog         clog.Instance
 	endpoint     string
 	isRegulator  bool
 	regulatorCtx *stuFuseContextRegulatorR
 	authObj      any
 
-	errorHandler func(ctx FuseContextR, err error) error
+	errorHandler func(clog.Instance, FuseContextR, error) error
 
-	handlers         []func(ctx FuseContextR) error
+	handlers         []func(clog.Instance, FuseContextR) error
 	lastResponseCode int
 	lastResponseVal  any
 	responseCode     int
@@ -53,6 +55,7 @@ type stuFuseContextR struct {
 }
 
 type stuFuseContextRegulatorR struct {
+	clog                  clog.Instance
 	fuseContext           *stuFuseContextR
 	currentIndex          int
 	currentHandlerContext *stuFuseContextR
