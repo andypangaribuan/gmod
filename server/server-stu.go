@@ -23,44 +23,52 @@ type stuGrpcServerHandler struct {
 	stackTraceSkipLevel int
 }
 
-type stuFuseRouterR struct {
+type stuFuseRRouter struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
-	errorHandler    func(clog.Instance, FuseContextR, error) error
+	errorHandler    func(clog.Instance, FuseRContext, error) error
 }
 
-type stuFuseRouterG struct {
+type stuFuseGRouter struct {
 	server              *grpc.Server
 	withAutoRecover     bool
 	stackTraceSkipLevel int
 	fnGetServer         func() *grpc.Server
 }
 
-type stuFuseContextR struct {
+type stuFuseRContext struct {
 	fiberCtx     *fiber.Ctx
 	clog         clog.Instance
 	endpoint     string
 	isRegulator  bool
-	regulatorCtx *stuFuseRegulatorR
+	regulatorCtx *stuFuseRRegulator
 	authObj      any
 
-	errorHandler func(clog.Instance, FuseContextR, error) error
+	errorHandler func(clog.Instance, FuseRContext, error) error
 
-	handlers         []func(clog.Instance, FuseContextR) error
+	handlers         []func(clog.Instance, FuseRContext) error
 	lastResponseCode int
 	lastResponseVal  any
 	responseCode     int
 	responseVal      any
+
+	header         map[string]string
+	fromSvcName    *string
+	fromSvcVersion *string
 }
 
-type stuFuseRegulatorR struct {
+type stuFuseRContextBuilder struct {
+	original *stuFuseRContext
+}
+
+type stuFuseRRegulator struct {
 	clog                  clog.Instance
-	fuseContext           *stuFuseContextR
+	fuseContext           *stuFuseRContext
 	currentIndex          int
-	currentHandlerContext *stuFuseContextR
+	currentHandlerContext *stuFuseRContext
 }
 
-type stuFuseContextBuilderR struct {
-	original *stuFuseContextR
+type stuFuseRCallOpt struct {
+	header *map[string]string
 }

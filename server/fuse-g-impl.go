@@ -31,7 +31,7 @@ func (slf *stuServer) FuseG(grpcPort int, routes func(router RouterG)) {
 		os.Exit(100)
 	}
 
-	router := &stuFuseRouterG{
+	router := &stuFuseGRouter{
 		withAutoRecover:     false,
 		stackTraceSkipLevel: 3,
 	}

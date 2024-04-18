@@ -11,14 +11,14 @@ package server
 
 import "fmt"
 
-func (slf *stuFuseContextR) regulator() FuseRegulatorR {
+func (slf *stuFuseRContext) regulator() FuseRRegulator {
 	if !slf.isRegulator {
 		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
 		return nil
 	}
 
 	if slf.regulatorCtx == nil {
-		slf.regulatorCtx = &stuFuseRegulatorR{
+		slf.regulatorCtx = &stuFuseRRegulator{
 			clog:         slf.clog,
 			fuseContext:  slf,
 			currentIndex: -1,
@@ -28,7 +28,7 @@ func (slf *stuFuseContextR) regulator() FuseRegulatorR {
 	return slf.regulatorCtx
 }
 
-func (slf *stuFuseContextR) setResponse(code int, val any) {
+func (slf *stuFuseRContext) setResponse(code int, val any) {
 	slf.responseCode = code
 	slf.responseVal = val
 }

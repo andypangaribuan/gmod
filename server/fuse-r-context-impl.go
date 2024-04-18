@@ -9,18 +9,22 @@
 
 package server
 
-func (slf *stuFuseContextR) LastResponse() (code int, val any) {
+func (slf *stuFuseRContext) LastResponse() (code int, val any) {
 	return slf.lastResponseCode, slf.lastResponseVal
 }
 
-func (slf *stuFuseContextR) Auth(obj ...any) any {
+func (slf *stuFuseRContext) Auth(obj ...any) any {
 	if len(obj) > 0 {
 		slf.authObj = obj[0]
 	}
 	return slf.authObj
 }
 
-func (slf *stuFuseContextR) R200OK(obj any) error {
+func (slf *stuFuseRContext) Header() map[string]string {
+	return slf.header
+}
+
+func (slf *stuFuseRContext) R200OK(obj any) error {
 	slf.setResponse(200, obj)
 	return nil
 }

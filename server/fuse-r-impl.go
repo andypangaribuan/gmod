@@ -31,7 +31,7 @@ func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
 		DisableStartupMessage: true,
 	})
 
-	router := &stuFuseRouterR{
+	router := &stuFuseRRouter{
 		fiberApp:        fuseFiberApp,
 		withAutoRecover: false,
 		printOnError:    true,

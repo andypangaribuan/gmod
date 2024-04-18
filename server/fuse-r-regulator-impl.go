@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseRegulatorR) Next() (next bool, handler func(clog clog.Instance, ctx FuseContextR) error) {
+func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) error) {
 	slf.currentIndex++
 	next = slf.currentIndex < len(slf.fuseContext.handlers)
 	if next {
@@ -27,19 +27,28 @@ func (slf *stuFuseRegulatorR) Next() (next bool, handler func(clog clog.Instance
 	return
 }
 
-func (slf *stuFuseRegulatorR) IsHandler(handler func(clog clog.Instance, ctx FuseContextR) error) bool {
+func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx FuseRContext) error) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
 
-func (slf *stuFuseRegulatorR) Call(handler func(clog clog.Instance, ctx FuseContextR) error) (code int, res any) {
+func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) error, opt ...FuseRCallOpt) (code int, res any) {
 	var (
-		builder = &stuFuseContextBuilderR{
+		builder = &stuFuseRContextBuilder{
 			original: slf.fuseContext,
 		}
 		ctx = builder.build()
 	)
+
+	for _, v := range opt {
+		o, ok := v.(*stuFuseRCallOpt)
+		if ok && o != nil {
+			if o.header != nil {
+				ctx.header = *o.header
+			}
+		}
+	}
 
 	err := handler(slf.clog, ctx)
 	if err != nil && slf.fuseContext.errorHandler != nil {
@@ -50,11 +59,15 @@ func (slf *stuFuseRegulatorR) Call(handler func(clog clog.Instance, ctx FuseCont
 	return ctx.responseCode, ctx.responseVal
 }
 
-func (slf *stuFuseRegulatorR) Endpoint() string {
+func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {
+	return new(stuFuseRCallOpt)
+}
+
+func (slf *stuFuseRRegulator) Endpoint() string {
 	return slf.fuseContext.endpoint
 }
 
-func (slf *stuFuseRegulatorR) Recover() {
+func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
 	if v != nil && slf.fuseContext.errorHandler != nil {
 		err, ok := v.(error)

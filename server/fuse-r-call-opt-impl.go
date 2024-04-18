@@ -9,12 +9,7 @@
 
 package server
 
-import "google.golang.org/grpc"
-
-func (slf *stuFuseGRouter) AutoRecover(autoRecover bool) {
-	slf.withAutoRecover = autoRecover
-}
-
-func (slf *stuFuseGRouter) Server() *grpc.Server {
-	return slf.fnGetServer()
+func (slf *stuFuseRCallOpt) OverrideHeader(header map[string]string) FuseRCallOpt {
+	slf.header = &header
+	return slf
 }

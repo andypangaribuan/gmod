@@ -32,3 +32,5 @@ wrapperspb
 protobuf
 handl
 sclog
+svcname
+svcversion
