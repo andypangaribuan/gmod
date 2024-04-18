@@ -11,6 +11,7 @@ package clog
 
 import (
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
@@ -29,6 +30,16 @@ func xinit() {
 
 		if val := getConfValue("svcVersion"); val != "" {
 			svcVersion = val
+		}
+	}
+
+	clogNew = func() Instance {
+		if client == nil {
+			return nil
+		}
+
+		return &stuInstance{
+			uid: gm.Util.UID(),
 		}
 	}
 }

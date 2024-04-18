@@ -9,9 +9,13 @@
 
 package server
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/andypangaribuan/gmod/clog"
+	"github.com/gofiber/fiber/v2"
+)
 
 var (
 	serverImpl   server
 	fuseFiberApp *fiber.App
+	clogNew func() clog.Instance
 )

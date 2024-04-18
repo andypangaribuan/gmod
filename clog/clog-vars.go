@@ -18,6 +18,9 @@ import (
 //go:linkname mainCLogCallback github.com/andypangaribuan/gmod.mainCLogCallback
 var mainCLogCallback func()
 
+//go:linkname clogNew github.com/andypangaribuan/gmod/server.clogNew
+var clogNew func() Instance
+
 var (
 	client     sclog.CLogServiceClient
 	svcName    string

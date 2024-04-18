@@ -15,16 +15,6 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func New() Instance {
-	if client == nil {
-		return nil
-	}
-
-	return &stuInstance{
-		uid: gm.Util.UID(),
-	}
-}
-
 func getConfValue(name string) (value string) {
 	val, err := gm.Util.ReflectionGet(gm.Conf, name)
 	if err == nil {
