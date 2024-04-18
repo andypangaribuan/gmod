@@ -18,5 +18,6 @@ func init() {
 	loadEnv()
 	gm.Conf.
 		SetTimezone(env.AppTimezone).
+		SetCLogAddress(env.ClogAddress, env.AppName, env.AppVersion).
 		Commit()
 }

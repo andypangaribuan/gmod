@@ -13,11 +13,14 @@ import "github.com/andypangaribuan/gmod/ice"
 
 type stuEnv struct {
 	AppName               string
+	AppVersion            string
 	AppEnv                ice.AppEnv
 	AppTimezone           string
 	AppRestPort           int
 	AppAutoRecover        bool
 	AppServerPrintOnError bool
+
+	ClogAddress string
 
 	DbHost string
 	DbPort int

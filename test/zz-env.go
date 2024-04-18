@@ -19,11 +19,14 @@ func loadEnv() {
 
 	env = &stuEnv{
 		AppName:               gm.Util.Env.GetString("APP_NAME"),
+		AppVersion:            gm.Util.Env.GetString("APP_VERSION", "0.0.0"),
 		AppEnv:                gm.Util.Env.GetAppEnv("APP_ENV"),
 		AppTimezone:           gm.Util.Env.GetString("APP_TIMEZONE"),
 		AppRestPort:           gm.Util.Env.GetInt("APP_REST_PORT"),
 		AppAutoRecover:        gm.Util.Env.GetBool("APP_AUTO_RECOVER"),
 		AppServerPrintOnError: gm.Util.Env.GetBool("APP_SERVER_PRINT_ON_ERROR"),
+
+		ClogAddress: gm.Util.Env.GetString("CLOG_ADDRESS"),
 
 		DbHost: gm.Util.Env.GetString("DB_HOST"),
 		DbPort: gm.Util.Env.GetInt("DB_PORT"),

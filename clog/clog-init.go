@@ -10,6 +10,9 @@
 package clog
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
@@ -19,8 +22,11 @@ func xinit() {
 	mainCLogCallback = func() {
 		if val := getConfValue("clogAddress"); val != "" {
 			c, err := fm.GrpcClient(val, sclog.NewCLogServiceClient)
-			if err == nil {
+			if err != nil {
+				go connect(val)
+			} else {
 				client = c
+				fmt.Println("connected to central log")
 			}
 		}
 
@@ -40,6 +46,18 @@ func xinit() {
 
 		return &stuInstance{
 			uid: gm.Util.UID(),
+		}
+	}
+}
+
+func connect(address string) {
+	for {
+		time.Sleep(time.Millisecond * 300)
+		c, err := fm.GrpcClient(address, sclog.NewCLogServiceClient)
+		if err == nil {
+			client = c
+			fmt.Println("connected to central log")
+			break
 		}
 	}
 }
