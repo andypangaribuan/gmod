@@ -42,7 +42,7 @@ type stuFuseContextR struct {
 	clog         clog.Instance
 	endpoint     string
 	isRegulator  bool
-	regulatorCtx *stuFuseContextRegulatorR
+	regulatorCtx *stuFuseRegulatorR
 	authObj      any
 
 	errorHandler func(clog.Instance, FuseContextR, error) error
@@ -54,7 +54,7 @@ type stuFuseContextR struct {
 	responseVal      any
 }
 
-type stuFuseContextRegulatorR struct {
+type stuFuseRegulatorR struct {
 	clog                  clog.Instance
 	fuseContext           *stuFuseContextR
 	currentIndex          int

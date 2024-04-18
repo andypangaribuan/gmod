@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(clog clog.Instance, ctx FuseContextR) error) {
+func (slf *stuFuseRegulatorR) Next() (next bool, handler func(clog clog.Instance, ctx FuseContextR) error) {
 	slf.currentIndex++
 	next = slf.currentIndex < len(slf.fuseContext.handlers)
 	if next {
@@ -27,13 +27,13 @@ func (slf *stuFuseContextRegulatorR) Next() (next bool, handler func(clog clog.I
 	return
 }
 
-func (slf *stuFuseContextRegulatorR) IsHandler(handler func(clog clog.Instance, ctx FuseContextR) error) bool {
+func (slf *stuFuseRegulatorR) IsHandler(handler func(clog clog.Instance, ctx FuseContextR) error) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
 
-func (slf *stuFuseContextRegulatorR) Call(handler func(clog clog.Instance, ctx FuseContextR) error) (code int, res any) {
+func (slf *stuFuseRegulatorR) Call(handler func(clog clog.Instance, ctx FuseContextR) error) (code int, res any) {
 	var (
 		builder = &stuFuseContextBuilderR{
 			original: slf.fuseContext,
@@ -50,11 +50,11 @@ func (slf *stuFuseContextRegulatorR) Call(handler func(clog clog.Instance, ctx F
 	return ctx.responseCode, ctx.responseVal
 }
 
-func (slf *stuFuseContextRegulatorR) Endpoint() string {
+func (slf *stuFuseRegulatorR) Endpoint() string {
 	return slf.fuseContext.endpoint
 }
 
-func (slf *stuFuseContextRegulatorR) Recover() {
+func (slf *stuFuseRegulatorR) Recover() {
 	v := recover()
 	if v != nil && slf.fuseContext.errorHandler != nil {
 		err, ok := v.(error)

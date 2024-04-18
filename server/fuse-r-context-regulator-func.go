@@ -14,11 +14,11 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (slf *stuFuseContextRegulatorR) currentHandler() func(clog.Instance, FuseContextR) error {
+func (slf *stuFuseRegulatorR) currentHandler() func(clog.Instance, FuseContextR) error {
 	return slf.fuseContext.handlers[slf.currentIndex]
 }
 
-func (slf *stuFuseContextRegulatorR) send() error {
+func (slf *stuFuseRegulatorR) send() error {
 	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {
