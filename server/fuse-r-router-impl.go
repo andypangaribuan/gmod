@@ -18,6 +18,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/andypangaribuan/gmod/gm"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -123,14 +124,26 @@ func (slf *stuFuseRouterR) restProcess(endpoint string, regulator func(clog.Inst
 }
 
 func (slf *stuFuseRouterR) execRegulator(fiberCtx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRegulatorR), handlers ...func(clog.Instance, FuseContextR) error) {
-	regulatorCtx := &stuFuseContextR{
-		fiberCtx:    fiberCtx,
-		clog:        clogNew(),
-		endpoint:    endpoint,
-		isRegulator: true,
-		handlers:    handlers,
+	var (
+		startedAt    = gm.Util.Timenow()
+		regulatorCtx = &stuFuseContextR{
+			fiberCtx:    fiberCtx,
+			clog:        clogNew(),
+			endpoint:    endpoint,
+			isRegulator: true,
+			handlers:    handlers,
 
-		errorHandler: slf.errorHandler,
+			errorHandler: slf.errorHandler,
+		}
+	)
+
+	if regulatorCtx.clog != nil {
+		mol := &clog.ServicePieceV1{
+			Endpoint:  endpoint,
+			StartedAt: startedAt,
+		}
+
+		regulatorCtx.clog.ServicePieceV1(mol)
 	}
 
 	if regulator != nil {

@@ -15,7 +15,7 @@ import (
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
-func (slf *stuInstance) DbqV1(mol DbqV1) error {
+func (slf *stuInstance) DbqV1(mol *DbqV1) error {
 	req := &sclog.RequestDbqV1{
 		Uid:          slf.uid,
 		UserId:       fm.PbwString(mol.UserId),
@@ -41,12 +41,12 @@ func (slf *stuInstance) DbqV1(mol DbqV1) error {
 	return err
 }
 
-func (slf *stuInstance) ServicePieceV1(mol ServicePieceV1) error {
+func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1) error {
 	req := &sclog.RequestServicePieceV1{
 		Uid:              slf.uid,
 		SvcName:          svcName,
 		SvcVersion:       svcVersion,
-		SvcParent:        fm.PbwString(mol.SvcParent),
+		SvcParentName:    fm.PbwString(mol.SvcParentName),
 		SvcParentVersion: fm.PbwString(mol.SvcParentVersion),
 		Endpoint:         mol.Endpoint,
 		Url:              mol.Url,
@@ -64,14 +64,14 @@ func (slf *stuInstance) ServicePieceV1(mol ServicePieceV1) error {
 	return err
 }
 
-func (slf *stuInstance) ServiceV1(mol ServiceV1) error {
+func (slf *stuInstance) ServiceV1(mol *ServiceV1) error {
 	req := &sclog.RequestServiceV1{
 		Uid:              slf.uid,
 		UserId:           fm.PbwString(mol.UserId),
 		PartnerId:        fm.PbwString(mol.PartnerId),
 		SvcName:          svcName,
 		SvcVersion:       svcVersion,
-		SvcParent:        fm.PbwString(mol.SvcParent),
+		SvcParentName:    fm.PbwString(mol.SvcParentName),
 		SvcParentVersion: fm.PbwString(mol.SvcParentVersion),
 		Endpoint:         mol.Endpoint,
 		Url:              mol.Url,

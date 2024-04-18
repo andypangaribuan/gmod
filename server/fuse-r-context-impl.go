@@ -9,27 +9,6 @@
 
 package server
 
-import (
-	"fmt"
-)
-
-func (slf *stuFuseContextR) regulator() FuseRegulatorR {
-	if !slf.isRegulator {
-		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
-		return nil
-	}
-
-	if slf.regulatorCtx == nil {
-		slf.regulatorCtx = &stuFuseRegulatorR{
-			clog:         slf.clog,
-			fuseContext:  slf,
-			currentIndex: -1,
-		}
-	}
-
-	return slf.regulatorCtx
-}
-
 func (slf *stuFuseContextR) LastResponse() (code int, val any) {
 	return slf.lastResponseCode, slf.lastResponseVal
 }

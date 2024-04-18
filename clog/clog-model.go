@@ -30,7 +30,7 @@ type DbqV1 struct {
 }
 
 type ServicePieceV1 struct {
-	SvcParent        *string
+	SvcParentName    *string
 	SvcParentVersion *string
 	Endpoint         string
 	Url              string
@@ -47,7 +47,7 @@ type ServicePieceV1 struct {
 type ServiceV1 struct {
 	UserId           *string
 	PartnerId        *string
-	SvcParent        *string
+	SvcParentName    *string
 	SvcParentVersion *string
 	Endpoint         string
 	Url              string
