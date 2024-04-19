@@ -20,8 +20,12 @@ func (slf *stuFuseRContext) Auth(obj ...any) any {
 	return slf.authObj
 }
 
-func (slf *stuFuseRContext) Header() map[string]string {
+func (slf *stuFuseRContext) Header() *map[string]string {
 	return slf.header
+}
+
+func (slf *stuFuseRContext) Url() string {
+	return slf.val.url
 }
 
 func (slf *stuFuseRContext) R200OK(obj any) error {

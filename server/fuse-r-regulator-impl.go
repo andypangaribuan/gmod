@@ -45,7 +45,7 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 		o, ok := v.(*stuFuseRCallOpt)
 		if ok && o != nil {
 			if o.header != nil {
-				ctx.header = *o.header
+				ctx.header = o.header
 			}
 		}
 	}
@@ -64,7 +64,7 @@ func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {
 }
 
 func (slf *stuFuseRRegulator) Endpoint() string {
-	return slf.fuseContext.endpoint
+	return slf.fuseContext.val.endpoint
 }
 
 func (slf *stuFuseRRegulator) Recover() {

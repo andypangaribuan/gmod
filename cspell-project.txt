@@ -34,3 +34,5 @@ handl
 sclog
 svcname
 svcversion
+jons
+fastly

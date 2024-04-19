@@ -12,14 +12,17 @@ package server
 func (slf *stuFuseRContextBuilder) build() *stuFuseRContext {
 	ctx := &stuFuseRContext{
 		fiberCtx:     slf.original.fiberCtx,
-		endpoint:     slf.original.endpoint,
 		isRegulator:  false,
 		regulatorCtx: slf.original.regulatorCtx,
 		authObj:      slf.original.authObj,
 
-		header:         slf.original.header,
-		fromSvcName:    slf.original.fromSvcName,
-		fromSvcVersion: slf.original.fromSvcVersion,
+		header:  slf.original.header,
+		param:   slf.original.param,
+		queries: slf.original.queries,
+		form:    slf.original.form,
+		file:    slf.original.file,
+
+		val: slf.original.val,
 	}
 
 	currentHandlerContext := slf.original.regulatorCtx.currentHandlerContext

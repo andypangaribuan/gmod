@@ -15,6 +15,7 @@ import (
 	"testing"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
 )
 
@@ -113,6 +114,11 @@ func sfrAuth(clog clog.Instance, ctx server.FuseRContext) error {
 }
 
 func sfrPrivateStatus1(clog clog.Instance, ctx server.FuseRContext) error {
+	h := ctx.Header()
+	hj, err := gm.Json.Encode(h)
+	if err == nil {
+		fmt.Println(hj)
+	}
 	fmt.Printf("private-status-1: header: %v\n", ctx.Header())
 	_, val := ctx.LastResponse()
 	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))

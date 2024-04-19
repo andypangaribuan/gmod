@@ -37,7 +37,8 @@ type RouterG interface {
 type FuseRContext interface {
 	LastResponse() (code int, val any)
 	Auth(obj ...any) any
-	Header() map[string]string
+	Header() *map[string]string
+	Url() string
 
 	R200OK(val any) error
 }

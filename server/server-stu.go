@@ -10,6 +10,9 @@
 package server
 
 import (
+	"mime/multipart"
+	"net"
+
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
@@ -40,7 +43,6 @@ type stuFuseGRouter struct {
 type stuFuseRContext struct {
 	fiberCtx     *fiber.Ctx
 	clog         clog.Instance
-	endpoint     string
 	isRegulator  bool
 	regulatorCtx *stuFuseRRegulator
 	authObj      any
@@ -53,9 +55,26 @@ type stuFuseRContext struct {
 	responseCode     int
 	responseVal      any
 
-	header         map[string]string
+	header  *map[string]string
+	param   *map[string]string
+	queries *map[string]string
+	form    *map[string][]string
+	file    *map[string][]*multipart.FileHeader
+	val     *stuFuseRVal
+}
+
+type stuFuseRVal struct {
+	endpoint string
+	url      string
+	clientIP string
+
 	fromSvcName    *string
 	fromSvcVersion *string
+	reqVersion     *string
+	reqHeader      *string
+	reqParam       *string
+	reqQuery       *string
+	reqForm        *string
 }
 
 type stuFuseRContextBuilder struct {
@@ -71,4 +90,18 @@ type stuFuseRRegulator struct {
 
 type stuFuseRCallOpt struct {
 	header *map[string]string
+}
+
+type stuClientIP struct {
+	cidrs                       []*net.IPNet
+	xOriginalForwardedForHeader string
+	xForwardedForHeader         string
+	xForwardedHeader            string
+	forwardedForHeader          string
+	forwardedHeader             string
+	xClientIPHeader             string
+	xRealIPHeader               string
+	cfConnectingIPHeader        string
+	fastlyClientIPHeader        string
+	trueClientIPHeader          string
 }

@@ -54,8 +54,11 @@ func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRCo
 			if fe.Message == fmt.Sprintf("Cannot %v %v", method, path) {
 				ctx := &stuFuseRContext{
 					fiberCtx:    c,
-					endpoint:    endpoint,
 					isRegulator: false,
+					val: &stuFuseRVal{
+						endpoint: endpoint,
+						url:      c.Request().URI().String(),
+					},
 				}
 
 				err = handler(clogNew(), ctx, method, path, url)

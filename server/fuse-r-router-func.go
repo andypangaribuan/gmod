@@ -10,6 +10,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -52,17 +53,23 @@ func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(clog.Inst
 
 func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) {
 	var (
-		startedAt   = gm.Util.Timenow()
-		original = &stuFuseRContext{
-			fiberCtx:    fiberCtx,
-			clog:        clogNew(),
-			endpoint:    endpoint,
-			isRegulator: true,
-			handlers:    handlers,
-
+		startedAt = gm.Util.Timenow()
+		original  = &stuFuseRContext{
+			fiberCtx:     fiberCtx,
+			clog:         clogNew(),
+			isRegulator:  true,
+			handlers:     handlers,
 			errorHandler: slf.errorHandler,
-			header:       make(map[string]string, 0),
+			val: &stuFuseRVal{
+				endpoint: endpoint,
+				url:      fiberCtx.Request().URI().String(),
+				clientIP: cip.getClientIP(fiberCtx),
+			},
 		}
+
+		reqHeader  = make(map[string]string, 0)
+		reqParam   = fiberCtx.AllParams()
+		reqQueries = fiberCtx.Queries()
 	)
 
 	for key, ls := range fiberCtx.GetReqHeaders() {
@@ -73,22 +80,83 @@ func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulat
 		}
 
 		if val != "" {
-			original.header[key] = val
+			reqHeader[key] = val
 
 			switch key {
 			case "x-from-svcname":
-				original.fromSvcName = &val
+				original.val.fromSvcName = &val
 
 			case "x-from-svcversion":
-				original.fromSvcVersion = &val
+				original.val.fromSvcVersion = &val
+
+			case "x-version":
+				original.val.reqVersion = &val
+			}
+		}
+	}
+
+	if len(reqHeader) > 0 {
+		original.header = &reqHeader
+		jons, err := gm.Json.Encode(reqHeader)
+		if err == nil {
+			original.val.reqHeader = &jons
+		}
+	}
+
+	if len(reqParam) > 0 {
+		original.param = &reqParam
+		jons, err := gm.Json.Encode(reqParam)
+		if err == nil {
+			original.val.reqParam = &jons
+		}
+	}
+
+	if len(reqQueries) > 0 {
+		original.queries = &reqQueries
+		jons, err := gm.Json.Encode(reqQueries)
+		if err == nil {
+			original.val.reqQuery = &jons
+		}
+	}
+
+	part, err := fiberCtx.MultipartForm()
+	if err == nil && part != nil {
+		original.file = &part.File
+		original.form = &part.Value
+		form := part.Value
+
+		for key, ls := range part.File {
+			arr := make([]string, 0)
+			for _, header := range ls {
+				arr = append(arr, header.Filename)
+			}
+
+			if len(arr) > 0 {
+				form[fmt.Sprintf("file-header: %v", key)] = arr
+			}
+		}
+
+		if len(form) > 0 {
+			jons, err := gm.Json.Encode(original.form)
+			if err == nil {
+				original.val.reqForm = &jons
 			}
 		}
 	}
 
 	if original.clog != nil {
 		mol := &clog.ServicePieceV1{
-			Endpoint:  endpoint,
-			StartedAt: startedAt,
+			SvcParentName:    original.val.fromSvcName,
+			SvcParentVersion: original.val.fromSvcVersion,
+			Endpoint:         original.val.endpoint,
+			Url:              original.val.url,
+			ReqVersion:       original.val.reqVersion,
+			ReqHeader:        original.val.reqHeader,
+			ReqParam:         original.val.reqParam,
+			ReqQuery:         original.val.reqQuery,
+			ReqForm:          original.val.reqForm,
+			ClientIp:         original.val.clientIP,
+			StartedAt:        startedAt,
 		}
 
 		original.clog.ServicePieceV1(mol)
