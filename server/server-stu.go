@@ -56,8 +56,8 @@ type stuFuseRContext struct {
 	lastResponseVal  any
 	responseCode     int
 	responseVal      any
-	execPath         *string
-	execFunc         *string
+	execPath         string
+	execFunc         string
 
 	header  *map[string]string
 	param   *map[string]string

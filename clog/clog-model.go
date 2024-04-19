@@ -18,7 +18,7 @@ type DbqV1 struct {
 	SqlArgs      *string
 	Severity     string
 	ExecPath     string
-	ExecFunction string
+	ExecFunc     string
 	ErrorMessage *string
 	StackTrace   *string
 	Host1        string
@@ -53,7 +53,7 @@ type ServiceV1 struct {
 	Url              string
 	Severity         string
 	ExecPath         string
-	ExecFunction     string
+	ExecFunc         string
 	ReqVersion       *string
 	ReqHeader        *string
 	ReqParam         *string

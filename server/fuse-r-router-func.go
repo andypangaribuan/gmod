@@ -186,6 +186,26 @@ func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulat
 				SvcParentVersion: original.val.fromSvcVersion,
 				Endpoint:         original.val.endpoint,
 				Url:              original.val.url,
+				Severity:         slf.getSeverity(original.regulatorCtx.currentHandlerContext.responseCode),
+				ExecPath:         original.regulatorCtx.currentHandlerContext.execPath,
+				ExecFunc:         original.regulatorCtx.currentHandlerContext.execFunc,
+				ReqVersion:       original.val.reqVersion,
+				ReqHeader:        original.val.reqHeader,
+				ReqParam:         original.val.reqParam,
+				ReqQuery:         original.val.reqQuery,
+				ReqForm:          original.val.reqForm,
+				ReqBody:          original.val.reqBody,
+				ResCode:          original.regulatorCtx.currentHandlerContext.responseCode,
+				ClientIp:         original.val.clientIP,
+				StartedAt:        startedAt,
+				FinishedAt:       gm.Util.Timenow(),
+			}
+
+			if original.regulatorCtx.currentHandlerContext.responseVal != nil {
+				jons, err := gm.Json.Encode(original.regulatorCtx.currentHandlerContext.responseVal)
+				if err == nil {
+					mol.ResData = &jons
+				}
 			}
 
 			original.clog.ServiceV1(mol)

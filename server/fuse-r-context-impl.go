@@ -50,9 +50,7 @@ func (slf *stuFuseRContext) Url() string {
 }
 
 func (slf *stuFuseRContext) setExecPathFunc() {
-	execPath, execFunc := gm.Util.GetExecPathFunc(1)
-	slf.regulatorCtx.original.execPath = &execPath
-	slf.regulatorCtx.original.execFunc = &execFunc
+	slf.execPath, slf.execFunc = gm.Util.GetExecPathFunc(2)
 }
 
 func (slf *stuFuseRContext) R200OK(obj any) error {
