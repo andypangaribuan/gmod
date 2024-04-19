@@ -15,11 +15,11 @@ import (
 )
 
 func (slf *stuFuseRRegulator) currentHandler() func(clog.Instance, FuseRContext) error {
-	return slf.fuseContext.handlers[slf.currentIndex]
+	return slf.original.handlers[slf.currentIndex]
 }
 
 func (slf *stuFuseRRegulator) send() error {
-	ctx := slf.fuseContext.fiberCtx.Status(slf.currentHandlerContext.responseCode)
+	ctx := slf.original.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {
 	case string:

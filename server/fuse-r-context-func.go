@@ -20,7 +20,7 @@ func (slf *stuFuseRContext) regulator() FuseRRegulator {
 	if slf.regulatorCtx == nil {
 		slf.regulatorCtx = &stuFuseRRegulator{
 			clog:         slf.clog,
-			fuseContext:  slf,
+			original:     slf,
 			currentIndex: -1,
 		}
 	}

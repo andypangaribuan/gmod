@@ -46,6 +46,8 @@ type stuFuseRContext struct {
 	isRegulator  bool
 	regulatorCtx *stuFuseRRegulator
 	authObj      any
+	userId       any
+	partnerId    any
 
 	errorHandler func(clog.Instance, FuseRContext, error) error
 
@@ -54,6 +56,8 @@ type stuFuseRContext struct {
 	lastResponseVal  any
 	responseCode     int
 	responseVal      any
+	execPath         *string
+	execFunc         *string
 
 	header  *map[string]string
 	param   *map[string]string
@@ -67,6 +71,7 @@ type stuFuseRVal struct {
 	endpoint string
 	url      string
 	clientIP string
+	body     []byte
 
 	fromSvcName    *string
 	fromSvcVersion *string
@@ -75,6 +80,7 @@ type stuFuseRVal struct {
 	reqParam       *string
 	reqQuery       *string
 	reqForm        *string
+	reqBody        *string
 }
 
 type stuFuseRContextBuilder struct {
@@ -83,7 +89,7 @@ type stuFuseRContextBuilder struct {
 
 type stuFuseRRegulator struct {
 	clog                  clog.Instance
-	fuseContext           *stuFuseRContext
+	original              *stuFuseRContext
 	currentIndex          int
 	currentHandlerContext *stuFuseRContext
 }

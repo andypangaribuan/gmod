@@ -37,6 +37,8 @@ type RouterG interface {
 type FuseRContext interface {
 	LastResponse() (code int, val any)
 	Auth(obj ...any) any
+	UserId(id ...any) any
+	PartnerId(id ...any) any
 	Header() *map[string]string
 	Url() string
 

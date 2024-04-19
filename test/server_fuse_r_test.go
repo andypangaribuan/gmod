@@ -27,6 +27,10 @@ func TestServerFuseR(t *testing.T) {
 		router.ErrorHandler(sfrErrorHandler)
 
 		router.Endpoints(nil, nil, map[string][]func(clog.Instance, server.FuseRContext) error{
+			"POS: /hi/:firstName-:lastName/:age?": {sfrHi},
+		})
+
+		router.Endpoints(nil, nil, map[string][]func(clog.Instance, server.FuseRContext) error{
 			"GET: /private/status-1": {sfrPrivateStatus1},
 		})
 
@@ -145,4 +149,8 @@ func sfrPrivateStatusPanic(clog clog.Instance, ctx server.FuseRContext) error {
 
 func sfrPrivateStatusErr(clog clog.Instance, ctx server.FuseRContext) error {
 	return errors.New("test error")
+}
+
+func sfrHi(clog clog.Instance, ctx server.FuseRContext) error {
+	return ctx.R200OK("ok")
 }

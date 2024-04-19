@@ -14,7 +14,6 @@ func (slf *stuFuseRContextBuilder) build() *stuFuseRContext {
 		fiberCtx:     slf.original.fiberCtx,
 		isRegulator:  false,
 		regulatorCtx: slf.original.regulatorCtx,
-		authObj:      slf.original.authObj,
 
 		header:  slf.original.header,
 		param:   slf.original.param,
@@ -27,9 +26,15 @@ func (slf *stuFuseRContextBuilder) build() *stuFuseRContext {
 
 	currentHandlerContext := slf.original.regulatorCtx.currentHandlerContext
 	if currentHandlerContext != nil {
-		ctx.authObj = currentHandlerContext.authObj
+		// ctx.authObj = currentHandlerContext.authObj
+		// ctx.userId = currentHandlerContext.userId
+		// ctx.partnerId = currentHandlerContext.partnerId
 		ctx.lastResponseCode = currentHandlerContext.responseCode
 		ctx.lastResponseVal = currentHandlerContext.responseVal
+
+		// slf.original.authObj = currentHandlerContext.authObj
+		// slf.original.userId = currentHandlerContext.userId
+		// slf.original.partnerId = currentHandlerContext.partnerId
 	}
 
 	slf.original.regulatorCtx.currentHandlerContext = ctx

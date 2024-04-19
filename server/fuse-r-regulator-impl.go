@@ -20,7 +20,7 @@ import (
 
 func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) error) {
 	slf.currentIndex++
-	next = slf.currentIndex < len(slf.fuseContext.handlers)
+	next = slf.currentIndex < len(slf.original.handlers)
 	if next {
 		handler = slf.currentHandler()
 	}
@@ -36,7 +36,7 @@ func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx Fus
 func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) error, opt ...FuseRCallOpt) (code int, res any) {
 	var (
 		builder = &stuFuseRContextBuilder{
-			original: slf.fuseContext,
+			original: slf.original,
 		}
 		ctx = builder.build()
 	)
@@ -50,9 +50,15 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 		}
 	}
 
+	defer func() {
+		slf.original.authObj = ctx.authObj
+		slf.original.userId = ctx.userId
+		slf.original.partnerId = ctx.partnerId
+	}()
+
 	err := handler(slf.clog, ctx)
-	if err != nil && slf.fuseContext.errorHandler != nil {
-		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	if err != nil && slf.original.errorHandler != nil {
+		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 		return -1, nil
 	}
 
@@ -64,12 +70,12 @@ func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {
 }
 
 func (slf *stuFuseRRegulator) Endpoint() string {
-	return slf.fuseContext.val.endpoint
+	return slf.original.val.endpoint
 }
 
 func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
-	if v != nil && slf.fuseContext.errorHandler != nil {
+	if v != nil && slf.original.errorHandler != nil {
 		err, ok := v.(error)
 		if ok {
 			err = errors.WithStack(err)
@@ -77,11 +83,11 @@ func (slf *stuFuseRRegulator) Recover() {
 			err = errors.New(fmt.Sprintf("%+v", v))
 		}
 
-		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, err)
+		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, err)
 	}
 
 	err := slf.send()
-	if err != nil && slf.fuseContext.errorHandler != nil {
-		slf.fuseContext.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	if err != nil && slf.original.errorHandler != nil {
+		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 	}
 }
