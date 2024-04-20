@@ -178,6 +178,25 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 
 	defer func() {
 		if mcx.clog != nil {
+			var (
+				reqFiles *string
+				resData  *string
+			)
+
+			if mcx.files != nil {
+				jons, err := gm.Json.Encode(mcx.files)
+				if err == nil {
+					reqFiles = &jons
+				}
+			}
+
+			if mcx.responseVal != nil {
+				jons, err := gm.Json.Encode(mcx.responseVal)
+				if err == nil {
+					resData = &jons
+				}
+			}
+
 			mol := &clog.ServiceV1{
 				UserId:           slf.getUserPartnerId(mcx.userId),
 				PartnerId:        slf.getUserPartnerId(mcx.partnerId),
@@ -193,18 +212,15 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				ReqParam:         mcx.val.reqParam,
 				ReqQuery:         mcx.val.reqQuery,
 				ReqForm:          mcx.val.reqForm,
+				ReqFiles:         reqFiles,
 				ReqBody:          mcx.val.reqBody,
+				ResData:          resData,
 				ResCode:          mcx.responseCode,
+				ErrMessage:       mcx.errMessage,
+				StackTrace:       mcx.stackTrace,
 				ClientIp:         mcx.val.clientIP,
 				StartedAt:        mcx.startedAt,
 				FinishedAt:       gm.Util.Timenow(),
-			}
-
-			if mcx.responseVal != nil {
-				jons, err := gm.Json.Encode(mcx.responseVal)
-				if err == nil {
-					mol.ResData = &jons
-				}
 			}
 
 			mcx.clog.ServiceV1(mol)

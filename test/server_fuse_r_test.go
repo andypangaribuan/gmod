@@ -125,6 +125,11 @@ func sfrPrivateStatus1(ctx server.FuseRContext) any {
 		fmt.Println(hj)
 	}
 	fmt.Printf("private-status-1: header: %v\n", ctx.Header())
+
+	ctx.SetFiles(map[string]string{
+		"file1": "gcs/file1.pdf",
+	})
+
 	_, val := ctx.LastResponse()
 	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
 }

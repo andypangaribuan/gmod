@@ -39,6 +39,7 @@ type FuseRContext interface {
 	Auth(obj ...any) any
 	UserId(id ...any) any
 	PartnerId(id ...any) any
+	SetFiles(files map[string]string)
 
 	Header() *map[string]string
 	Url() string

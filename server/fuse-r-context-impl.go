@@ -39,6 +39,12 @@ func (slf *stuFuseRContext) PartnerId(id ...any) any {
 	return slf.mcx.partnerId
 }
 
+func (slf *stuFuseRContext) SetFiles(files map[string]string) {
+	if len(files) > 0 {
+		slf.mcx.files = &files
+	}
+}
+
 func (slf *stuFuseRContext) Header() *map[string]string {
 	return slf.header
 }

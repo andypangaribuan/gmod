@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -77,14 +78,25 @@ func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
 
 	if v != nil {
-		if slf.mcx.errorHandler != nil {
-			err, ok := v.(error)
-			if ok {
-				err = errors.WithStack(err)
-			} else {
-				err = errors.New(fmt.Sprintf("%+v", v))
-			}
+		err, ok := v.(error)
+		if ok {
+			err = errors.WithStack(err)
+		} else {
+			err = errors.New(fmt.Sprintf("%+v", v))
+		}
 
+		errMessage := err.Error()
+		stackTrace := fmt.Sprintf("%+v", err)
+		idx := strings.Index(stackTrace, errMessage)
+		if idx == 0 {
+			stackTrace = strings.Replace(stackTrace, errMessage, "", 1)
+			stackTrace = strings.TrimSpace(stackTrace)
+		}
+
+		slf.mcx.errMessage = &errMessage
+		slf.mcx.stackTrace = &stackTrace
+
+		if slf.mcx.errorHandler != nil {
 			slf.mcx.errorHandler(slf.currentHandlerContext, err)
 		} else {
 			slf.currentHandlerContext.R500InternalServerError("We apologize and are fixing the problem. Please try again at a later stage.")

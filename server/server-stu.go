@@ -51,12 +51,15 @@ type stuFuseRMainContext struct {
 	authObj   any
 	userId    any
 	partnerId any
+	files     *map[string]string
 
 	val          *stuFuseRVal
 	responseCode int
 	responseVal  any
 	execPath     string
 	execFunc     string
+	errMessage   *string
+	stackTrace   *string
 }
 
 type stuFuseRContext struct {
