@@ -15,6 +15,7 @@ import (
 	"runtime"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/pkg/errors"
 )
 
@@ -51,9 +52,9 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 	}
 
 	defer func() {
-		slf.original.authObj = ctx.authObj
-		slf.original.userId = ctx.userId
-		slf.original.partnerId = ctx.partnerId
+		slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
+		slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
+		slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
 	}()
 
 	err := handler(slf.clog, ctx)

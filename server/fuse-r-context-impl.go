@@ -20,6 +20,7 @@ func (slf *stuFuseRContext) LastResponse() (code int, val any) {
 func (slf *stuFuseRContext) Auth(obj ...any) any {
 	if len(obj) > 0 {
 		slf.authObj = obj[0]
+		slf.isSetAuthObj = true
 	}
 
 	return slf.authObj
@@ -28,6 +29,7 @@ func (slf *stuFuseRContext) Auth(obj ...any) any {
 func (slf *stuFuseRContext) UserId(id ...any) any {
 	if len(id) > 0 {
 		slf.userId = id[0]
+		slf.isSetUserId = true
 	}
 
 	return slf.userId
@@ -36,6 +38,7 @@ func (slf *stuFuseRContext) UserId(id ...any) any {
 func (slf *stuFuseRContext) PartnerId(id ...any) any {
 	if len(id) > 0 {
 		slf.partnerId = id[0]
+		slf.isSetPartnerId = true
 	}
 
 	return slf.partnerId

@@ -114,6 +114,8 @@ func sfrRegulator(clog clog.Instance, regulator server.FuseRRegulator) {
 
 func sfrAuth(clog clog.Instance, ctx server.FuseRContext) error {
 	ctx.Auth("Halo")
+	ctx.UserId("abc")
+	ctx.PartnerId("xyz")
 	return ctx.R200OK("Andy")
 }
 

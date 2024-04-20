@@ -45,9 +45,14 @@ type stuFuseRContext struct {
 	clog         clog.Instance
 	isRegulator  bool
 	regulatorCtx *stuFuseRRegulator
-	authObj      any
-	userId       any
-	partnerId    any
+
+	authObj   any
+	userId    any
+	partnerId any
+
+	isSetAuthObj   bool
+	isSetUserId    bool
+	isSetPartnerId bool
 
 	errorHandler func(clog.Instance, FuseRContext, error) error
 
