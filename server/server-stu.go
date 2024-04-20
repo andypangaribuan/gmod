@@ -12,6 +12,7 @@ package server
 import (
 	"mime/multipart"
 	"net"
+	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/gofiber/fiber/v2"
@@ -38,6 +39,27 @@ type stuFuseGRouter struct {
 	withAutoRecover     bool
 	stackTraceSkipLevel int
 	fnGetServer         func() *grpc.Server
+}
+
+type stuFuseRMainContext struct {
+	startedAt    time.Time
+	fcx          *fiber.Ctx
+	clog         clog.Instance
+	handlers     []func(clog.Instance, FuseRContext) error
+	errorHandler func(clog.Instance, FuseRContext, error) error
+
+	authObj        any
+	userId         any
+	partnerId      any
+	isSetAuthObj   bool
+	isSetUserId    bool
+	isSetPartnerId bool
+
+	val          *stuFuseRVal
+	responseCode int
+	responseVal  any
+	execPath     string
+	execFunc     string
 }
 
 type stuFuseRContext struct {
@@ -78,6 +100,12 @@ type stuFuseRVal struct {
 	clientIP string
 	body     []byte
 
+	header  *map[string]string
+	param   *map[string]string
+	queries *map[string]string
+	form    *map[string][]string
+	file    *map[string][]*multipart.FileHeader
+
 	fromSvcName    *string
 	fromSvcVersion *string
 	reqVersion     *string
@@ -94,6 +122,7 @@ type stuFuseRContextBuilder struct {
 
 type stuFuseRRegulator struct {
 	clog                  clog.Instance
+	mcx                   *stuFuseRMainContext
 	original              *stuFuseRContext
 	currentIndex          int
 	currentHandlerContext *stuFuseRContext

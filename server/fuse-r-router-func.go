@@ -46,36 +46,48 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instanc
 }
 
 func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) func(*fiber.Ctx) error {
-	return func(fiberCtx *fiber.Ctx) error {
-		slf.execute(fiberCtx, endpoint, regulator, handlers...)
+	return func(fcx *fiber.Ctx) error {
+		slf.execute(fcx, endpoint, regulator, handlers...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) {
+func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) {
 	var (
-		startedAt = gm.Util.Timenow()
-		original  = &stuFuseRContext{
-			fiberCtx:     fiberCtx,
+		// startedAt = gm.Util.Timenow()
+		mcx = &stuFuseRMainContext{
+			startedAt:    gm.Util.Timenow(),
+			fcx:          fcx,
 			clog:         clogNew(),
-			isRegulator:  true,
 			handlers:     handlers,
 			errorHandler: slf.errorHandler,
 			val: &stuFuseRVal{
 				endpoint: endpoint,
-				url:      fiberCtx.Request().URI().String(),
-				clientIP: cip.getClientIP(fiberCtx),
+				url:      fcx.Request().URI().String(),
+				clientIP: cip.getClientIP(fcx),
 			},
 		}
+		// original  = &stuFuseRContext{
+		// 	fiberCtx:     fiberCtx,
+		// 	clog:         clogNew(),
+		// 	isRegulator:  true,
+		// 	handlers:     handlers,
+		// 	errorHandler: slf.errorHandler,
+		// 	val: &stuFuseRVal{
+		// 		endpoint: endpoint,
+		// 		url:      fiberCtx.Request().URI().String(),
+		// 		clientIP: cip.getClientIP(fiberCtx),
+		// 	},
+		// }
 
 		contentType string
 		reqHeader   = make(map[string]string, 0)
-		reqParam    = fiberCtx.AllParams()
-		reqQueries  = fiberCtx.Queries()
-		reqBody     = fiberCtx.Request().Body()
+		reqParam    = fcx.AllParams()
+		reqQueries  = fcx.Queries()
+		reqBody     = fcx.Request().Body()
 	)
 
-	for key, ls := range fiberCtx.GetReqHeaders() {
+	for key, ls := range fcx.GetReqHeaders() {
 		key = strings.TrimSpace(strings.ToLower(key))
 		val := ""
 		if len(ls) > 0 {
@@ -91,45 +103,45 @@ func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulat
 				contentType = ls[0]
 
 			case "x-from-svcname":
-				original.val.fromSvcName = &val
+				mcx.val.fromSvcName = &val
 
 			case "x-from-svcversion":
-				original.val.fromSvcVersion = &val
+				mcx.val.fromSvcVersion = &val
 
 			case "x-version":
-				original.val.reqVersion = &val
+				mcx.val.reqVersion = &val
 			}
 		}
 	}
 
 	if len(reqHeader) > 0 {
-		original.header = &reqHeader
+		mcx.val.header = &reqHeader
 		jons, err := gm.Json.Encode(reqHeader)
 		if err == nil {
-			original.val.reqHeader = &jons
+			mcx.val.reqHeader = &jons
 		}
 	}
 
 	if len(reqParam) > 0 {
-		original.param = &reqParam
+		mcx.val.param = &reqParam
 		jons, err := gm.Json.Encode(reqParam)
 		if err == nil {
-			original.val.reqParam = &jons
+			mcx.val.reqParam = &jons
 		}
 	}
 
 	if len(reqQueries) > 0 {
-		original.queries = &reqQueries
+		mcx.val.queries = &reqQueries
 		jons, err := gm.Json.Encode(reqQueries)
 		if err == nil {
-			original.val.reqQuery = &jons
+			mcx.val.reqQuery = &jons
 		}
 	}
 
-	part, err := fiberCtx.MultipartForm()
+	part, err := fcx.MultipartForm()
 	if err == nil && part != nil {
-		original.file = &part.File
-		original.form = &part.Value
+		mcx.val.file = &part.File
+		mcx.val.form = &part.Value
 		form := fm.MapCopy(part.Value)
 
 		for key, ls := range part.File {
@@ -146,76 +158,87 @@ func (slf *stuFuseRRouter) execute(fiberCtx *fiber.Ctx, endpoint string, regulat
 		if len(form) > 0 {
 			jons, err := gm.Json.Encode(form)
 			if err == nil {
-				original.val.reqForm = &jons
+				mcx.val.reqForm = &jons
 			}
 		}
 	}
 
 	if len(reqBody) > 0 {
-		original.val.body = reqBody
+		mcx.val.body = reqBody
 		if contentType == "application/json" {
-			original.val.reqBody = fm.Ptr(string(reqBody))
+			mcx.val.reqBody = fm.Ptr(string(reqBody))
 		}
 	}
 
-	if original.clog != nil {
+	if mcx.clog != nil {
 		mol := &clog.ServicePieceV1{
-			SvcParentName:    original.val.fromSvcName,
-			SvcParentVersion: original.val.fromSvcVersion,
-			Endpoint:         original.val.endpoint,
-			Url:              original.val.url,
-			ReqVersion:       original.val.reqVersion,
-			ReqHeader:        original.val.reqHeader,
-			ReqParam:         original.val.reqParam,
-			ReqQuery:         original.val.reqQuery,
-			ReqForm:          original.val.reqForm,
-			ReqBody:          original.val.reqBody,
-			ClientIp:         original.val.clientIP,
-			StartedAt:        startedAt,
+			SvcParentName:    mcx.val.fromSvcName,
+			SvcParentVersion: mcx.val.fromSvcVersion,
+			Endpoint:         mcx.val.endpoint,
+			Url:              mcx.val.url,
+			ReqVersion:       mcx.val.reqVersion,
+			ReqHeader:        mcx.val.reqHeader,
+			ReqParam:         mcx.val.reqParam,
+			ReqQuery:         mcx.val.reqQuery,
+			ReqForm:          mcx.val.reqForm,
+			ReqBody:          mcx.val.reqBody,
+			ClientIp:         mcx.val.clientIP,
+			StartedAt:        mcx.startedAt,
 		}
 
-		original.clog.ServicePieceV1(mol)
+		mcx.clog.ServicePieceV1(mol)
 	}
 
 	defer func() {
-		if original.clog != nil {
+		if mcx.clog != nil {
 			mol := &clog.ServiceV1{
-				UserId:           slf.getUserPartnerId(original.userId),
-				PartnerId:        slf.getUserPartnerId(original.partnerId),
-				SvcParentName:    original.val.fromSvcName,
-				SvcParentVersion: original.val.fromSvcVersion,
-				Endpoint:         original.val.endpoint,
-				Url:              original.val.url,
-				Severity:         slf.getSeverity(original.regulatorCtx.currentHandlerContext.responseCode),
-				ExecPath:         original.regulatorCtx.currentHandlerContext.execPath,
-				ExecFunc:         original.regulatorCtx.currentHandlerContext.execFunc,
-				ReqVersion:       original.val.reqVersion,
-				ReqHeader:        original.val.reqHeader,
-				ReqParam:         original.val.reqParam,
-				ReqQuery:         original.val.reqQuery,
-				ReqForm:          original.val.reqForm,
-				ReqBody:          original.val.reqBody,
-				ResCode:          original.regulatorCtx.currentHandlerContext.responseCode,
-				ClientIp:         original.val.clientIP,
-				StartedAt:        startedAt,
-				FinishedAt:       gm.Util.Timenow(),
+				UserId:           slf.getUserPartnerId(mcx.userId),
+				PartnerId:        slf.getUserPartnerId(mcx.partnerId),
+				SvcParentName:    mcx.val.fromSvcName,
+				SvcParentVersion: mcx.val.fromSvcVersion,
+				Endpoint:         mcx.val.endpoint,
+				Url:              mcx.val.url,
+				// Severity:         slf.getSeverity(original.regulatorCtx.currentHandlerContext.responseCode),
+				Severity: slf.getSeverity(mcx.responseCode),
+				// ExecPath:         original.regulatorCtx.currentHandlerContext.execPath,
+				// ExecFunc:         original.regulatorCtx.currentHandlerContext.execFunc,
+				ExecPath:   mcx.execPath,
+				ExecFunc:   mcx.execFunc,
+				ReqVersion: mcx.val.reqVersion,
+				ReqHeader:  mcx.val.reqHeader,
+				ReqParam:   mcx.val.reqParam,
+				ReqQuery:   mcx.val.reqQuery,
+				ReqForm:    mcx.val.reqForm,
+				ReqBody:    mcx.val.reqBody,
+				// ResCode:          original.regulatorCtx.currentHandlerContext.responseCode,
+				ResCode:    mcx.responseCode,
+				ClientIp:   mcx.val.clientIP,
+				StartedAt:  mcx.startedAt,
+				FinishedAt: gm.Util.Timenow(),
 			}
 
-			if original.regulatorCtx.currentHandlerContext.responseVal != nil {
-				jons, err := gm.Json.Encode(original.regulatorCtx.currentHandlerContext.responseVal)
+			// if original.regulatorCtx.currentHandlerContext.responseVal != nil {
+			// 	jons, err := gm.Json.Encode(original.regulatorCtx.currentHandlerContext.responseVal)
+			// 	if err == nil {
+			// 		mol.ResData = &jons
+			// 	}
+			// }
+
+			if mcx.responseVal != nil {
+				jons, err := gm.Json.Encode(mcx.responseVal)
 				if err == nil {
 					mol.ResData = &jons
 				}
 			}
 
-			original.clog.ServiceV1(mol)
+			mcx.clog.ServiceV1(mol)
 		}
 	}()
 
 	if regulator != nil {
-		regulator(original.clog, original.regulator())
+		regulator(mcx.clog, mcx.regulator())
 	} else {
-		slf.defaultHandlerRegulator(original.regulator())
+		slf.defaultHandlerRegulator(mcx.regulator())
 	}
 }
 

@@ -21,7 +21,8 @@ import (
 
 func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) error) {
 	slf.currentIndex++
-	next = slf.currentIndex < len(slf.original.handlers)
+	// next = slf.currentIndex < len(slf.original.handlers)
+	next = slf.currentIndex < len(slf.mcx.handlers)
 	if next {
 		handler = slf.currentHandler()
 	}
@@ -35,12 +36,14 @@ func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx Fus
 }
 
 func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) error, opt ...FuseRCallOpt) (code int, res any) {
-	var (
-		builder = &stuFuseRContextBuilder{
-			original: slf.original,
-		}
-		ctx = builder.build()
-	)
+	// var (
+	// 	builder = &stuFuseRContextBuilder{
+	// 		original: slf.original,
+	// 	}
+	// 	ctx = builder.build()
+	// )
+
+	ctx := slf.buildContext()
 
 	for _, v := range opt {
 		o, ok := v.(*stuFuseRCallOpt)
@@ -52,9 +55,12 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 	}
 
 	defer func() {
-		slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
-		slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
-		slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
+		// slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
+		// slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
+		// slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
+		slf.mcx.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.mcx.authObj)
+		slf.mcx.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.mcx.userId)
+		slf.mcx.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.mcx.partnerId)
 	}()
 
 	err := handler(slf.clog, ctx)

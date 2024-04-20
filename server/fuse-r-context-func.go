@@ -9,24 +9,24 @@
 
 package server
 
-import "fmt"
+// import "fmt"
 
-func (slf *stuFuseRContext) regulator() FuseRRegulator {
-	if !slf.isRegulator {
-		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
-		return nil
-	}
+// func (slf *stuFuseRContext) regulator() FuseRRegulator {
+// 	if !slf.isRegulator {
+// 		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
+// 		return nil
+// 	}
 
-	if slf.regulatorCtx == nil {
-		slf.regulatorCtx = &stuFuseRRegulator{
-			clog:         slf.clog,
-			original:     slf,
-			currentIndex: -1,
-		}
-	}
+// 	if slf.regulatorCtx == nil {
+// 		slf.regulatorCtx = &stuFuseRRegulator{
+// 			clog:         slf.clog,
+// 			original:     slf,
+// 			currentIndex: -1,
+// 		}
+// 	}
 
-	return slf.regulatorCtx
-}
+// 	return slf.regulatorCtx
+// }
 
 func (slf *stuFuseRContext) setResponse(code int, val any) {
 	slf.responseCode = code
