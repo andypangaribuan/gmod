@@ -31,7 +31,7 @@ type stuFuseRRouter struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
-	errorHandler    func(clog.Instance, FuseRContext, error) any
+	errorHandler    func(FuseRContext, error) any
 }
 
 type stuFuseGRouter struct {
@@ -45,8 +45,8 @@ type stuFuseRMainContext struct {
 	startedAt    time.Time
 	fcx          *fiber.Ctx
 	clog         clog.Instance
-	handlers     []func(clog.Instance, FuseRContext) any
-	errorHandler func(clog.Instance, FuseRContext, error) any
+	handlers     []func(FuseRContext) any
+	errorHandler func(FuseRContext, error) any
 
 	authObj   any
 	userId    any

@@ -14,11 +14,10 @@ import (
 	"reflect"
 	"runtime"
 
-	"github.com/andypangaribuan/gmod/clog"
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) any) {
+func (slf *stuFuseRRegulator) Next() (next bool, handler func(ctx FuseRContext) any) {
 	slf.currentIndex++
 	next = slf.currentIndex < len(slf.mcx.handlers)
 	if next {
@@ -28,13 +27,13 @@ func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance
 	return
 }
 
-func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx FuseRContext) any) bool {
+func (slf *stuFuseRRegulator) IsHandler(handler func(ctx FuseRContext) any) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
 
-func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any) {
+func (slf *stuFuseRRegulator) Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any) {
 	ctx := slf.buildContext()
 
 	// override request from opt call
@@ -59,7 +58,7 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 		}
 	}
 
-	handler(slf.mcx.clog, ctx)
+	handler(ctx)
 	slf.mcx.responseCode = ctx.responseCode
 	slf.mcx.responseVal = ctx.responseVal
 
@@ -86,7 +85,7 @@ func (slf *stuFuseRRegulator) Recover() {
 				err = errors.New(fmt.Sprintf("%+v", v))
 			}
 
-			slf.mcx.errorHandler(slf.mcx.clog, slf.currentHandlerContext, err)
+			slf.mcx.errorHandler(slf.currentHandlerContext, err)
 		} else {
 			slf.currentHandlerContext.R500InternalServerError("We apologize and are fixing the problem. Please try again at a later stage.")
 		}

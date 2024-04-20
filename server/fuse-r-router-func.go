@@ -20,7 +20,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) {
+func (slf *stuFuseRRouter) register(endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -45,14 +45,14 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instanc
 	}
 }
 
-func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) func(*fiber.Ctx) error {
+func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) func(*fiber.Ctx) error {
 	return func(fcx *fiber.Ctx) error {
 		slf.execute(fcx, endpoint, regulator, handlers...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) {
+func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) {
 	var (
 		mcx = &stuFuseRMainContext{
 			startedAt:    gm.Util.Timenow(),
@@ -212,7 +212,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 	}()
 
 	if regulator != nil {
-		regulator(mcx.clog, mcx.regulator())
+		regulator(mcx.regulator())
 	} else {
 		slf.defaultHandlerRegulator(mcx.regulator())
 	}

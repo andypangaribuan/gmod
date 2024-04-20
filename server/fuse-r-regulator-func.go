@@ -10,7 +10,6 @@
 package server
 
 import (
-	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 )
 
@@ -29,7 +28,7 @@ func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	return ctx
 }
 
-func (slf *stuFuseRRegulator) currentHandler() func(clog.Instance, FuseRContext) any {
+func (slf *stuFuseRRegulator) currentHandler() func(FuseRContext) any {
 	return slf.mcx.handlers[slf.currentIndex]
 }
 

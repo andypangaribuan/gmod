@@ -14,7 +14,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
 )
@@ -26,19 +25,19 @@ func TestServerFuseR(t *testing.T) {
 		router.PrintOnError(env.AppServerPrintOnError)
 		router.ErrorHandler(sfrErrorHandler)
 
-		router.Endpoints(nil, nil, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(nil, nil, map[string][]func(server.FuseRContext) any{
 			"POS: /hi/:firstName-:lastName/:age?": {sfrHi},
 		})
 
-		router.Endpoints(nil, nil, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(nil, nil, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-1": {sfrPrivateStatus1},
 		})
 
-		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-2": {sfrPrivateStatus1},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-3": {sfrPrivateStatus1},
 			"GET: /private/status-4": {sfrPrivateStatus1, sfrPrivateStatus2},
 			"GET: /private/status-5": {sfrPrivateStatus1, sfrPrivateStatus2},
@@ -46,34 +45,34 @@ func TestServerFuseR(t *testing.T) {
 		})
 
 		// error or panic
-		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-10": {sfrPrivateStatus1, sfrPrivateStatusPanic, sfrPrivateStatus2},
 			"GET: /private/status-11": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusPanic},
 		})
 
-		router.Endpoints(nil, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-12": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-13": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-14": {sfrPrivateStatus1, sfrPrivateStatusPanic, sfrPrivateStatus2},
 			"GET: /private/status-15": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusPanic},
 		})
 
-		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(clog.Instance, server.FuseRContext) any{
+		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-16": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-17": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
 	})
 }
 
-func sfrErrorHandler(clog clog.Instance, ctx server.FuseRContext, err error) any {
+func sfrErrorHandler(ctx server.FuseRContext, err error) any {
 	message := fmt.Sprintf("something went wrong: %v\n%+v", err.Error(), err)
 	return ctx.R500InternalServerError(message)
 }
 
-func sfrRegulator(clog clog.Instance, regulator server.FuseRRegulator) {
+func sfrRegulator(regulator server.FuseRRegulator) {
 	defer regulator.Recover()
 	var (
 		code    int
@@ -87,7 +86,7 @@ func sfrRegulator(clog clog.Instance, regulator server.FuseRRegulator) {
 			break
 		}
 
-		if regulator.Endpoint() == "GET: /private/status-4" && regulator.IsHandler(sfrPrivateStatus1) {
+		if regulator.Endpoint() == "GET: /private/status-4" && regulator.IsHandler(sfrPrivateStatus2) {
 			continue
 		}
 
@@ -112,14 +111,14 @@ func sfrRegulator(clog clog.Instance, regulator server.FuseRRegulator) {
 	}
 }
 
-func sfrAuth(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrAuth(ctx server.FuseRContext) any {
 	ctx.Auth("Halo")
 	ctx.UserId("abc")
 	ctx.PartnerId("xyz")
 	return ctx.R200OK("Andy")
 }
 
-func sfrPrivateStatus1(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrPrivateStatus1(ctx server.FuseRContext) any {
 	h := ctx.Header()
 	hj, err := gm.Json.Encode(h)
 	if err == nil {
@@ -130,7 +129,7 @@ func sfrPrivateStatus1(clog clog.Instance, ctx server.FuseRContext) any {
 	return ctx.R200OK(fmt.Sprintf("%v Pangaribuan", val))
 }
 
-func sfrPrivateStatus2(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrPrivateStatus2(ctx server.FuseRContext) any {
 	fmt.Printf("private-status-2: header: %v\n", ctx.Header())
 	auth := ctx.Auth().(string)
 	_, val := ctx.LastResponse()
@@ -144,15 +143,15 @@ func sfrPrivateStatus2(clog clog.Instance, ctx server.FuseRContext) any {
 	return ctx.R200OK(data)
 }
 
-func sfrPrivateStatusPanic(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrPrivateStatusPanic(ctx server.FuseRContext) any {
 	auth := ctx.Auth().(int) // panic error
 	return ctx.R200OK(auth)
 }
 
-func sfrPrivateStatusErr(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrPrivateStatusErr(ctx server.FuseRContext) any {
 	return errors.New("test error")
 }
 
-func sfrHi(clog clog.Instance, ctx server.FuseRContext) any {
+func sfrHi(ctx server.FuseRContext) any {
 	return ctx.R200OK("ok")
 }

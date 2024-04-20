@@ -9,8 +9,10 @@
 
 package server
 
-func (slf *stuFuseRContext) LastResponse() (code int, val any) {
-	return slf.mcx.responseCode, slf.mcx.responseVal
+import "github.com/andypangaribuan/gmod/clog"
+
+func (slf *stuFuseRContext) Clog() clog.Instance {
+	return slf.mcx.clog
 }
 
 func (slf *stuFuseRContext) Auth(obj ...any) any {
@@ -43,6 +45,10 @@ func (slf *stuFuseRContext) Header() *map[string]string {
 
 func (slf *stuFuseRContext) Url() string {
 	return slf.mcx.val.url
+}
+
+func (slf *stuFuseRContext) LastResponse() (code int, val any) {
+	return slf.mcx.responseCode, slf.mcx.responseVal
 }
 
 func (slf *stuFuseRContext) R200OK(val any) any {
