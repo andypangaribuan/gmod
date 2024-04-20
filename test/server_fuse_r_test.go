@@ -23,7 +23,7 @@ func TestServerFuseR(t *testing.T) {
 	server.FuseR(env.AppRestPort, func(router server.RouterR) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
-		router.ErrorHandler(sfrErrorHandler)
+		// router.ErrorHandler(sfrErrorHandler)
 
 		router.Endpoints(nil, nil, map[string][]func(server.FuseRContext) any{
 			"POS: /hi/:firstName-:lastName/:age?": {sfrHi},
