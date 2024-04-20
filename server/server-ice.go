@@ -23,10 +23,10 @@ type server interface {
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Unrouted(handler func(clog clog.Instance, ctx FuseRContext, method, path, url string) error)
+	Unrouted(handler func(clog clog.Instance, ctx FuseRContext, method, path, url string) any)
 
-	ErrorHandler(catcher func(clog clog.Instance, ctx FuseRContext, err error) error)
-	Endpoints(regulator func(clog clog.Instance, regulator FuseRRegulator), auth func(clog.Instance, FuseRContext) error, pathHandlers map[string][]func(clog.Instance, FuseRContext) error)
+	ErrorHandler(catcher func(clog clog.Instance, ctx FuseRContext, err error) any)
+	Endpoints(regulator func(clog clog.Instance, regulator FuseRRegulator), auth func(clog.Instance, FuseRContext) any, pathHandlers map[string][]func(clog.Instance, FuseRContext) any)
 }
 
 type RouterG interface {
@@ -42,7 +42,8 @@ type FuseRContext interface {
 	Header() *map[string]string
 	Url() string
 
-	R200OK(val any) error
+	R200OK(val any) any
+	R500InternalServerError(val any) any
 }
 
 type FuseRContextBuilder interface {
@@ -50,9 +51,9 @@ type FuseRContextBuilder interface {
 }
 
 type FuseRRegulator interface {
-	Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) error)
-	IsHandler(handler func(clog clog.Instance, ctx FuseRContext) error) bool
-	Call(handler func(clog clog.Instance, ctx FuseRContext) error, opt ...FuseRCallOpt) (code int, res any)
+	Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) any)
+	IsHandler(handler func(clog clog.Instance, ctx FuseRContext) any) bool
+	Call(handler func(clog clog.Instance, ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any)
 	CallOpt() FuseRCallOpt
 	Endpoint() string
 	Recover()

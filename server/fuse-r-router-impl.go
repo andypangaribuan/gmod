@@ -28,7 +28,7 @@ func (slf *stuFuseRRouter) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRContext, method, path, url string) error) {
+func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRContext, method, path, url string) any) {
 	slf.fiberApp.Use(func(fcx *fiber.Ctx) error {
 		err := fcx.Next()
 
@@ -61,7 +61,7 @@ func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRCo
 					// },
 				}
 
-				err = handler(clogNew(), ctx, method, path, url)
+				_ = handler(clogNew(), ctx, method, path, url)
 			}
 		}
 
@@ -69,15 +69,15 @@ func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRCo
 	})
 }
 
-func (slf *stuFuseRRouter) ErrorHandler(catcher func(clog clog.Instance, ctx FuseRContext, err error) error) {
+func (slf *stuFuseRRouter) ErrorHandler(catcher func(clog clog.Instance, ctx FuseRContext, err error) any) {
 	slf.errorHandler = catcher
 }
 
-func (slf *stuFuseRRouter) Endpoints(regulator func(clog clog.Instance, regulator FuseRRegulator), auth func(clog.Instance, FuseRContext) error, pathHandlers map[string][]func(clog.Instance, FuseRContext) error) {
+func (slf *stuFuseRRouter) Endpoints(regulator func(clog clog.Instance, regulator FuseRRegulator), auth func(clog.Instance, FuseRContext) any, pathHandlers map[string][]func(clog.Instance, FuseRContext) any) {
 	for endpoint, handlers := range pathHandlers {
 		var (
 			ca = fm.Ternary(auth == nil, 0, 1)
-			ls = make([]func(clog.Instance, FuseRContext) error, len(handlers)+ca)
+			ls = make([]func(clog.Instance, FuseRContext) any, len(handlers)+ca)
 		)
 
 		if auth != nil {

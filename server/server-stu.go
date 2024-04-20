@@ -31,7 +31,7 @@ type stuFuseRRouter struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool
 	printOnError    bool
-	errorHandler    func(clog.Instance, FuseRContext, error) error
+	errorHandler    func(clog.Instance, FuseRContext, error) any
 }
 
 type stuFuseGRouter struct {
@@ -45,8 +45,8 @@ type stuFuseRMainContext struct {
 	startedAt    time.Time
 	fcx          *fiber.Ctx
 	clog         clog.Instance
-	handlers     []func(clog.Instance, FuseRContext) error
-	errorHandler func(clog.Instance, FuseRContext, error) error
+	handlers     []func(clog.Instance, FuseRContext) any
+	errorHandler func(clog.Instance, FuseRContext, error) any
 
 	authObj   any
 	userId    any
@@ -61,35 +61,15 @@ type stuFuseRMainContext struct {
 
 type stuFuseRContext struct {
 	mcx *stuFuseRMainContext
-	// fcx *fiber.Ctx
-	// clog         clog.Instance
-	// isRegulator  bool
-	// regulatorCtx *stuFuseRRegulator
-
-	// authObj   any
-	// userId    any
-	// partnerId any
-
-	// isSetAuthObj   bool
-	// isSetUserId    bool
-	// isSetPartnerId bool
-
-	// errorHandler func(clog.Instance, FuseRContext, error) error
-
-	// handlers         []func(clog.Instance, FuseRContext) error
-	// lastResponseCode int
-	// lastResponseVal  any
-	responseCode int
-	responseVal  any
-	// execPath         string
-	// execFunc         string
 
 	header  *map[string]string
 	param   *map[string]string
 	queries *map[string]string
 	form    *map[string][]string
 	file    *map[string][]*multipart.FileHeader
-	// val     *stuFuseRVal
+
+	responseCode int
+	responseVal  any
 }
 
 type stuFuseRVal struct {
@@ -114,14 +94,8 @@ type stuFuseRVal struct {
 	reqBody        *string
 }
 
-// type stuFuseRContextBuilder struct {
-// 	original *stuFuseRContext
-// }
-
 type stuFuseRRegulator struct {
-	clog clog.Instance
-	mcx  *stuFuseRMainContext
-	// original              *stuFuseRContext
+	mcx                   *stuFuseRMainContext
 	currentIndex          int
 	currentHandlerContext *stuFuseRContext
 }

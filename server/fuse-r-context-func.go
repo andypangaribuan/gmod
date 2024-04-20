@@ -9,26 +9,15 @@
 
 package server
 
-// import "fmt"
+import "github.com/andypangaribuan/gmod/gm"
 
-// func (slf *stuFuseRContext) regulator() FuseRRegulator {
-// 	if !slf.isRegulator {
-// 		fmt.Printf("fuse server [restful]: forbidden, you're not the regulator")
-// 		return nil
-// 	}
+func (slf *stuFuseRContext) setExecPathFunc() {
+	slf.mcx.execPath, slf.mcx.execFunc = gm.Util.GetExecPathFunc(3)
+}
 
-// 	if slf.regulatorCtx == nil {
-// 		slf.regulatorCtx = &stuFuseRRegulator{
-// 			clog:         slf.clog,
-// 			original:     slf,
-// 			currentIndex: -1,
-// 		}
-// 	}
-
-// 	return slf.regulatorCtx
-// }
-
-func (slf *stuFuseRContext) setResponse(code int, val any) {
+func (slf *stuFuseRContext) setResponse(code int, val any) any {
+	slf.setExecPathFunc()
 	slf.responseCode = code
 	slf.responseVal = val
+	return nil
 }

@@ -18,30 +18,23 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) error) {
+func (slf *stuFuseRRegulator) Next() (next bool, handler func(clog clog.Instance, ctx FuseRContext) any) {
 	slf.currentIndex++
-	// next = slf.currentIndex < len(slf.original.handlers)
 	next = slf.currentIndex < len(slf.mcx.handlers)
 	if next {
 		handler = slf.currentHandler()
 	}
+
 	return
 }
 
-func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx FuseRContext) error) bool {
+func (slf *stuFuseRRegulator) IsHandler(handler func(clog clog.Instance, ctx FuseRContext) any) bool {
 	v1 := runtime.FuncForPC(reflect.ValueOf(slf.currentHandler()).Pointer()).Name()
 	v2 := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
 	return v1 == v2
 }
 
-func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) error, opt ...FuseRCallOpt) (code int, res any) {
-	// var (
-	// 	builder = &stuFuseRContextBuilder{
-	// 		original: slf.original,
-	// 	}
-	// 	ctx = builder.build()
-	// )
-
+func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any) {
 	ctx := slf.buildContext()
 
 	// override request from opt call
@@ -66,28 +59,9 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 		}
 	}
 
-	// defer func() {
-	// 	// slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
-	// 	// slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
-	// 	// slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
-	// 	slf.mcx.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.mcx.authObj)
-	// 	slf.mcx.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.mcx.userId)
-	// 	slf.mcx.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.mcx.partnerId)
-	// }()
-
-	err := handler(slf.clog, ctx)
-	defer func() {
-		slf.mcx.responseCode = ctx.responseCode
-		slf.mcx.responseVal = ctx.responseVal
-	}()
-	// if err != nil && slf.original.errorHandler != nil {
-	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
-	// 	return -1, nil
-	// }
-	if err != nil && slf.mcx.errorHandler != nil {
-		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
-		return -1, nil
-	}
+	handler(slf.mcx.clog, ctx)
+	slf.mcx.responseCode = ctx.responseCode
+	slf.mcx.responseVal = ctx.responseVal
 
 	return ctx.responseCode, ctx.responseVal
 }
@@ -97,41 +71,26 @@ func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {
 }
 
 func (slf *stuFuseRRegulator) Endpoint() string {
-	// return slf.original.val.endpoint
 	return slf.mcx.val.endpoint
 }
 
 func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
-	// if v != nil && slf.original.errorHandler != nil {
-	// 	err, ok := v.(error)
-	// 	if ok {
-	// 		err = errors.WithStack(err)
-	// 	} else {
-	// 		err = errors.New(fmt.Sprintf("%+v", v))
-	// 	}
 
-	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, err)
-	// }
+	if v != nil {
+		if slf.mcx.errorHandler != nil {
+			err, ok := v.(error)
+			if ok {
+				err = errors.WithStack(err)
+			} else {
+				err = errors.New(fmt.Sprintf("%+v", v))
+			}
 
-	// err := slf.send()
-	// if err != nil && slf.original.errorHandler != nil {
-	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
-	// }
-
-	if v != nil && slf.mcx.errorHandler != nil {
-		err, ok := v.(error)
-		if ok {
-			err = errors.WithStack(err)
+			slf.mcx.errorHandler(slf.mcx.clog, slf.currentHandlerContext, err)
 		} else {
-			err = errors.New(fmt.Sprintf("%+v", v))
+			slf.currentHandlerContext.R500InternalServerError("We apologize and are fixing the problem. Please try again at a later stage.")
 		}
-
-		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, err)
 	}
 
-	err := slf.send()
-	if err != nil && slf.mcx.errorHandler != nil {
-		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
-	}
+	slf.send()
 }

@@ -11,7 +11,6 @@ package server
 
 func (slf *stuFuseRMainContext) regulator() FuseRRegulator {
 	return &stuFuseRRegulator{
-		clog:         slf.clog,
 		mcx:          slf,
 		currentIndex: -1,
 	}

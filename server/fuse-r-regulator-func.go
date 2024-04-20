@@ -17,35 +17,23 @@ import (
 func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	ctx := &stuFuseRContext{
 		mcx: slf.mcx,
-		// fcx: slf.mcx.fcx,
-		// regulatorCtx: slf,
 
 		header:  slf.mcx.val.header,
 		param:   slf.mcx.val.param,
 		queries: slf.mcx.val.queries,
 		form:    slf.mcx.val.form,
 		file:    slf.mcx.val.file,
-
-		// val: slf.mcx.val,
 	}
-
-	// current := slf.currentHandlerContext
-	// if current != nil {
-	// 	ctx.lastResponseCode = current.lastResponseCode
-	// 	ctx.lastResponseVal = current.lastResponseVal
-	// }
 
 	slf.currentHandlerContext = ctx
 	return ctx
 }
 
-func (slf *stuFuseRRegulator) currentHandler() func(clog.Instance, FuseRContext) error {
-	// return slf.original.handlers[slf.currentIndex]
+func (slf *stuFuseRRegulator) currentHandler() func(clog.Instance, FuseRContext) any {
 	return slf.mcx.handlers[slf.currentIndex]
 }
 
 func (slf *stuFuseRRegulator) send() error {
-	// ctx := slf.original.fiberCtx.Status(slf.currentHandlerContext.responseCode)
 	ctx := slf.mcx.fcx.Status(slf.currentHandlerContext.responseCode)
 
 	switch val := slf.currentHandlerContext.responseVal.(type) {

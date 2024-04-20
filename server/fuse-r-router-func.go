@@ -20,7 +20,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) {
+func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
 		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
@@ -45,16 +45,15 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(clog.Instanc
 	}
 }
 
-func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) func(*fiber.Ctx) error {
+func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) func(*fiber.Ctx) error {
 	return func(fcx *fiber.Ctx) error {
 		slf.execute(fcx, endpoint, regulator, handlers...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) error) {
+func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(clog.Instance, FuseRRegulator), handlers ...func(clog.Instance, FuseRContext) any) {
 	var (
-		// startedAt = gm.Util.Timenow()
 		mcx = &stuFuseRMainContext{
 			startedAt:    gm.Util.Timenow(),
 			fcx:          fcx,
@@ -67,18 +66,6 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				clientIP: cip.getClientIP(fcx),
 			},
 		}
-		// original  = &stuFuseRContext{
-		// 	fiberCtx:     fiberCtx,
-		// 	clog:         clogNew(),
-		// 	isRegulator:  true,
-		// 	handlers:     handlers,
-		// 	errorHandler: slf.errorHandler,
-		// 	val: &stuFuseRVal{
-		// 		endpoint: endpoint,
-		// 		url:      fiberCtx.Request().URI().String(),
-		// 		clientIP: cip.getClientIP(fiberCtx),
-		// 	},
-		// }
 
 		contentType string
 		reqHeader   = make(map[string]string, 0)
@@ -198,31 +185,20 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				SvcParentVersion: mcx.val.fromSvcVersion,
 				Endpoint:         mcx.val.endpoint,
 				Url:              mcx.val.url,
-				// Severity:         slf.getSeverity(original.regulatorCtx.currentHandlerContext.responseCode),
-				Severity: slf.getSeverity(mcx.responseCode),
-				// ExecPath:         original.regulatorCtx.currentHandlerContext.execPath,
-				// ExecFunc:         original.regulatorCtx.currentHandlerContext.execFunc,
-				ExecPath:   mcx.execPath,
-				ExecFunc:   mcx.execFunc,
-				ReqVersion: mcx.val.reqVersion,
-				ReqHeader:  mcx.val.reqHeader,
-				ReqParam:   mcx.val.reqParam,
-				ReqQuery:   mcx.val.reqQuery,
-				ReqForm:    mcx.val.reqForm,
-				ReqBody:    mcx.val.reqBody,
-				// ResCode:          original.regulatorCtx.currentHandlerContext.responseCode,
-				ResCode:    mcx.responseCode,
-				ClientIp:   mcx.val.clientIP,
-				StartedAt:  mcx.startedAt,
-				FinishedAt: gm.Util.Timenow(),
+				Severity:         slf.getSeverity(mcx.responseCode),
+				ExecPath:         mcx.execPath,
+				ExecFunc:         mcx.execFunc,
+				ReqVersion:       mcx.val.reqVersion,
+				ReqHeader:        mcx.val.reqHeader,
+				ReqParam:         mcx.val.reqParam,
+				ReqQuery:         mcx.val.reqQuery,
+				ReqForm:          mcx.val.reqForm,
+				ReqBody:          mcx.val.reqBody,
+				ResCode:          mcx.responseCode,
+				ClientIp:         mcx.val.clientIP,
+				StartedAt:        mcx.startedAt,
+				FinishedAt:       gm.Util.Timenow(),
 			}
-
-			// if original.regulatorCtx.currentHandlerContext.responseVal != nil {
-			// 	jons, err := gm.Json.Encode(original.regulatorCtx.currentHandlerContext.responseVal)
-			// 	if err == nil {
-			// 		mol.ResData = &jons
-			// 	}
-			// }
 
 			if mcx.responseVal != nil {
 				jons, err := gm.Json.Encode(mcx.responseVal)
