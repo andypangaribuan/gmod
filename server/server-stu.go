@@ -60,8 +60,8 @@ type stuFuseRMainContext struct {
 }
 
 type stuFuseRContext struct {
-	mcx      *stuFuseRMainContext
-	fiberCtx *fiber.Ctx
+	mcx *stuFuseRMainContext
+	// fcx *fiber.Ctx
 	// clog         clog.Instance
 	// isRegulator  bool
 	// regulatorCtx *stuFuseRRegulator
@@ -89,7 +89,7 @@ type stuFuseRContext struct {
 	queries *map[string]string
 	form    *map[string][]string
 	file    *map[string][]*multipart.FileHeader
-	val     *stuFuseRVal
+	// val     *stuFuseRVal
 }
 
 type stuFuseRVal struct {
@@ -119,8 +119,8 @@ type stuFuseRVal struct {
 // }
 
 type stuFuseRRegulator struct {
-	clog                  clog.Instance
-	mcx                   *stuFuseRMainContext
+	clog clog.Instance
+	mcx  *stuFuseRMainContext
 	// original              *stuFuseRContext
 	currentIndex          int
 	currentHandlerContext *stuFuseRContext

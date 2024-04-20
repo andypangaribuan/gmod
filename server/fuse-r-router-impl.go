@@ -29,36 +29,36 @@ func (slf *stuFuseRRouter) PrintOnError(printOnError bool) {
 }
 
 func (slf *stuFuseRRouter) Unrouted(handler func(clog clog.Instance, ctx FuseRContext, method, path, url string) error) {
-	slf.fiberApp.Use(func(c *fiber.Ctx) error {
-		err := c.Next()
+	slf.fiberApp.Use(func(fcx *fiber.Ctx) error {
+		err := fcx.Next()
 
 		var fe *fiber.Error
 		if errors.As(err, &fe) && fe.Code == 404 {
 			var (
-				url      = c.OriginalURL()
-				path     = c.Path()
+				url      = fcx.OriginalURL()
+				path     = fcx.Path()
 				method   = ""
-				endpoint = ""
+				// endpoint = ""
 			)
 
-			if c.Route() != nil {
-				method = strings.ToUpper(c.Route().Method)
+			if fcx.Route() != nil {
+				method = strings.ToUpper(fcx.Route().Method)
 
-				m := method
-				if len(m) > 3 {
-					m = m[:3]
-				}
-				endpoint = fmt.Sprintf("%v: %v", m, path)
+				// m := method
+				// if len(m) > 3 {
+				// 	m = m[:3]
+				// }
+				// endpoint = fmt.Sprintf("%v: %v", m, path)
 			}
 
 			if fe.Message == fmt.Sprintf("Cannot %v %v", method, path) {
 				ctx := &stuFuseRContext{
-					fiberCtx:    c,
+					// fcx: fcx,
 					// isRegulator: false,
-					val: &stuFuseRVal{
-						endpoint: endpoint,
-						url:      c.Request().URI().String(),
-					},
+					// val: &stuFuseRVal{
+					// 	endpoint: endpoint,
+					// 	url:      fcx.Request().URI().String(),
+					// },
 				}
 
 				err = handler(clogNew(), ctx, method, path, url)

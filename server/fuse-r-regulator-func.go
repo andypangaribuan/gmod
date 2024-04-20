@@ -16,8 +16,8 @@ import (
 
 func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	ctx := &stuFuseRContext{
-		mcx:      slf.mcx,
-		fiberCtx: slf.mcx.fcx,
+		mcx: slf.mcx,
+		// fcx: slf.mcx.fcx,
 		// regulatorCtx: slf,
 
 		header:  slf.mcx.val.header,
@@ -26,7 +26,7 @@ func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 		form:    slf.mcx.val.form,
 		file:    slf.mcx.val.file,
 
-		val: slf.mcx.val,
+		// val: slf.mcx.val,
 	}
 
 	// current := slf.currentHandlerContext
