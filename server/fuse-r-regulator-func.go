@@ -29,13 +29,13 @@ func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 		val: slf.mcx.val,
 	}
 
-	current := slf.currentHandlerContext
-	if current != nil {
-		ctx.lastResponseCode = current.lastResponseCode
-		ctx.lastResponseVal = current.lastResponseVal
-	}
+	// current := slf.currentHandlerContext
+	// if current != nil {
+	// 	ctx.lastResponseCode = current.lastResponseCode
+	// 	ctx.lastResponseVal = current.lastResponseVal
+	// }
 
-	slf.currentHandlerContext = current
+	slf.currentHandlerContext = ctx
 	return ctx
 }
 

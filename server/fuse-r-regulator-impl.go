@@ -44,11 +44,24 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 
 	ctx := slf.buildContext()
 
+	// override request from opt call
 	for _, v := range opt {
 		o, ok := v.(*stuFuseRCallOpt)
 		if ok && o != nil {
 			if o.header != nil {
 				ctx.header = o.header
+			}
+
+			if o.param != nil {
+				ctx.param = o.param
+			}
+
+			if o.query != nil {
+				ctx.queries = o.query
+			}
+
+			if o.form != nil {
+				ctx.form = o.form
 			}
 		}
 	}
@@ -63,6 +76,10 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 	// }()
 
 	err := handler(slf.clog, ctx)
+	defer func() {
+		slf.mcx.responseCode = ctx.responseCode
+		slf.mcx.responseVal = ctx.responseVal
+	}()
 	// if err != nil && slf.original.errorHandler != nil {
 	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 	// 	return -1, nil
@@ -80,7 +97,8 @@ func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {
 }
 
 func (slf *stuFuseRRegulator) Endpoint() string {
-	return slf.original.val.endpoint
+	// return slf.original.val.endpoint
+	return slf.mcx.val.endpoint
 }
 
 func (slf *stuFuseRRegulator) Recover() {

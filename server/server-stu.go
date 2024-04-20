@@ -48,9 +48,9 @@ type stuFuseRMainContext struct {
 	handlers     []func(clog.Instance, FuseRContext) error
 	errorHandler func(clog.Instance, FuseRContext, error) error
 
-	authObj        any
-	userId         any
-	partnerId      any
+	authObj   any
+	userId    any
+	partnerId any
 
 	val          *stuFuseRVal
 	responseCode int
@@ -77,12 +77,12 @@ type stuFuseRContext struct {
 	// errorHandler func(clog.Instance, FuseRContext, error) error
 
 	// handlers         []func(clog.Instance, FuseRContext) error
-	lastResponseCode int
-	lastResponseVal  any
-	responseCode     int
-	responseVal      any
-	execPath         string
-	execFunc         string
+	// lastResponseCode int
+	// lastResponseVal  any
+	responseCode int
+	responseVal  any
+	// execPath         string
+	// execFunc         string
 
 	header  *map[string]string
 	param   *map[string]string
@@ -121,13 +121,16 @@ type stuFuseRVal struct {
 type stuFuseRRegulator struct {
 	clog                  clog.Instance
 	mcx                   *stuFuseRMainContext
-	original              *stuFuseRContext
+	// original              *stuFuseRContext
 	currentIndex          int
 	currentHandlerContext *stuFuseRContext
 }
 
 type stuFuseRCallOpt struct {
 	header *map[string]string
+	param  *map[string]string
+	query  *map[string]string
+	form   *map[string][]string
 }
 
 type stuClientIP struct {

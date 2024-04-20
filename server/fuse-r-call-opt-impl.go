@@ -9,7 +9,22 @@
 
 package server
 
-func (slf *stuFuseRCallOpt) OverrideHeader(header map[string]string) FuseRCallOpt {
-	slf.header = &header
+func (slf *stuFuseRCallOpt) OverrideHeader(val map[string]string) FuseRCallOpt {
+	slf.header = &val
+	return slf
+}
+
+func (slf *stuFuseRCallOpt) OverrideParam(val map[string]string) FuseRCallOpt {
+	slf.param = &val
+	return slf
+}
+
+func (slf *stuFuseRCallOpt) OverrideQuery(val map[string]string) FuseRCallOpt {
+	slf.query = &val
+	return slf
+}
+
+func (slf *stuFuseRCallOpt) OverrideForm(val map[string][]string) FuseRCallOpt{
+	slf.form = &val
 	return slf
 }

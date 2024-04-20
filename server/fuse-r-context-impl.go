@@ -57,11 +57,13 @@ func (slf *stuFuseRContext) Header() *map[string]string {
 }
 
 func (slf *stuFuseRContext) Url() string {
-	return slf.val.url
+	// return slf.val.url
+	return slf.mcx.val.url
 }
 
 func (slf *stuFuseRContext) setExecPathFunc() {
-	slf.execPath, slf.execFunc = gm.Util.GetExecPathFunc(2)
+	slf.mcx.execPath, slf.mcx.execFunc = gm.Util.GetExecPathFunc(2)
+	// slf.execPath, slf.execFunc = gm.Util.GetExecPathFunc(2)
 }
 
 func (slf *stuFuseRContext) R200OK(obj any) error {

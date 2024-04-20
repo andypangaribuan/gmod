@@ -59,5 +59,8 @@ type FuseRRegulator interface {
 }
 
 type FuseRCallOpt interface {
-	OverrideHeader(header map[string]string) FuseRCallOpt
+	OverrideHeader(val map[string]string) FuseRCallOpt
+	OverrideParam(val map[string]string) FuseRCallOpt
+	OverrideQuery(val map[string]string) FuseRCallOpt
+	OverrideForm(val map[string][]string) FuseRCallOpt
 }
