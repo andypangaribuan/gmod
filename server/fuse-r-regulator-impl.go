@@ -15,7 +15,6 @@ import (
 	"runtime"
 
 	"github.com/andypangaribuan/gmod/clog"
-	"github.com/andypangaribuan/gmod/fm"
 	"github.com/pkg/errors"
 )
 
@@ -54,18 +53,22 @@ func (slf *stuFuseRRegulator) Call(handler func(clog clog.Instance, ctx FuseRCon
 		}
 	}
 
-	defer func() {
-		// slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
-		// slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
-		// slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
-		slf.mcx.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.mcx.authObj)
-		slf.mcx.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.mcx.userId)
-		slf.mcx.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.mcx.partnerId)
-	}()
+	// defer func() {
+	// 	// slf.original.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.original.authObj)
+	// 	// slf.original.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.original.userId)
+	// 	// slf.original.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.original.partnerId)
+	// 	slf.mcx.authObj = fm.Ternary(ctx.isSetAuthObj, ctx.authObj, slf.mcx.authObj)
+	// 	slf.mcx.userId = fm.Ternary(ctx.isSetUserId, ctx.userId, slf.mcx.userId)
+	// 	slf.mcx.partnerId = fm.Ternary(ctx.isSetPartnerId, ctx.partnerId, slf.mcx.partnerId)
+	// }()
 
 	err := handler(slf.clog, ctx)
-	if err != nil && slf.original.errorHandler != nil {
-		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	// if err != nil && slf.original.errorHandler != nil {
+	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	// 	return -1, nil
+	// }
+	if err != nil && slf.mcx.errorHandler != nil {
+		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 		return -1, nil
 	}
 
@@ -82,7 +85,23 @@ func (slf *stuFuseRRegulator) Endpoint() string {
 
 func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
-	if v != nil && slf.original.errorHandler != nil {
+	// if v != nil && slf.original.errorHandler != nil {
+	// 	err, ok := v.(error)
+	// 	if ok {
+	// 		err = errors.WithStack(err)
+	// 	} else {
+	// 		err = errors.New(fmt.Sprintf("%+v", v))
+	// 	}
+
+	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, err)
+	// }
+
+	// err := slf.send()
+	// if err != nil && slf.original.errorHandler != nil {
+	// 	slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	// }
+
+	if v != nil && slf.mcx.errorHandler != nil {
 		err, ok := v.(error)
 		if ok {
 			err = errors.WithStack(err)
@@ -90,11 +109,11 @@ func (slf *stuFuseRRegulator) Recover() {
 			err = errors.New(fmt.Sprintf("%+v", v))
 		}
 
-		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, err)
+		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, err)
 	}
 
 	err := slf.send()
-	if err != nil && slf.original.errorHandler != nil {
-		slf.original.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
+	if err != nil && slf.mcx.errorHandler != nil {
+		slf.mcx.errorHandler(slf.clog, slf.currentHandlerContext, errors.WithStack(err))
 	}
 }

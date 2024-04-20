@@ -16,8 +16,9 @@ import (
 
 func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	ctx := &stuFuseRContext{
-		fiberCtx:     slf.mcx.fcx,
-		regulatorCtx: slf,
+		mcx:      slf.mcx,
+		fiberCtx: slf.mcx.fcx,
+		// regulatorCtx: slf,
 
 		header:  slf.mcx.val.header,
 		param:   slf.mcx.val.param,

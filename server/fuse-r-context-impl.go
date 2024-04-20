@@ -14,34 +14,42 @@ import (
 )
 
 func (slf *stuFuseRContext) LastResponse() (code int, val any) {
-	return slf.lastResponseCode, slf.lastResponseVal
+	// return slf.lastResponseCode, slf.lastResponseVal
+	return slf.mcx.responseCode, slf.mcx.responseVal
 }
 
 func (slf *stuFuseRContext) Auth(obj ...any) any {
 	if len(obj) > 0 {
-		slf.authObj = obj[0]
-		slf.isSetAuthObj = true
+		// slf.authObj = obj[0]
+		// slf.isSetAuthObj = true
+		slf.mcx.authObj = obj[0]
+		// slf.mcx.isSetAuthObj = true
 	}
 
-	return slf.authObj
+	// return slf.authObj
+	return slf.mcx.authObj
 }
 
 func (slf *stuFuseRContext) UserId(id ...any) any {
 	if len(id) > 0 {
-		slf.userId = id[0]
-		slf.isSetUserId = true
+		// slf.userId = id[0]
+		// slf.isSetUserId = true
+		slf.mcx.userId = id[0]
 	}
 
-	return slf.userId
+	// return slf.userId
+	return slf.mcx.userId
 }
 
 func (slf *stuFuseRContext) PartnerId(id ...any) any {
 	if len(id) > 0 {
-		slf.partnerId = id[0]
-		slf.isSetPartnerId = true
+		// slf.partnerId = id[0]
+		// slf.isSetPartnerId = true
+		slf.mcx.partnerId = id[0]
 	}
 
-	return slf.partnerId
+	// return slf.partnerId
+	return slf.mcx.partnerId
 }
 
 func (slf *stuFuseRContext) Header() *map[string]string {

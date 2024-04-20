@@ -51,9 +51,6 @@ type stuFuseRMainContext struct {
 	authObj        any
 	userId         any
 	partnerId      any
-	isSetAuthObj   bool
-	isSetUserId    bool
-	isSetPartnerId bool
 
 	val          *stuFuseRVal
 	responseCode int
@@ -63,22 +60,23 @@ type stuFuseRMainContext struct {
 }
 
 type stuFuseRContext struct {
-	fiberCtx     *fiber.Ctx
-	clog         clog.Instance
-	isRegulator  bool
-	regulatorCtx *stuFuseRRegulator
+	mcx      *stuFuseRMainContext
+	fiberCtx *fiber.Ctx
+	// clog         clog.Instance
+	// isRegulator  bool
+	// regulatorCtx *stuFuseRRegulator
 
-	authObj   any
-	userId    any
-	partnerId any
+	// authObj   any
+	// userId    any
+	// partnerId any
 
-	isSetAuthObj   bool
-	isSetUserId    bool
-	isSetPartnerId bool
+	// isSetAuthObj   bool
+	// isSetUserId    bool
+	// isSetPartnerId bool
 
-	errorHandler func(clog.Instance, FuseRContext, error) error
+	// errorHandler func(clog.Instance, FuseRContext, error) error
 
-	handlers         []func(clog.Instance, FuseRContext) error
+	// handlers         []func(clog.Instance, FuseRContext) error
 	lastResponseCode int
 	lastResponseVal  any
 	responseCode     int
@@ -116,9 +114,9 @@ type stuFuseRVal struct {
 	reqBody        *string
 }
 
-type stuFuseRContextBuilder struct {
-	original *stuFuseRContext
-}
+// type stuFuseRContextBuilder struct {
+// 	original *stuFuseRContext
+// }
 
 type stuFuseRRegulator struct {
 	clog                  clog.Instance
