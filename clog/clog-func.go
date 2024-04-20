@@ -10,9 +10,12 @@
 package clog
 
 import (
+	"context"
 	"strings"
 
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
+	"google.golang.org/grpc"
 )
 
 func getConfValue(name string) (value string) {
@@ -22,5 +25,22 @@ func getConfValue(name string) (value string) {
 			value = strings.TrimSpace(v)
 		}
 	}
+	return
+}
+
+func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), req *T, header ...map[string]string) (err error) {
+	if !async {
+		_, err = fm.GrpcCall(fn, req, header...)
+	} else {
+		go func ()  {
+			for {
+				_, err = fm.GrpcCall(fn, req, header...)
+				if err == nil {
+					break
+				}
+			}
+		}()
+	}
+
 	return
 }

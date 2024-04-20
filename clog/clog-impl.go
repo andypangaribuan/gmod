@@ -15,7 +15,7 @@ import (
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
-func (slf *stuInstance) DbqV1(mol *DbqV1) error {
+func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 	req := &sclog.RequestDbqV1{
 		Uid:          slf.uid,
 		UserId:       fm.PbwString(mol.UserId),
@@ -37,11 +37,10 @@ func (slf *stuInstance) DbqV1(mol *DbqV1) error {
 		FinishedAt:   gm.Conv.Time.ToStrFull(mol.FinishedAt),
 	}
 
-	_, err := fm.GrpcCall(client.DbqV1, req)
-	return err
+	return grpcCall(*fm.GetFirst(async, true), client.DbqV1, req)
 }
 
-func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1) error {
+func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error {
 	req := &sclog.RequestServicePieceV1{
 		Uid:              slf.uid,
 		SvcName:          svcName,
@@ -60,11 +59,10 @@ func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1) error {
 		StartedAt:        gm.Conv.Time.ToStrFull(mol.StartedAt),
 	}
 
-	_, err := fm.GrpcCall(client.ServicePieceV1, req)
-	return err
+	return grpcCall(*fm.GetFirst(async, true), client.ServicePieceV1, req)
 }
 
-func (slf *stuInstance) ServiceV1(mol *ServiceV1) error {
+func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
 	req := &sclog.RequestServiceV1{
 		Uid:              slf.uid,
 		UserId:           fm.PbwString(mol.UserId),
@@ -94,6 +92,5 @@ func (slf *stuInstance) ServiceV1(mol *ServiceV1) error {
 		FinishedAt:       gm.Conv.Time.ToStrFull(mol.FinishedAt),
 	}
 
-	_, err := fm.GrpcCall(client.ServiceV1, req)
-	return err
+	return grpcCall(*fm.GetFirst(async, true), client.ServiceV1, req)
 }
