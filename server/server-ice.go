@@ -47,7 +47,25 @@ type FuseRContext interface {
 	LastResponse() (code int, val any)
 
 	R200OK(val any) any
+	R201Created(val any) any
+	R202Accepted(val any) any
+	R204NoContent(val any) any
+
+	R301MovedPermanently(val any) any
+	R307TemporaryRedirect(val any) any
+	R308PermanentRedirect(val any) any
+
+	R400BadRequest(val any) any
+	R401Unauthorized(val any) any
+	R403Forbidden(val any) any
+	R404NotFound(val any) any
+	R406NotAcceptable(val any) any
+	R412PreconditionFailed(val any) any
+	R418Teapot(val any) any
+	R428PreconditionRequired(val any) any
+
 	R500InternalServerError(val any) any
+	R503ServiceUnavailable(val any) any
 }
 
 type FuseRContextBuilder interface {
