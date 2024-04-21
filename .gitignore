@@ -22,3 +22,5 @@ go.work
 
 # miscellaneous
 .DS_Store
+
+test/res/pgdata
