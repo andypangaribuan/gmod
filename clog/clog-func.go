@@ -32,7 +32,7 @@ func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts
 	if !async {
 		_, err = fm.GrpcCall(fn, req, header...)
 	} else {
-		go func ()  {
+		go func() {
 			for {
 				_, err = fm.GrpcCall(fn, req, header...)
 				if err == nil {

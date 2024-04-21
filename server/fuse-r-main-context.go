@@ -23,8 +23,8 @@ func (slf *stuFuseRMainContext) regulator() *stuFuseRRegulator {
 }
 
 func (slf *stuFuseRMainContext) severity() string {
-	if slf.val.endpoint == "unrouted" {
-		return slf.val.endpoint
+	if slf.val.unrouted {
+		return "unrouted"
 	}
 
 	severity := "unknown"

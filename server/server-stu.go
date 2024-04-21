@@ -80,6 +80,7 @@ type stuFuseRVal struct {
 	url      string
 	clientIP string
 	body     []byte
+	unrouted bool
 
 	header  *map[string]string
 	param   *map[string]string

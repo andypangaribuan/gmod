@@ -41,7 +41,6 @@ type FuseRContext interface {
 	PartnerId(id ...any) any
 	SetFiles(files map[string]string)
 
-	Url() string
 	Header() *map[string]string
 
 	LastResponse() (code int, val any)

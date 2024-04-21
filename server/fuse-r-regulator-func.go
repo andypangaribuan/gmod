@@ -10,6 +10,7 @@
 package server
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -55,6 +56,7 @@ func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted 
 			method = strings.ToLower(fcx.Route().Method)
 		}
 
+		slf.mcx.val.endpoint = fmt.Sprintf("%v: %v", method, path)
 		unrouted(ctx, method, path, slf.mcx.val.url)
 	}
 

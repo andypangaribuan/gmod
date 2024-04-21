@@ -64,6 +64,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				endpoint: endpoint,
 				url:      fcx.Request().URI().String(),
 				clientIP: cip.getClientIP(fcx),
+				unrouted: unrouted != nil,
 			},
 		}
 

@@ -45,10 +45,6 @@ func (slf *stuFuseRContext) SetFiles(files map[string]string) {
 	}
 }
 
-func (slf *stuFuseRContext) Url() string {
-	return slf.mcx.val.url
-}
-
 func (slf *stuFuseRContext) Header() *map[string]string {
 	return slf.header
 }

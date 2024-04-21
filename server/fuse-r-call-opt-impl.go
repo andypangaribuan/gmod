@@ -24,7 +24,7 @@ func (slf *stuFuseRCallOpt) OverrideQuery(val map[string]string) FuseRCallOpt {
 	return slf
 }
 
-func (slf *stuFuseRCallOpt) OverrideForm(val map[string][]string) FuseRCallOpt{
+func (slf *stuFuseRCallOpt) OverrideForm(val map[string][]string) FuseRCallOpt {
 	slf.form = &val
 	return slf
 }
