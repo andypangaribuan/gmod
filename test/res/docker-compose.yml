@@ -1,0 +1,24 @@
+version: "3.8"
+name: gmod-pro
+
+networks:
+  gmod-net:
+    name: gmod-net
+
+services:
+  gmod-db:
+    container_name: gmod-db
+    image: postgres:16.2-alpine3.19
+    restart: always
+    command: postgres -c 'max_connections=1000'
+    networks:
+      - gmod-net
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 4410:5432
+    environment:
+      PGDATA: ./pgdata
+      POSTGRES_DB: gmoddb
+      POSTGRES_USER: gmoduser
+      POSTGRES_PASSWORD: gmodpass
