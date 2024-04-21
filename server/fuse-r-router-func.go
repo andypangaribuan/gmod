@@ -47,12 +47,12 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(FuseRRegulat
 
 func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) func(*fiber.Ctx) error {
 	return func(fcx *fiber.Ctx) error {
-		slf.execute(fcx, endpoint, regulator, handlers...)
+		slf.execute(fcx, endpoint, regulator, nil, handlers...)
 		return nil
 	}
 }
 
-func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) {
+func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator func(FuseRRegulator), unrouted func(ctx FuseRContext, method, path, url string) any, handlers ...func(FuseRContext) any) {
 	var (
 		mcx = &stuFuseRMainContext{
 			startedAt:    gm.Util.Timenow(),
@@ -230,12 +230,17 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 	if regulator != nil {
 		regulator(mcx.regulator())
 	} else {
-		slf.defaultHandlerRegulator(mcx.regulator())
+		slf.defaultHandlerRegulator(mcx.regulator(), unrouted)
 	}
 }
 
-func (slf *stuFuseRRouter) defaultHandlerRegulator(regulator FuseRRegulator) {
+func (slf *stuFuseRRouter) defaultHandlerRegulator(regulator *stuFuseRRegulator, unrouted func(ctx FuseRContext, method, path, url string) any) {
 	defer regulator.Recover()
+
+	if unrouted != nil {
+		regulator.call(nil, unrouted)
+		return
+	}
 
 	for {
 		next, handler := regulator.Next()

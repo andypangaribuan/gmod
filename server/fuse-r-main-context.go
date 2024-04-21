@@ -15,7 +15,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (slf *stuFuseRMainContext) regulator() FuseRRegulator {
+func (slf *stuFuseRMainContext) regulator() *stuFuseRRegulator {
 	return &stuFuseRRegulator{
 		mcx:          slf,
 		currentIndex: -1,

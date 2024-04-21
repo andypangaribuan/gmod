@@ -35,35 +35,7 @@ func (slf *stuFuseRRegulator) IsHandler(handler func(ctx FuseRContext) any) bool
 }
 
 func (slf *stuFuseRRegulator) Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any) {
-	ctx := slf.buildContext()
-
-	// override request from opt call
-	for _, v := range opt {
-		o, ok := v.(*stuFuseRCallOpt)
-		if ok && o != nil {
-			if o.header != nil {
-				ctx.header = o.header
-			}
-
-			if o.param != nil {
-				ctx.param = o.param
-			}
-
-			if o.query != nil {
-				ctx.queries = o.query
-			}
-
-			if o.form != nil {
-				ctx.form = o.form
-			}
-		}
-	}
-
-	handler(ctx)
-	slf.mcx.responseCode = ctx.responseCode
-	slf.mcx.responseVal = ctx.responseVal
-
-	return ctx.responseCode, ctx.responseVal
+	return slf.call(handler, nil, opt...)
 }
 
 func (slf *stuFuseRRegulator) CallOpt() FuseRCallOpt {

@@ -24,13 +24,14 @@ func (slf *stuFuseRRouter) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRRouter) Unrouted(handler func(ctx FuseRContext) any) {
+func (slf *stuFuseRRouter) Unrouted(handler func(ctx FuseRContext, method, path, url string) any) {
 	slf.fiberApp.Use(func(fcx *fiber.Ctx) error {
 		err := fcx.Next()
 
 		var fe *fiber.Error
 		if errors.As(err, &fe) && fe.Code == 404 {
 			slf.execute(fcx, "unrouted", nil, handler)
+			return nil
 		}
 
 		return err

@@ -23,7 +23,7 @@ func TestServerFuseR(t *testing.T) {
 	server.FuseR(env.AppRestPort, func(router server.RouterR) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
-		// router.ErrorHandler(sfrErrorHandler)
+		router.ErrorHandler(sfrErrorHandler)
 		router.Unrouted(sfrUnrouted)
 
 		router.Endpoints(nil, nil, map[string][]func(server.FuseRContext) any{
@@ -68,8 +68,15 @@ func TestServerFuseR(t *testing.T) {
 	})
 }
 
-func sfrUnrouted(ctx server.FuseRContext) any {
-	return ctx.R404NotFound("unrouted")
+func sfrUnrouted(ctx server.FuseRContext, method, path, url string) any {
+	data := map[string]string{
+		"status": "unrouted",
+		"method": method,
+		"path":   path,
+		"url":    url,
+	}
+
+	return ctx.R404NotFound(data)
 }
 
 func sfrErrorHandler(ctx server.FuseRContext, err error) any {

@@ -10,8 +10,59 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/andypangaribuan/gmod/fm"
 )
+
+func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted func(ctx FuseRContext, method, path, url string) any, opt ...FuseRCallOpt) (code int, res any) {
+	ctx := slf.buildContext()
+
+	// override request from opt call
+	for _, v := range opt {
+		o, ok := v.(*stuFuseRCallOpt)
+		if ok && o != nil {
+			if o.header != nil {
+				ctx.header = o.header
+			}
+
+			if o.param != nil {
+				ctx.param = o.param
+			}
+
+			if o.query != nil {
+				ctx.queries = o.query
+			}
+
+			if o.form != nil {
+				ctx.form = o.form
+			}
+		}
+	}
+
+	if handler != nil {
+		handler(ctx)
+	}
+
+	if unrouted != nil {
+		var (
+			fcx    = slf.mcx.fcx
+			method = ""
+			path   = fcx.Path()
+		)
+
+		if fcx.Route() != nil {
+			method = strings.ToLower(fcx.Route().Method)
+		}
+
+		unrouted(ctx, method, path, slf.mcx.val.url)
+	}
+
+	slf.mcx.responseCode = ctx.responseCode
+	slf.mcx.responseVal = ctx.responseVal
+
+	return ctx.responseCode, ctx.responseVal
+}
 
 func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	ctx := &stuFuseRContext{
