@@ -10,9 +10,6 @@
 package server
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/pkg/errors"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -27,41 +24,13 @@ func (slf *stuFuseRRouter) PrintOnError(printOnError bool) {
 	slf.printOnError = printOnError
 }
 
-func (slf *stuFuseRRouter) Unrouted(handler func(ctx FuseRContext, method, path, url string) any) {
+func (slf *stuFuseRRouter) Unrouted(handler func(ctx FuseRContext) any) {
 	slf.fiberApp.Use(func(fcx *fiber.Ctx) error {
 		err := fcx.Next()
 
 		var fe *fiber.Error
 		if errors.As(err, &fe) && fe.Code == 404 {
-			var (
-				url      = fcx.OriginalURL()
-				path     = fcx.Path()
-				method   = ""
-				// endpoint = ""
-			)
-
-			if fcx.Route() != nil {
-				method = strings.ToUpper(fcx.Route().Method)
-
-				// m := method
-				// if len(m) > 3 {
-				// 	m = m[:3]
-				// }
-				// endpoint = fmt.Sprintf("%v: %v", m, path)
-			}
-
-			if fe.Message == fmt.Sprintf("Cannot %v %v", method, path) {
-				ctx := &stuFuseRContext{
-					// fcx: fcx,
-					// isRegulator: false,
-					// val: &stuFuseRVal{
-					// 	endpoint: endpoint,
-					// 	url:      fcx.Request().URI().String(),
-					// },
-				}
-
-				_ = handler(ctx, method, path, url)
-			}
+			slf.execute(fcx, "unrouted", nil, handler)
 		}
 
 		return err

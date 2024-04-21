@@ -198,13 +198,13 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			}
 
 			mol := &clog.ServiceV1{
-				UserId:           slf.getUserPartnerId(mcx.userId),
-				PartnerId:        slf.getUserPartnerId(mcx.partnerId),
+				UserId:           mcx.getUserId(),
+				PartnerId:        mcx.getPartnerId(),
 				SvcParentName:    mcx.val.fromSvcName,
 				SvcParentVersion: mcx.val.fromSvcVersion,
 				Endpoint:         mcx.val.endpoint,
 				Url:              mcx.val.url,
-				Severity:         slf.getSeverity(mcx.responseCode),
+				Severity:         mcx.severity(),
 				ExecPath:         mcx.execPath,
 				ExecFunc:         mcx.execFunc,
 				ReqVersion:       mcx.val.reqVersion,
@@ -252,63 +252,4 @@ func (slf *stuFuseRRouter) defaultHandlerRegulator(regulator FuseRRegulator) {
 			break
 		}
 	}
-}
-
-func (slf *stuFuseRRouter) getUserPartnerId(id any) *string {
-	if id == nil {
-		return nil
-	}
-
-	switch val := id.(type) {
-	case string:
-		return &val
-	case *string:
-		return val
-
-	case int:
-		return fm.Ptr(fmt.Sprint(val))
-	case *int:
-		if val != nil {
-			return fm.Ptr(fmt.Sprint(*val))
-		}
-
-	case int32:
-		return fm.Ptr(fmt.Sprint(val))
-	case *int32:
-		if val != nil {
-			return fm.Ptr(fmt.Sprint(*val))
-		}
-
-	case int64:
-		return fm.Ptr(fmt.Sprint(val))
-	case *int64:
-		if val != nil {
-			return fm.Ptr(fmt.Sprint(*val))
-		}
-	}
-
-	return nil
-}
-
-func (slf *stuFuseRRouter) getSeverity(resCode int) string {
-	severity := "unknown"
-
-	switch {
-	case resCode >= 100 && resCode <= 199:
-		severity = "server"
-
-	case resCode >= 200 && resCode <= 299:
-		severity = "success"
-
-	case resCode >= 300 && resCode <= 399:
-		severity = "server"
-
-	case resCode >= 400 && resCode <= 499:
-		severity = "warning"
-
-	case resCode >= 500 && resCode <= 599:
-		severity = "error"
-	}
-
-	return severity
 }

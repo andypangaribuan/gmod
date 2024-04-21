@@ -24,6 +24,7 @@ func TestServerFuseR(t *testing.T) {
 		router.AutoRecover(env.AppAutoRecover)
 		router.PrintOnError(env.AppServerPrintOnError)
 		// router.ErrorHandler(sfrErrorHandler)
+		router.Unrouted(sfrUnrouted)
 
 		router.Endpoints(nil, nil, map[string][]func(server.FuseRContext) any{
 			"POS: /hi/:firstName-:lastName/:age?": {sfrHi},
@@ -65,6 +66,10 @@ func TestServerFuseR(t *testing.T) {
 			"GET: /private/status-17": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
 		})
 	})
+}
+
+func sfrUnrouted(ctx server.FuseRContext) any {
+	return ctx.R404NotFound("unrouted")
 }
 
 func sfrErrorHandler(ctx server.FuseRContext, err error) any {

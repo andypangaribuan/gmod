@@ -23,7 +23,7 @@ type server interface {
 type RouterR interface {
 	AutoRecover(autoRecover bool)
 	PrintOnError(printOnError bool)
-	Unrouted(handler func(ctx FuseRContext, method, path, url string) any)
+	Unrouted(handler func(ctx FuseRContext) any)
 
 	ErrorHandler(catcher func(ctx FuseRContext, err error) any)
 	Endpoints(regulator func(regulator FuseRRegulator), auth func(FuseRContext) any, pathHandlers map[string][]func(FuseRContext) any)
@@ -41,8 +41,8 @@ type FuseRContext interface {
 	PartnerId(id ...any) any
 	SetFiles(files map[string]string)
 
-	Header() *map[string]string
 	Url() string
+	Header() *map[string]string
 
 	LastResponse() (code int, val any)
 
