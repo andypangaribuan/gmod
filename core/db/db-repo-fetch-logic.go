@@ -51,10 +51,7 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 
 	err = report.transform()
 	if err != nil {
-		return &stuRepoResult[T]{
-			report: report,
-			err:    err,
-		}
+		return slf.result(report, err, nil, nil)
 	}
 
 	if tx != nil {
@@ -68,9 +65,5 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 	}
 
 	report.execReport = execReport
-	return &stuRepoResult[T]{
-		report:   report,
-		err:      err,
-		entities: out,
-	}
+	return slf.result(report, err, nil, out)
 }

@@ -44,11 +44,7 @@ RETURNING id`
 
 	err = report.transform()
 	if err != nil {
-		return &stuRepoResult[T]{
-			report: report,
-			err:    err,
-			id:     id,
-		}
+		return slf.result(report, err, id, nil)
 	}
 
 	if tx != nil {
@@ -66,19 +62,12 @@ RETURNING id`
 	}
 
 	report.execReport = execReport
-	return &stuRepoResult[T]{
-		report: report,
-		err:    err,
-		id:     id,
-	}
+	return slf.result(report, err, id, nil)
 }
 
 func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) *stuRepoResult[T] { // (*stuReport, error) {
 	if tx == nil {
-		return &stuRepoResult[T]{
-			report: nil,
-			err:    errors.New("db: bulk insert only available via transaction"),
-		}
+		return slf.result(nil, errors.New("db: bulk insert only available via transaction"), nil, nil)
 	}
 
 	var (
@@ -128,9 +117,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 	}
 
 	if len(partSize) == 0 {
-		return &stuRepoResult[T]{
-			err: errors.New("db: no data to process"),
-		}
+		return slf.result(nil, errors.New("db: no data to process"), nil, nil)
 	}
 
 	valFormat := `(
@@ -149,14 +136,9 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 
 		_, err = slf.ins.TxExecute(tx, query, args...)
 		if err != nil {
-			return &stuRepoResult[T]{
-				report: report,
-				err:    err,
-			}
+			return slf.result(report, err, nil, nil)
 		}
 	}
 
-	return &stuRepoResult[T]{
-		report: report,
-	}
+	return slf.result(report, nil, nil, nil)
 }

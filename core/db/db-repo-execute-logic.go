@@ -49,10 +49,7 @@ func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) *stuRe
 
 	err = report.transform()
 	if err != nil {
-		return &stuRepoResult[T]{
-			report: report,
-			err:    err,
-		}
+		return slf.result(report, err, nil, nil)
 	}
 
 	if tx == nil {
@@ -62,8 +59,5 @@ func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) *stuRe
 	}
 
 	report.execReport = execReport
-	return &stuRepoResult[T]{
-		report: report,
-		err:    err,
-	}
+	return slf.result(report, err, nil, nil)
 }

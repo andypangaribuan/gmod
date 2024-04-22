@@ -96,10 +96,7 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) *stuRepoRe
 
 	err = report.transform()
 	if err != nil {
-		return &stuRepoResult[T]{
-			report: report,
-			err:    err,
-		}
+		return slf.result(report, err, nil, nil)
 	}
 
 	if tx != nil {
@@ -109,8 +106,5 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) *stuRepoRe
 	}
 
 	report.execReport = execReport
-	return &stuRepoResult[T]{
-		report: report,
-		err:    err,
-	}
+	return slf.result(report, err, nil, nil)
 }

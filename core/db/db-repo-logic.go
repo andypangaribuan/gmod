@@ -147,6 +147,15 @@ func (slf *stuRepo[T]) getArgs(args []any) []any {
 	return filtered
 }
 
+func (slf *stuRepo[T]) result(report *stuReport, err error, id *int64, entities []*T) *stuRepoResult[T] {
+	return &stuRepoResult[T]{
+		report:   report,
+		err:      err,
+		id:       id,
+		entities: entities,
+	}
+}
+
 func (slf *stuRepo[T]) override(clog clog.Instance, res *stuRepoResult[T]) *stuRepoResult[T] {
 	pushClogReport(clog, res.report, res.err, 4)
 	return res
