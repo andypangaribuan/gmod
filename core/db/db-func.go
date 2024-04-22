@@ -46,3 +46,19 @@ func FetchOpt() FetchOptBuilder {
 func Update() UpdateBuilder {
 	return new(stuUpdateBuilder)
 }
+
+func NewRepoFuncOpt() RepoFuncOpt {
+	return new(stuRepoFuncOpt)
+}
+
+func AddSkipLevel(level int, args ...any) []any {
+	opt := NewRepoFuncOpt().SetSkipLevel(level)
+
+	if args == nil {
+		args = []any{opt}
+	} else {
+		args = append(args, opt)
+	}
+
+	return args
+}

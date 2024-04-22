@@ -65,7 +65,7 @@ RETURNING id`
 	return id, report, err
 }
 
-func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) (*stuReport, error) {
+func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, args ...any) (*stuReport, error) {
 	if tx == nil {
 		return nil, errors.New("db: bulk insert only available via transaction")
 	}
@@ -83,7 +83,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 			},
 		}
 		err             error
-		insertChunkSize = *fm.GetFirst(chunkSize, 100)
+		insertChunkSize = 100
 		partSize        = make([]int, 0)
 		partArgs        = make([][]any, 0)
 		part            = make([]any, 0)
@@ -94,6 +94,18 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 		report.execReport.FinishedAt = gm.Util.Timenow()
 		report.execReport.DurationMs = report.execReport.FinishedAt.Sub(report.execReport.StartedAt).Milliseconds()
 	}()
+
+	for _, arg := range args {
+		switch v := arg.(type) {
+		case RepoFuncOpt:
+			if v != nil {
+				o, ok := v.(*stuRepoFuncOpt)
+				if ok && o != nil && o.chunkSize != nil {
+					insertChunkSize = *o.chunkSize
+				}
+			}
+		}
+	}
 
 	for _, e := range entities {
 		count++

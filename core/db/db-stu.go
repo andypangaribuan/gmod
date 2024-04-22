@@ -67,6 +67,11 @@ type stuRepoOptBuilder struct {
 	rwFetchWhenNull     *bool
 }
 
+type stuRepoFuncOpt struct {
+	skipLevel *int
+	chunkSize *int
+}
+
 type stuFetchOptBuilder struct {
 	withDeletedAtIsNull *bool
 	endQuery            *string

@@ -133,7 +133,7 @@ func (slf *stuRepo[T]) getArgs(args []any) []any {
 
 	for _, arg := range args {
 		switch arg.(type) {
-		case FetchOptBuilder:
+		case FetchOptBuilder, *stuRepoFuncOpt, RepoFuncOpt:
 			continue
 		default:
 			filtered = append(filtered, arg)

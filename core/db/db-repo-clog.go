@@ -18,7 +18,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func pushClogReport(cin clog.Instance, report *stuReport, err error) {
+func pushClogReport(cin clog.Instance, report *stuReport, err error, args ...any) {
 	if cin == nil || report == nil {
 		return
 	}
@@ -33,6 +33,15 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error) {
 		duration1             int
 		duration2             *int
 	)
+
+	for _, arg := range args {
+		opt, ok := arg.(*stuRepoFuncOpt)
+		if ok && opt != nil {
+			if opt.skipLevel != nil {
+				execPathFuncSkipLevel += *opt.skipLevel
+			}
+		}
+	}
 
 	execPath, execFunc := gm.Util.GetExecPathFunc(execPathFuncSkipLevel)
 

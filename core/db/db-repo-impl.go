@@ -34,77 +34,90 @@ func (slf *stuRepo[T]) SetInsert(columns string, fn func(e *T) []any) {
 
 func (slf *stuRepo[T]) Fetch(clog clog.Instance, condition string, args ...any) (*T, error) {
 	models, report, err := slf.fetches(true, nil, condition, args)
-	go pushClogReport(clog, report, err)
+	pushClogReport(clog, report, err, args...)
 	return fm.PtrGetFirst(models), err
 }
 
 func (slf *stuRepo[T]) Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error) {
 	models, report, err := slf.fetches(false, nil, condition, args)
-	go pushClogReport(clog, report, err)
+	pushClogReport(clog, report, err, args...)
 	return models, err
 }
 
 func (slf *stuRepo[T]) VFetches(clog clog.Instance, condition string, args ...any) ([]T, error) {
-	models, _, err := slf.vfetches(false, nil, condition, args)
+	models, report, err := slf.vfetches(false, nil, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return models, err
 }
 
-func (slf *stuRepo[T]) Insert(clog clog.Instance, e *T) error {
-	_, _, err := slf.insert(nil, false, slf.insertColumnFunc(e))
+func (slf *stuRepo[T]) Insert(clog clog.Instance, e *T, args ...any) error {
+	_, report, err := slf.insert(nil, false, slf.insertColumnFunc(e))
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
-func (slf *stuRepo[T]) InsertRID(clog clog.Instance, e *T) (*int64, error) {
-	id, _, err := slf.insert(nil, true, slf.insertColumnFunc(e))
+func (slf *stuRepo[T]) InsertRID(clog clog.Instance, e *T, args ...any) (*int64, error) {
+	id, report, err := slf.insert(nil, true, slf.insertColumnFunc(e))
+	pushClogReport(clog, report, err, args...)
 	return id, err
 }
 
-func (slf *stuRepo[T]) Update(clog clog.Instance, builder UpdateBuilder) error {
-	_, err := slf.update(nil, builder.(*stuUpdateBuilder))
+func (slf *stuRepo[T]) Update(clog clog.Instance, builder UpdateBuilder, args ...any) error {
+	report, err := slf.update(nil, builder.(*stuUpdateBuilder))
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
 func (slf *stuRepo[T]) Execute(clog clog.Instance, condition string, args ...any) error {
-	_, err := slf.execute(nil, condition, args)
+	report, err := slf.execute(nil, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
 func (slf *stuRepo[T]) TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error) {
-	models, _, err := slf.fetches(true, tx, condition, args)
+	models, report, err := slf.fetches(true, tx, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return fm.PtrGetFirst(models), err
 }
 
 func (slf *stuRepo[T]) TxFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]*T, error) {
-	models, _, err := slf.fetches(false, tx, condition, args)
+	models, report, err := slf.fetches(false, tx, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return models, err
 }
 
 func (slf *stuRepo[T]) TxVFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]T, error) {
-	models, _, err := slf.vfetches(false, tx, condition, args)
+	models, report, err := slf.vfetches(false, tx, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return models, err
 }
 
-func (slf *stuRepo[T]) TxInsert(clog clog.Instance, tx ice.DbTx, e *T) error {
-	_, _, err := slf.insert(tx, false, slf.insertColumnFunc(e))
+func (slf *stuRepo[T]) TxInsert(clog clog.Instance, tx ice.DbTx, e *T, args ...any) error {
+	_, report, err := slf.insert(tx, false, slf.insertColumnFunc(e))
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
-func (slf *stuRepo[T]) TxInsertRID(clog clog.Instance, tx ice.DbTx, e *T) (*int64, error) {
-	id, _, err := slf.insert(tx, true, slf.insertColumnFunc(e))
+func (slf *stuRepo[T]) TxInsertRID(clog clog.Instance, tx ice.DbTx, e *T, args ...any) (*int64, error) {
+	id, report, err := slf.insert(tx, true, slf.insertColumnFunc(e))
+	pushClogReport(clog, report, err, args...)
 	return id, err
 }
 
-func (slf *stuRepo[T]) TxBulkInsert(clog clog.Instance, tx ice.DbTx, entities []*T, chunkSize ...int) error {
-	_, err := slf.bulkInsert(tx, entities, chunkSize...)
+func (slf *stuRepo[T]) TxBulkInsert(clog clog.Instance, tx ice.DbTx, entities []*T, args ...any) error {
+	report, err := slf.bulkInsert(tx, entities, args...)
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
-func (slf *stuRepo[T]) TxUpdate(clog clog.Instance, tx ice.DbTx, builder UpdateBuilder) error {
-	_, err := slf.update(tx, builder.(*stuUpdateBuilder))
+func (slf *stuRepo[T]) TxUpdate(clog clog.Instance, tx ice.DbTx, builder UpdateBuilder, args ...any) error {
+	report, err := slf.update(tx, builder.(*stuUpdateBuilder))
+	pushClogReport(clog, report, err, args...)
 	return err
 }
 
 func (slf *stuRepo[T]) TxExecute(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error {
-	_, err := slf.execute(tx, condition, args)
+	report, err := slf.execute(tx, condition, args)
+	pushClogReport(clog, report, err, args...)
 	return err
 }
