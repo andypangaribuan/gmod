@@ -8,7 +8,3 @@ runme:
 python -m pip install requests
 python -m pip install print_color
 ```
-
-```sh {"id":"01HW3D66FCSY0ZWP5CPPB1SEME"}
-python -m pip install uuid
-```

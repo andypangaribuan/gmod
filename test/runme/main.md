@@ -41,7 +41,7 @@ headers = {
 }
 body = {
     'name': 'andy',
-    'address': 'bintaro',
+    'address': 'tangerang',
     'height': 10,
     'gold_amount': 100.00000000901234
 }

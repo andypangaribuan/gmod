@@ -26,7 +26,7 @@ func JsonCast[T any](value any, links ...string) (*T, error) {
 
 		case []byte:
 			var out *map[string]any
-			err := gm.Json.UnMarshal(val, &out)
+			err := gm.Json.Unmarshal(val, &out)
 			if err != nil {
 				return nil, err
 			}
@@ -45,7 +45,7 @@ func JsonCast[T any](value any, links ...string) (*T, error) {
 	switch val := value.(type) {
 	case []byte:
 		var out *map[string]any
-		err := gm.Json.UnMarshal(val, &out)
+		err := gm.Json.Unmarshal(val, &out)
 		if err != nil {
 			return nil, err
 		}

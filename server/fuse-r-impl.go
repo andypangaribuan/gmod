@@ -27,7 +27,7 @@ func (*stuServer) FuseR(restPort int, routes func(router RouterR)) {
 
 	fuseFiberApp = fiber.New(fiber.Config{
 		JSONEncoder:           gm.Json.Marshal,
-		JSONDecoder:           gm.Json.UnMarshal,
+		JSONDecoder:           gm.Json.Unmarshal,
 		DisableStartupMessage: true,
 	})
 

@@ -84,7 +84,7 @@ func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 			return err
 		}
 
-		err = gm.Json.UnMarshal(data, header)
+		err = gm.Json.Unmarshal(data, header)
 		if err != nil {
 			return err
 		}

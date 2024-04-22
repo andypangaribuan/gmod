@@ -13,7 +13,7 @@ func (*stuJson) Marshal(obj any) ([]byte, error) {
 	return api.Marshal(obj)
 }
 
-func (*stuJson) UnMarshal(data []byte, out any) error {
+func (*stuJson) Unmarshal(data []byte, out any) error {
 	return api.Unmarshal(data, &out)
 }
 

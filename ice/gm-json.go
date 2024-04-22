@@ -11,7 +11,7 @@ package ice
 
 type Json interface {
 	Marshal(obj any) ([]byte, error)
-	UnMarshal(data []byte, out any) error
+	Unmarshal(data []byte, out any) error
 	Encode(obj any) (string, error)
 	Decode(jsonStr string, out any) error
 	MapToJson(maps map[string]any) (string, error)
