@@ -65,8 +65,8 @@ func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error
 func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
 	req := &sclog.RequestServiceV1{
 		Uid:              slf.uid,
-		UserId:           fm.PbwString(mol.UserId),
-		PartnerId:        fm.PbwString(mol.PartnerId),
+		UserId:           fm.PbwString(slf.userId),
+		PartnerId:        fm.PbwString(slf.partnerId),
 		SvcName:          svcName,
 		SvcVersion:       svcVersion,
 		SvcParentName:    fm.PbwString(mol.SvcParentName),

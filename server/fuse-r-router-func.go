@@ -199,8 +199,6 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			}
 
 			mol := &clog.ServiceV1{
-				UserId:           mcx.getUserId(),
-				PartnerId:        mcx.getPartnerId(),
 				SvcParentName:    mcx.val.fromSvcName,
 				SvcParentVersion: mcx.val.fromSvcVersion,
 				Endpoint:         mcx.val.endpoint,

@@ -45,8 +45,6 @@ type ServicePieceV1 struct {
 }
 
 type ServiceV1 struct {
-	UserId           *string
-	PartnerId        *string
 	SvcParentName    *string
 	SvcParentVersion *string
 	Endpoint         string
