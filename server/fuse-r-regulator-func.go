@@ -70,11 +70,12 @@ func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
 	ctx := &stuFuseRContext{
 		mcx: slf.mcx,
 
-		header:  slf.mcx.val.header,
-		param:   slf.mcx.val.param,
-		queries: slf.mcx.val.queries,
-		form:    slf.mcx.val.form,
-		file:    slf.mcx.val.file,
+		header:     slf.mcx.val.header,
+		param:      slf.mcx.val.param,
+		queries:    slf.mcx.val.queries,
+		form:       slf.mcx.val.form,
+		file:       slf.mcx.val.file,
+		bodyParser: slf.mcx.val.bodyParser,
 	}
 
 	slf.currentHandlerContext = ctx

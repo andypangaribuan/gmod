@@ -41,20 +41,18 @@ function docker-down {
   docker-compose down
 }
 
+#: space
+
 #: clean the docker database
-function docker-clean {
+function reset {
   cd res
   docker-compose down
   rm -rf pgdata
   docker-compose up -d
   sleep 5
   docker-compose ps -a
-}
 
-#: space
-
-#: execute sql files and configuration
-function sql {
+  sleep 2
   PGPASSWORD=gmodpass \
   PGOPTIONS="-c search_path=public" \
   psql -h 127.0.0.1 -p 4410 \
@@ -62,7 +60,7 @@ function sql {
   <<-EOSQL
   BEGIN;
 
-  \i res/table.sql
+  \i table.sql
 
   COMMIT;
 EOSQL

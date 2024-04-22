@@ -13,9 +13,9 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/andypangaribuan/gmod/fc"
-	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
 	"github.com/andypangaribuan/gmod/test/db/entity"
@@ -73,6 +73,8 @@ func TestServerFuseR(t *testing.T) {
 		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /fetch-1":  {sfrFetch},
 			"POS: /insert-1": {sfrInsert},
+			"POS: /delete-1": {sfrDelete},
+			"POS: /form-1":   {sfrForm},
 		})
 	})
 }
@@ -140,12 +142,12 @@ func sfrAuth(ctx server.FuseRContext) any {
 }
 
 func sfrPrivateStatus1(ctx server.FuseRContext) any {
-	h := ctx.Header()
+	h := ctx.ReqHeader()
 	hj, err := gm.Json.Encode(h)
 	if err == nil {
 		fmt.Println(hj)
 	}
-	fmt.Printf("private-status-1: header: %v\n", ctx.Header())
+	fmt.Printf("private-status-1: header: %v\n", ctx.ReqHeader())
 
 	ctx.SetFiles(map[string]string{
 		"file1": "gcs/file1.pdf",
@@ -156,7 +158,7 @@ func sfrPrivateStatus1(ctx server.FuseRContext) any {
 }
 
 func sfrPrivateStatus2(ctx server.FuseRContext) any {
-	fmt.Printf("private-status-2: header: %v\n", ctx.Header())
+	fmt.Printf("private-status-2: header: %v\n", ctx.ReqHeader())
 	auth := ctx.Auth().(string)
 	_, val := ctx.LastResponse()
 
@@ -188,25 +190,116 @@ func sfrFetch(ctx server.FuseRContext) any {
 		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
 	}
 
-	return ctx.R200OK(fmt.Sprintf("total user: %v", len(entities)))
+	type response struct {
+		CreatedAt  time.Time  `json:"created_at"`
+		UpdatedAt  time.Time  `json:"updated_at"`
+		DeletedAt  *time.Time `json:"deleted_at"`
+		Name       string     `json:"name"`
+		Address    *string    `json:"address"`
+		Height     *int       `json:"height"`
+		GoldAmount *fc.FCT    `json:"gold_amount"`
+	}
+
+	users := make([]response, len(entities))
+	for i, e := range entities {
+		users[i] = response{
+			CreatedAt:  e.CreatedAt,
+			UpdatedAt:  e.UpdatedAt,
+			Name:       e.Name,
+			Address:    e.Address,
+			Height:     e.Height,
+			GoldAmount: e.GoldAmount,
+		}
+	}
+
+	return ctx.R200OK(users)
 }
 
 func sfrInsert(ctx server.FuseRContext) any {
+	type stuHeader struct {
+		Version string `json:"x-version"`
+	}
+
+	type stuRequest struct {
+		Name       string  `json:"name"`
+		Address    *string `json:"address"`
+		Height     *int    `json:"height"`
+		GoldAmount *fc.FCT `json:"gold_amount"`
+	}
+
+	var (
+		header *stuHeader
+		req    *stuRequest
+	)
+
+	err := ctx.ReqParser(&header, &req)
+	if err != nil {
+		return ctx.R500InternalServerError("something went wrong with your request")
+	}
+
 	timenow := gm.Util.Timenow()
 	user := &entity.User{
 		CreatedAt:  timenow,
 		UpdatedAt:  timenow,
 		Uid:        gm.Util.UID(),
-		Name:       "andy",
-		Address:    fm.Ptr("bintaro"),
-		Height:     fm.Ptr(10),
-		GoldAmount: fm.Ptr(fc.New(100.000000000100005)),
+		Name:       req.Name,
+		Address:    req.Address,
+		Height:     req.Height,
+		GoldAmount: req.GoldAmount,
 	}
 
-	err := repo.User.Insert(ctx.Clog(), user)
+	err = repo.User.Insert(ctx.Clog(), user)
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
 	}
 
 	return ctx.R200OK("success")
+}
+
+func sfrDelete(ctx server.FuseRContext) any {
+	query := ctx.ReqQuery()
+	if query == nil {
+		return ctx.R406NotAcceptable("have no query")
+	}
+
+	var name *string
+	for k, v := range *query {
+		if k == "name" {
+			name = &v
+		}
+	}
+
+	if name == nil {
+		return ctx.R400BadRequest("not found: name on query")
+	}
+
+	err := repo.User.Delete(ctx.Clog(), "name=?", name)
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+	}
+
+	return ctx.R200OK("ok")
+}
+
+func sfrForm(ctx server.FuseRContext) any {
+	form := ctx.ReqForm()
+	file := ctx.ReqFile()
+
+	if form == nil {
+		fmt.Printf("[form] no data\n")
+	} else {
+		for k, v := range *form {
+			fmt.Printf("[form] key: %v, file: %v\n", k, v)
+		}
+	}
+
+	if file == nil {
+		fmt.Printf("[file] no data\n")
+	} else {
+		for k, v := range *file {
+			fmt.Printf("[file] key: %v, total-file: %v\n", k, len(v))
+		}
+	}
+
+	return ctx.R200OK("ok")
 }

@@ -26,6 +26,6 @@ func (slf *xrepo[T]) Fetches(clog clog.Instance, condition string, args ...any) 
 	return slf.repo.Fetches(clog, condition, args...)
 }
 
-func (slf *xrepo[T]) Execute(clog clog.Instance, condition string, args ...any) error {
-	return slf.repo.Execute(clog, condition, args...)
+func (slf *xrepo[T]) Delete(clog clog.Instance, condition string, args ...any) error {
+	return slf.repo.Delete(clog, condition, args...)
 }

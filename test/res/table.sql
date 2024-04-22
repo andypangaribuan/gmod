@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS users (
     name        VARCHAR(500)  NOT NULL,
     address     VARCHAR(500),
     height      INTEGER,
-    gold_amount NUMERIC(25, 15)
+    gold_amount NUMERIC(24, 14)
 );

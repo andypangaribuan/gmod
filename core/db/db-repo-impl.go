@@ -51,8 +51,8 @@ func (slf *stuRepo[T]) Update(clog clog.Instance, builder UpdateBuilder) error {
 	return slf.override(clog, slf.update(nil, builder.(*stuUpdateBuilder))).err
 }
 
-func (slf *stuRepo[T]) Execute(clog clog.Instance, condition string, args ...any) error {
-	return slf.override(clog, slf.execute(nil, condition, args)).err
+func (slf *stuRepo[T]) Delete(clog clog.Instance, condition string, args ...any) error {
+	return slf.override(clog, slf.delete(nil, condition, args)).err
 }
 
 func (slf *stuRepo[T]) TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error) {
@@ -79,6 +79,6 @@ func (slf *stuRepo[T]) TxUpdate(clog clog.Instance, tx ice.DbTx, builder UpdateB
 	return slf.override(clog, slf.update(tx, builder.(*stuUpdateBuilder))).err
 }
 
-func (slf *stuRepo[T]) TxExecute(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error {
-	return slf.override(clog, slf.execute(tx, condition, args)).err
+func (slf *stuRepo[T]) TxDelete(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error {
+	return slf.override(clog, slf.delete(tx, condition, args)).err
 }

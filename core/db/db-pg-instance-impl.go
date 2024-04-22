@@ -159,9 +159,9 @@ func (slf *pgInstance) SelectR2(out any, query string, args []any, check *func()
 		return report, err
 	}
 
-	if check != nil {
+	if slf.ro != nil && check != nil {
 		c := *check
-		if !c() && slf.ro != nil {
+		if !c() {
 			reportHost := &mol.DbExecReportHost{StartedAt: gm.Util.Timenow()}
 			report.Hosts = append(report.Hosts, reportHost)
 

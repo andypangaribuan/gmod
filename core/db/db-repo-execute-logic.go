@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) *stuRepoResult[T] {
+func (slf *stuRepo[T]) delete(tx ice.DbTx, condition string, args []any) *stuRepoResult[T] {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
 		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args))

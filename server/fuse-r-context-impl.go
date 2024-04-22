@@ -9,7 +9,13 @@
 
 package server
 
-import "github.com/andypangaribuan/gmod/clog"
+import (
+	"mime/multipart"
+
+	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/gm"
+	"github.com/pkg/errors"
+)
 
 func (slf *stuFuseRContext) Clog() clog.Instance {
 	return slf.mcx.clog
@@ -47,8 +53,59 @@ func (slf *stuFuseRContext) SetFiles(files map[string]string) {
 	}
 }
 
-func (slf *stuFuseRContext) Header() *map[string]string {
+func (slf *stuFuseRContext) ReqHeader() *map[string]string {
 	return slf.header
+}
+
+func (slf *stuFuseRContext) ReqParam() *map[string]string {
+	return slf.param
+}
+
+func (slf *stuFuseRContext) ReqQuery() *map[string]string {
+	return slf.queries
+}
+
+func (slf *stuFuseRContext) ReqForm() *map[string][]string {
+	return slf.form
+}
+
+func (slf *stuFuseRContext) ReqFile() *map[string][]*multipart.FileHeader {
+	return slf.file
+}
+
+func (slf *stuFuseRContext) ReqParser(header any, body any) error {
+	if header != nil {
+		if slf.header == nil || len(*slf.header) == 0 {
+			return errors.New("parser: have no header")
+		}
+
+		data, err := gm.Json.Marshal(slf.header)
+		if err != nil {
+			return err
+		}
+
+		err = gm.Json.UnMarshal(data, header)
+		if err != nil {
+			return err
+		}
+	}
+
+	if body != nil {
+		if slf.bodyParser == nil {
+			return errors.New("parser: have no body")
+		}
+
+		err := slf.bodyParser(body)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (slf *stuFuseRContext) ReqParserPQF(param any, query any, form any) error {
+	return nil
 }
 
 func (slf *stuFuseRContext) LastResponse() (code int, val any) {

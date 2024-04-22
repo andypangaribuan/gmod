@@ -65,11 +65,12 @@ type stuFuseRMainContext struct {
 type stuFuseRContext struct {
 	mcx *stuFuseRMainContext
 
-	header  *map[string]string
-	param   *map[string]string
-	queries *map[string]string
-	form    *map[string][]string
-	file    *map[string][]*multipart.FileHeader
+	header     *map[string]string
+	param      *map[string]string
+	queries    *map[string]string
+	form       *map[string][]string
+	file       *map[string][]*multipart.FileHeader
+	bodyParser func(out any) error
 
 	responseCode int
 	responseVal  any
@@ -79,8 +80,9 @@ type stuFuseRVal struct {
 	endpoint string
 	url      string
 	clientIP string
-	body     []byte
 	unrouted bool
+
+	bodyParser func(out any) error
 
 	header  *map[string]string
 	param   *map[string]string

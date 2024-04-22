@@ -61,10 +61,11 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			handlers:     handlers,
 			errorHandler: slf.errorHandler,
 			val: &stuFuseRVal{
-				endpoint: endpoint,
-				url:      fcx.Request().URI().String(),
-				clientIP: cip.getClientIP(fcx),
-				unrouted: unrouted != nil,
+				endpoint:   endpoint,
+				url:        fcx.Request().URI().String(),
+				clientIP:   cip.getClientIP(fcx),
+				unrouted:   unrouted != nil,
+				bodyParser: fcx.BodyParser,
 			},
 		}
 
@@ -72,7 +73,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 		reqHeader   = make(map[string]string, 0)
 		reqParam    = fcx.AllParams()
 		reqQueries  = fcx.Queries()
-		reqBody     = fcx.Request().Body()
+		reqBody     = fcx.BodyRaw()
 	)
 
 	for key, ls := range fcx.GetReqHeaders() {
@@ -152,7 +153,6 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 	}
 
 	if len(reqBody) > 0 {
-		mcx.val.body = reqBody
 		if contentType == "application/json" {
 			mcx.val.reqBody = fm.Ptr(string(reqBody))
 		}

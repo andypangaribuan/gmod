@@ -22,7 +22,7 @@ type Repo[T any] interface {
 	Insert(clog clog.Instance, e *T) error
 	InsertRID(clog clog.Instance, e *T) (*int64, error)
 	Update(clog clog.Instance, builder UpdateBuilder) error
-	Execute(clog clog.Instance, condition string, args ...any) error
+	Delete(clog clog.Instance, condition string, args ...any) error
 
 	TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error)
 	TxFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]*T, error)
@@ -30,7 +30,7 @@ type Repo[T any] interface {
 	TxInsertRID(clog clog.Instance, tx ice.DbTx, e *T) (*int64, error)
 	TxBulkInsert(clog clog.Instance, tx ice.DbTx, entities []*T, chunkSize ...int) error
 	TxUpdate(clog clog.Instance, tx ice.DbTx, builder UpdateBuilder) error
-	TxExecute(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error
+	TxDelete(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error
 }
 
 type RepoOptBuilder interface {

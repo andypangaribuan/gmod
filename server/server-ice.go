@@ -10,6 +10,8 @@
 package server
 
 import (
+	"mime/multipart"
+
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/grpc"
 )
@@ -41,7 +43,14 @@ type FuseRContext interface {
 	PartnerId(id ...any) any
 	SetFiles(files map[string]string)
 
-	Header() *map[string]string
+	ReqHeader() *map[string]string
+	ReqParam() *map[string]string
+	ReqQuery() *map[string]string
+	ReqForm() *map[string][]string
+	ReqFile() *map[string][]*multipart.FileHeader
+
+	ReqParser(header any, body any) error
+	ReqParserPQF(param any, query any, form any) error
 
 	LastResponse() (code int, val any)
 
