@@ -22,3 +22,7 @@ func (slf *xrepo[T]) Insert(e *T) error {
 func (slf *xrepo[T]) Fetches(condition string, args ...any) ([]*T, error) {
 	return slf.repo.Fetches(condition, args...)
 }
+
+func (slf *xrepo[T]) Execute(condition string, args ...any) error {
+	return slf.repo.Execute(condition, args...)
+}

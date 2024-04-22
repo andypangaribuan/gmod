@@ -7,20 +7,5 @@
  * All Rights Reserved.
  */
 
-package fm
+package db
 
-func Ternary[T any](condition bool, a, b T) T {
-	if condition {
-		return a
-	} else {
-		return b
-	}
-}
-
-func Ternary2LR[A any, B any](condition bool, l, r func() (A, B)) (A, B) {
-	if condition {
-		return l()
-	} else {
-		return r()
-	}
-}

@@ -17,8 +17,8 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]T, *stuReport, error) {
-	entities, report, err := slf.fetches(isFetch, tx, condition, args)
+func (slf *stuRepo[T]) vfetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) ([]T, *stuReport, error) {
+	entities, report, err := slf.fetches(isLimitOne, tx, condition, args)
 	ls := make([]T, len(entities))
 
 	for i, e := range entities {
@@ -28,10 +28,10 @@ func (slf *stuRepo[T]) vfetches(isFetch bool, tx ice.DbTx, condition string, arg
 	return ls, report, err
 }
 
-func (slf *stuRepo[T]) fetches(isFetch bool, tx ice.DbTx, condition string, args []any) ([]*T, *stuReport, error) {
+func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) ([]*T, *stuReport, error) {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
-		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isFetch, " LIMIT 1", ""))
+		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isLimitOne, " LIMIT 1", ""))
 		fullQuery  = slf.getQuery("full-query", args)
 		report     = &stuReport{
 			tableName:     slf.tableName,

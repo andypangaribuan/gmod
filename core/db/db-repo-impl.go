@@ -61,6 +61,11 @@ func (slf *stuRepo[T]) Update(builder UpdateBuilder) error {
 	return err
 }
 
+func (slf *stuRepo[T]) Execute(condition string, args ...any) error {
+	_, err := slf.execute(nil, condition, args)
+	return err
+}
+
 func (slf *stuRepo[T]) TxFetch(tx ice.DbTx, condition string, args ...any) (*T, error) {
 	models, _, err := slf.fetches(true, tx, condition, args)
 	return fm.PtrGetFirst(models), err
@@ -93,5 +98,10 @@ func (slf *stuRepo[T]) TxBulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int
 
 func (slf *stuRepo[T]) TxUpdate(tx ice.DbTx, builder UpdateBuilder) error {
 	_, err := slf.update(tx, builder.(*stuUpdateBuilder))
+	return err
+}
+
+func (slf *stuRepo[T]) TxExecute(tx ice.DbTx, condition string, args ...any) error {
+	_, err := slf.execute(tx, condition, args)
 	return err
 }

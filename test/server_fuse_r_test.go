@@ -16,6 +16,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
+	"github.com/andypangaribuan/gmod/test/db/repo"
 )
 
 // go test -v -run ^TestServerFuseR$
@@ -64,6 +65,10 @@ func TestServerFuseR(t *testing.T) {
 		router.Endpoints(sfrRegulator, sfrAuth, map[string][]func(server.FuseRContext) any{
 			"GET: /private/status-16": {sfrPrivateStatus1, sfrPrivateStatusErr, sfrPrivateStatus2},
 			"GET: /private/status-17": {sfrPrivateStatus1, sfrPrivateStatus2, sfrPrivateStatusErr},
+		})
+
+		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
+			"GET: /fetch-1": {sfrFetch},
 		})
 	})
 }
@@ -171,4 +176,13 @@ func sfrPrivateStatusErr(ctx server.FuseRContext) any {
 
 func sfrHi(ctx server.FuseRContext) any {
 	return ctx.R200OK("ok")
+}
+
+func sfrFetch(ctx server.FuseRContext) any {
+	entities, err := repo.User.Fetches("name=?", "andy")
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
+	}
+
+	return ctx.R200OK(fmt.Sprintf("total user: %v", len(entities)))
 }

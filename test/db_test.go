@@ -42,9 +42,15 @@ func TestDbInsert(t *testing.T) {
 
 func TestDbFetches(t *testing.T) {
 	gm.Test.Start(t, func(t *testing.T) {
-		ls, err := repo.User.Fetches("name=?", "andy")
+		entities, err := repo.User.Fetches("name=?", "andy")
 		require.Nil(t, err)
-		require.Greater(t, len(ls), 0)
-		gm.Test.Printf(t, "length: %v\n", len(ls))
+		require.Greater(t, len(entities), 0)
+		gm.Test.Printf(t, "length: %v\n", len(entities))
+	})
+}
+
+func TestDbDelete(t *testing.T) {
+	gm.Test.Start(t, func(t *testing.T) {
+		
 	})
 }

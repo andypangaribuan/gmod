@@ -20,6 +20,7 @@ type Repo[T any] interface {
 	Insert(e *T) error
 	InsertRID(e *T) (*int64, error)
 	Update(builder UpdateBuilder) error
+	Execute(condition string, args ...any) error
 
 	TxFetch(tx ice.DbTx, condition string, args ...any) (*T, error)
 	TxFetches(tx ice.DbTx, condition string, args ...any) ([]*T, error)
@@ -28,6 +29,7 @@ type Repo[T any] interface {
 	TxInsertRID(tx ice.DbTx, e *T) (*int64, error)
 	TxBulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) error
 	TxUpdate(tx ice.DbTx, builder UpdateBuilder) error
+	TxExecute(tx ice.DbTx, condition string, args ...any) error
 }
 
 type RepoOptBuilder interface {
