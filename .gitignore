@@ -21,6 +21,7 @@ vendor/
 go.work
 
 # miscellaneous
+__debug_*
 .DS_Store
 
 test/res/pgdata
