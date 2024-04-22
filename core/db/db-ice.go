@@ -19,7 +19,6 @@ type Repo[T any] interface {
 
 	Fetch(clog clog.Instance, condition string, args ...any) (*T, error)
 	Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error)
-	VFetches(clog clog.Instance, condition string, args ...any) ([]T, error)
 	Insert(clog clog.Instance, e *T) error
 	InsertRID(clog clog.Instance, e *T) (*int64, error)
 	Update(clog clog.Instance, builder UpdateBuilder) error
@@ -27,7 +26,6 @@ type Repo[T any] interface {
 
 	TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error)
 	TxFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]*T, error)
-	TxVFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]T, error)
 	TxInsert(clog clog.Instance, tx ice.DbTx, e *T) error
 	TxInsertRID(clog clog.Instance, tx ice.DbTx, e *T) (*int64, error)
 	TxBulkInsert(clog clog.Instance, tx ice.DbTx, entities []*T, chunkSize ...int) error
@@ -38,11 +36,6 @@ type Repo[T any] interface {
 type RepoOptBuilder interface {
 	WithDeletedAtIsNull(val ...bool) RepoOptBuilder
 	RWFetchWhenNull(val ...bool) RepoOptBuilder
-}
-
-type RepoFuncOpt interface {
-	SetSkipLevel(level int) RepoFuncOpt
-	SetChunkSize(size int) RepoFuncOpt
 }
 
 type FetchOptBuilder interface {

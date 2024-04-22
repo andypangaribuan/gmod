@@ -19,7 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []any) (*int64, *stuReport, error) {
+func (slf *stuRepo[T]) insert(tx ice.DbTx, rid bool, args []any) *stuRepoResult[T] { // (*int64, *stuReport, error) {
 	var (
 		report = &stuReport{
 			tableName:     slf.tableName,
@@ -44,7 +44,11 @@ RETURNING id`
 
 	err = report.transform()
 	if err != nil {
-		return id, report, err
+		return &stuRepoResult[T]{
+			report: report,
+			err:    err,
+			id:     id,
+		}
 	}
 
 	if tx != nil {
@@ -62,12 +66,19 @@ RETURNING id`
 	}
 
 	report.execReport = execReport
-	return id, report, err
+	return &stuRepoResult[T]{
+		report: report,
+		err:    err,
+		id:     id,
+	}
 }
 
-func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) (*stuReport, error) {
+func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) *stuRepoResult[T] { // (*stuReport, error) {
 	if tx == nil {
-		return nil, errors.New("db: bulk insert only available via transaction")
+		return &stuRepoResult[T]{
+			report: nil,
+			err:    errors.New("db: bulk insert only available via transaction"),
+		}
 	}
 
 	var (
@@ -117,7 +128,9 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 	}
 
 	if len(partSize) == 0 {
-		return nil, errors.New("db: no data to process")
+		return &stuRepoResult[T]{
+			err: errors.New("db: no data to process"),
+		}
 	}
 
 	valFormat := `(
@@ -136,9 +149,14 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 
 		_, err = slf.ins.TxExecute(tx, query, args...)
 		if err != nil {
-			return report, err
+			return &stuRepoResult[T]{
+				report: report,
+				err:    err,
+			}
 		}
 	}
 
-	return report, nil
+	return &stuRepoResult[T]{
+		report: report,
+	}
 }

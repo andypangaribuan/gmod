@@ -18,30 +18,20 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func pushClogReport(cin clog.Instance, report *stuReport, err error, args ...any) {
+func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFuncSkipLevel int) {
 	if cin == nil || report == nil {
 		return
 	}
 
 	var (
-		execPathFuncSkipLevel = 3
-		sqlArgs               *string
-		errMessage            *string
-		stackTrace            *string
-		host1                 string
-		host2                 *string
-		duration1             int
-		duration2             *int
+		sqlArgs    *string
+		errMessage *string
+		stackTrace *string
+		host1      string
+		host2      *string
+		duration1  int
+		duration2  *int
 	)
-
-	for _, arg := range args {
-		opt, ok := arg.(*stuRepoFuncOpt)
-		if ok && opt != nil {
-			if opt.skipLevel != nil {
-				execPathFuncSkipLevel += *opt.skipLevel
-			}
-		}
-	}
 
 	execPath, execFunc := gm.Util.GetExecPathFunc(execPathFuncSkipLevel)
 
@@ -69,13 +59,15 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, args ...any
 		stackTrace = &trace
 	}
 
-	for i, h := range report.execReport.Hosts {
-		if i == 0 {
-			host1 = h.Host
-			duration1 = int(h.DurationMs)
-		} else {
-			host2 = &h.Host
-			duration2 = fm.Ptr(int(h.DurationMs))
+	if report.execReport != nil && report.execReport.Hosts != nil {
+		for i, h := range report.execReport.Hosts {
+			if i == 0 {
+				host1 = h.Host
+				duration1 = int(h.DurationMs)
+			} else {
+				host2 = &h.Host
+				duration2 = fm.Ptr(int(h.DurationMs))
+			}
 		}
 	}
 

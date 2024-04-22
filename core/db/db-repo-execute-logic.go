@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) (*stuReport, error) {
+func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) *stuRepoResult[T] {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
 		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args))
@@ -49,7 +49,10 @@ func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) (*stuR
 
 	err = report.transform()
 	if err != nil {
-		return report, err
+		return &stuRepoResult[T]{
+			report: report,
+			err:    err,
+		}
 	}
 
 	if tx == nil {
@@ -59,5 +62,8 @@ func (slf *stuRepo[T]) execute(tx ice.DbTx, condition string, args []any) (*stuR
 	}
 
 	report.execReport = execReport
-	return report, err
+	return &stuRepoResult[T]{
+		report: report,
+		err:    err,
+	}
 }

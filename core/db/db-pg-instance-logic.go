@@ -46,9 +46,10 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any)
 
 	reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
-	defer updateReportHost(conn, reportHost)
 
 	conn, err = slf.crw()
+	defer updateReportHost(conn, reportHost)
+
 	if err != nil {
 		return nil, report, err
 	}

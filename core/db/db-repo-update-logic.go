@@ -19,7 +19,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuReport, error) {
+func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) *stuRepoResult[T] {
 	var (
 		report = &stuReport{
 			tableName:     slf.tableName,
@@ -96,7 +96,10 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuRepor
 
 	err = report.transform()
 	if err != nil {
-		return report, err
+		return &stuRepoResult[T]{
+			report: report,
+			err:    err,
+		}
 	}
 
 	if tx != nil {
@@ -106,5 +109,8 @@ func (slf *stuRepo[T]) update(tx ice.DbTx, builder *stuUpdateBuilder) (*stuRepor
 	}
 
 	report.execReport = execReport
-	return report, err
+	return &stuRepoResult[T]{
+		report: report,
+		err:    err,
+	}
 }

@@ -46,6 +46,13 @@ type pgInstanceTx struct {
 	errCommit  error
 }
 
+type stuRepoResult[T any] struct {
+	entities []*T
+	id       *int64
+	report   *stuReport
+	err      error
+}
+
 type stuReport struct {
 	tableName     string
 	insertColumn  string
@@ -65,11 +72,6 @@ type stuUnsafe struct {
 type stuRepoOptBuilder struct {
 	withDeletedAtIsNull *bool
 	rwFetchWhenNull     *bool
-}
-
-type stuRepoFuncOpt struct {
-	skipLevel *int
-	chunkSize *int
 }
 
 type stuFetchOptBuilder struct {

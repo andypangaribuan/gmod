@@ -17,18 +17,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuRepo[T]) vfetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) ([]T, *stuReport, error) {
-	entities, report, err := slf.fetches(isLimitOne, tx, condition, args)
-	ls := make([]T, len(entities))
-
-	for i, e := range entities {
-		ls[i] = *e
-	}
-
-	return ls, report, err
-}
-
-func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) ([]*T, *stuReport, error) {
+func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) *stuRepoResult[T] {
 	var (
 		whereQuery = slf.getWhereQuery(condition, args)
 		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isLimitOne, " LIMIT 1", ""))
@@ -62,7 +51,10 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 
 	err = report.transform()
 	if err != nil {
-		return nil, report, err
+		return &stuRepoResult[T]{
+			report: report,
+			err:    err,
+		}
 	}
 
 	if tx != nil {
@@ -76,5 +68,9 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 	}
 
 	report.execReport = execReport
-	return out, report, err
+	return &stuRepoResult[T]{
+		report:   report,
+		err:      err,
+		entities: out,
+	}
 }

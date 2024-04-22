@@ -9,7 +9,11 @@
 
 package db
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/clog"
+)
 
 func (*stuRepo[T]) generateArgSign(column string) (argSign string) {
 	if column != "" {
@@ -133,7 +137,7 @@ func (slf *stuRepo[T]) getArgs(args []any) []any {
 
 	for _, arg := range args {
 		switch arg.(type) {
-		case FetchOptBuilder, *stuRepoFuncOpt, RepoFuncOpt:
+		case FetchOptBuilder:
 			continue
 		default:
 			filtered = append(filtered, arg)
@@ -141,4 +145,9 @@ func (slf *stuRepo[T]) getArgs(args []any) []any {
 	}
 
 	return filtered
+}
+
+func (slf *stuRepo[T]) override(clog clog.Instance, res *stuRepoResult[T]) *stuRepoResult[T] {
+	pushClogReport(clog, res.report, res.err, 4)
+	return res
 }
