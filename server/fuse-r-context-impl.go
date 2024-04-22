@@ -26,6 +26,7 @@ func (slf *stuFuseRContext) Auth(obj ...any) any {
 func (slf *stuFuseRContext) UserId(id ...any) any {
 	if len(id) > 0 {
 		slf.mcx.userId = id[0]
+		slf.pushUserIdToClog()
 	}
 
 	return slf.mcx.userId
@@ -34,6 +35,7 @@ func (slf *stuFuseRContext) UserId(id ...any) any {
 func (slf *stuFuseRContext) PartnerId(id ...any) any {
 	if len(id) > 0 {
 		slf.mcx.partnerId = id[0]
+		slf.pushPartnerIdToClog()
 	}
 
 	return slf.mcx.partnerId

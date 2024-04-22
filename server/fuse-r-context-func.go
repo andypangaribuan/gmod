@@ -21,3 +21,21 @@ func (slf *stuFuseRContext) setResponse(code int, val any) any {
 	slf.responseVal = val
 	return nil
 }
+
+func (slf *stuFuseRContext) pushUserIdToClog() {
+	if slf.mcx.clog != nil {
+		id := slf.mcx.getUserId()
+		if id != nil {
+			clogSetUserId(slf.mcx.clog, *id)
+		}
+	}
+}
+
+func (slf *stuFuseRContext) pushPartnerIdToClog() {
+	if slf.mcx.clog != nil {
+		id := slf.mcx.getPartnerId()
+		if id != nil {
+			clogSetPartnerId(slf.mcx.clog, *id)
+		}
+	}
+}
