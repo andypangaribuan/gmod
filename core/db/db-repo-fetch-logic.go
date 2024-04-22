@@ -76,6 +76,5 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 	}
 
 	report.execReport = execReport
-	go pushClogReport(report)
 	return out, report, err
 }

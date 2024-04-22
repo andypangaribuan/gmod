@@ -18,8 +18,8 @@ import (
 func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 	req := &sclog.RequestDbqV1{
 		Uid:          slf.uid,
-		UserId:       fm.PbwString(mol.UserId),
-		PartnerId:    fm.PbwString(mol.PartnerId),
+		UserId:       fm.PbwString(slf.userId),
+		PartnerId:    fm.PbwString(slf.partnerId),
 		SvcName:      svcName,
 		SvcVersion:   svcVersion,
 		SqlQuery:     mol.SqlQuery,

@@ -33,12 +33,14 @@ func (slf *stuRepo[T]) SetInsert(columns string, fn func(e *T) []any) {
 }
 
 func (slf *stuRepo[T]) Fetch(clog clog.Instance, condition string, args ...any) (*T, error) {
-	models, _, err := slf.fetches(true, nil, condition, args)
+	models, report, err := slf.fetches(true, nil, condition, args)
+	go pushClogReport(clog, report, err)
 	return fm.PtrGetFirst(models), err
 }
 
 func (slf *stuRepo[T]) Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error) {
-	models, _, err := slf.fetches(false, nil, condition, args)
+	models, report, err := slf.fetches(false, nil, condition, args)
+	go pushClogReport(clog, report, err)
 	return models, err
 }
 

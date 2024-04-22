@@ -12,8 +12,6 @@ package clog
 import "time"
 
 type DbqV1 struct {
-	UserId       *string
-	PartnerId    *string
 	SqlQuery     string
 	SqlArgs      *string
 	Severity     string
