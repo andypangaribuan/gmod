@@ -7,18 +7,15 @@
  * All Rights Reserved.
  */
 
-package test
+package repo
 
 import (
-	_ "github.com/andypangaribuan/gmod"
-	"github.com/andypangaribuan/gmod/gm"
+	"sync"
+
+	"github.com/andypangaribuan/gmod/ice"
 )
 
-func init() {
-	loadEnv()
-	loadDb()
-	gm.Conf.
-		SetTimezone(env.AppTimezone).
-		SetCLogAddress(env.ClogAddress, env.AppName, env.AppVersion).
-		Commit()
-}
+var (
+	callbacks []func(dbi ice.DbInstance)
+	mx        sync.Mutex
+)

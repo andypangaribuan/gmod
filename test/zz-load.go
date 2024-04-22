@@ -10,7 +10,10 @@
 package test
 
 import (
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/andypangaribuan/gmod/mol"
+	"github.com/andypangaribuan/gmod/test/db/repo"
 )
 
 func loadEnv() {
@@ -34,4 +37,19 @@ func loadEnv() {
 		DbUser: gm.Util.Env.GetString("DB_USER"),
 		DbPass: gm.Util.Env.GetString("DB_PASS"),
 	}
+}
+
+func loadDb() {
+	conn := mol.DbConnection{
+		AppName:  env.AppName,
+		Host:     env.DbHost,
+		Port:     env.DbPort,
+		Name:     env.DbName,
+		Username: env.DbUser,
+		Password: env.DbPass,
+	}
+
+	dbi = gm.Db.PostgresRW(conn, conn)
+	repo.Init(dbi)
+	fm.CallOrderedInit()
 }

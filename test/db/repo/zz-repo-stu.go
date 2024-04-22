@@ -7,18 +7,11 @@
  * All Rights Reserved.
  */
 
-package test
+package repo
 
-import (
-	_ "github.com/andypangaribuan/gmod"
-	"github.com/andypangaribuan/gmod/gm"
-)
+import "github.com/andypangaribuan/gmod/core/db"
 
-func init() {
-	loadEnv()
-	loadDb()
-	gm.Conf.
-		SetTimezone(env.AppTimezone).
-		SetCLogAddress(env.ClogAddress, env.AppName, env.AppVersion).
-		Commit()
+type stuRepo[T any] struct {
+	repo db.Repo[T]
+	xrepo[T]
 }

@@ -36,3 +36,4 @@ svcname
 svcversion
 jons
 fastly
+xrepo

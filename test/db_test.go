@@ -10,104 +10,41 @@
 package test
 
 import (
-	"fmt"
 	"testing"
-	"time"
 
 	_ "github.com/andypangaribuan/gmod"
 
-	"github.com/andypangaribuan/gmod/core/db"
+	"github.com/andypangaribuan/gmod/fc"
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
-	"github.com/andypangaribuan/gmod/mol"
-	"github.com/stretchr/testify/assert"
+	"github.com/andypangaribuan/gmod/test/db/entity"
+	"github.com/andypangaribuan/gmod/test/db/repo"
 	"github.com/stretchr/testify/require"
 )
 
-var (
-	repoTUid1 *stuTUid1Repo
-)
+func TestDbInsert(t *testing.T) {
+	gm.Test.Start(t, func(t *testing.T) {
+		timenow := gm.Util.Timenow()
+		e := &entity.User{
+			CreatedAt:  timenow,
+			UpdatedAt:  timenow,
+			Uid:        gm.Util.UID(),
+			Name:       "andy",
+			Address:    fm.Ptr("bintaro"),
+			Height:     fm.Ptr(10),
+			GoldAmount: fm.Ptr(fc.New(100.0)),
+		}
 
-func initDb() {
-	conn := mol.DbConnection{
-		AppName:  gm.Util.Env.GetString("APP_NAME"),
-		Host:     gm.Util.Env.GetString("DBW_HOST"),
-		Port:     gm.Util.Env.GetInt("DBW_PORT"),
-		Name:     gm.Util.Env.GetString("DBW_NAME"),
-		Username: gm.Util.Env.GetString("DBW_USER"),
-		Password: gm.Util.Env.GetString("DBW_PASS"),
-	}
-
-	dbi = gm.Db.PostgresRW(conn, conn)
-	repoTUid1 = newTUid1Repo(dbi)
+		err := repo.User.Insert(e)
+		require.Nil(t, err)
+	})
 }
 
 func TestDbFetches(t *testing.T) {
-	startedTime := time.Now()
-	defer func() {
-		durationMs := time.Since(startedTime).Milliseconds()
-		fmt.Printf("\nduration: %v ms\n", durationMs)
-	}()
-
-	initDb()
-
-	// models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
-	// models, err := repoTUid1.Fetches("", db.FetchOpt{EndQuery: fm.Ptr("ORDER BY uid ASC"), WithDeletedAtIsNull: fm.Ptr(false)})
-	models, err := repoTUid1.Fetches("", db.FetchOpt().WithDeletedAtIsNull(false).EndQuery("ORDER BY uid ASC"))
-	assert.Nil(t, err)
-
-	l3, _, _ := uidL3()
-	// require.Equal(t, len(models), 0)
-	require.Equal(t, len(models), len(l3))
-
-	for i := range l3 {
-		require.Equal(t, l3[i], models[i].Uid)
-		require.Equal(t, int64(i+1), models[i].Id)
-	}
-}
-
-func TestDbInsert(t *testing.T) {
-	startedTime := time.Now()
-	defer func() {
-		durationMs := time.Since(startedTime).Milliseconds()
-		fmt.Printf("\nduration: %v ms\n", durationMs)
-	}()
-
-	initDb()
-
-	model := &stuTUid1Model{
-		Uid: "AA9",
-	}
-
-	err := repoTUid1.Insert(model)
-	assert.Nil(t, err)
-}
-
-func TestUidL3Insert(t *testing.T) {
-	startedTime := time.Now()
-	defer func() {
-		durationMs := time.Since(startedTime).Milliseconds()
-		fmt.Printf("\nduration: %v ms\n", durationMs)
-	}()
-
-	initDb()
-
-	l3, _, _ := uidL3()
-
-	tx, err := dbi.NewTransaction()
-	defer tx.Rollback()
-	assert.Nil(t, err)
-
-	models := make([]*stuTUid1Model, len(l3))
-
-	for i, uid := range l3 {
-		models[i] = &stuTUid1Model{
-			Uid: uid,
-		}
-	}
-
-	err = repoTUid1.TxBulkInsert(tx, models)
-	assert.Nil(t, err)
-
-	err = tx.Commit()
-	assert.Nil(t, err)
+	gm.Test.Start(t, func(t *testing.T) {
+		ls, err := repo.User.Fetches("name=?", "andy")
+		require.Nil(t, err)
+		require.Greater(t, len(ls), 0)
+		gm.Test.Printf(t, "length: %v\n", len(ls))
+	})
 }
