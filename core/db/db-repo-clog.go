@@ -24,7 +24,7 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, args ...any
 	}
 
 	var (
-		execPathFuncSkipLevel = 2
+		execPathFuncSkipLevel = 3
 		sqlArgs               *string
 		errMessage            *string
 		stackTrace            *string

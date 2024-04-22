@@ -19,13 +19,13 @@ type xrepo[T any] struct {
 }
 
 func (slf *xrepo[T]) Insert(clog clog.Instance, e *T) error {
-	return slf.repo.Insert(clog, e, db.AddSkipLevel(1)...)
+	return slf.repo.Insert(clog, e)
 }
 
 func (slf *xrepo[T]) Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error) {
-	return slf.repo.Fetches(clog, condition, db.AddSkipLevel(1, args...)...)
+	return slf.repo.Fetches(clog, condition, args...)
 }
 
 func (slf *xrepo[T]) Execute(clog clog.Instance, condition string, args ...any) error {
-	return slf.repo.Execute(clog, condition, db.AddSkipLevel(1, args...)...)
+	return slf.repo.Execute(clog, condition, args...)
 }

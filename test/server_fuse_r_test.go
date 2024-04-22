@@ -14,8 +14,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/andypangaribuan/gmod/fc"
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
+	"github.com/andypangaribuan/gmod/test/db/entity"
 	"github.com/andypangaribuan/gmod/test/db/repo"
 )
 
@@ -68,7 +71,8 @@ func TestServerFuseR(t *testing.T) {
 		})
 
 		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
-			"GET: /fetch-1": {sfrFetch},
+			"GET: /fetch-1":  {sfrFetch},
+			"POS: /insert-1": {sfrInsert},
 		})
 	})
 }
@@ -185,4 +189,24 @@ func sfrFetch(ctx server.FuseRContext) any {
 	}
 
 	return ctx.R200OK(fmt.Sprintf("total user: %v", len(entities)))
+}
+
+func sfrInsert(ctx server.FuseRContext) any {
+	timenow := gm.Util.Timenow()
+	user := &entity.User{
+		CreatedAt:  timenow,
+		UpdatedAt:  timenow,
+		Uid:        gm.Util.UID(),
+		Name:       "andy",
+		Address:    fm.Ptr("bintaro"),
+		Height:     fm.Ptr(10),
+		GoldAmount: fm.Ptr(fc.New(100.000000000100005)),
+	}
+
+	err := repo.User.Insert(ctx.Clog(), user)
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
+	}
+
+	return ctx.R200OK("success")
 }
