@@ -26,3 +26,9 @@ var (
 	svcName    string
 	svcVersion string
 )
+
+// through injection
+var (
+	clogSetUserId func(clog Instance, id string)
+	clogSetPartnerId func(clog Instance, id string)
+)

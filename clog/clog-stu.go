@@ -10,5 +10,7 @@
 package clog
 
 type stuInstance struct {
-	uid string
+	uid       string
+	userId    *string
+	partnerId *string
 }

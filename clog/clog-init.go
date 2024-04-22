@@ -48,6 +48,24 @@ func xinit() {
 			uid: gm.Util.UID(),
 		}
 	}
+
+	clogSetUserId = func(clog Instance, id string) {
+		if clog != nil {
+			c, ok := clog.(*stuInstance)
+			if ok && c != nil {
+				c.userId = &id
+			}
+		}
+	}
+
+	clogSetPartnerId = func(clog Instance, id string) {
+		if clog != nil {
+			c, ok := clog.(*stuInstance)
+			if ok && c != nil {
+				c.partnerId = &id
+			}
+		}
+	}
 }
 
 func connect(address string) {

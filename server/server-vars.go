@@ -10,9 +10,17 @@
 package server
 
 import (
+	_ "unsafe"
+
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/gofiber/fiber/v2"
 )
+
+//go:linkname clogSetUserId github.com/andypangaribuan/gmod/clog.clogSetUserId
+var clogSetUserId func(clog clog.Instance, id string)
+
+//go:linkname clogSetPartnerId github.com/andypangaribuan/gmod/clog.clogSetPartnerId
+var clogSetPartnerId func(clog clog.Instance, id string)
 
 var (
 	serverImpl   server

@@ -9,3 +9,10 @@
 
 package db
 
+// import "github.com/andypangaribuan/gmod/clog"
+
+func pushClogReport(report *stuReport) {
+	// mol := &clog.DbqV1{
+
+	// }
+}
