@@ -2,9 +2,7 @@
 
 **Golang Framework**
 
-- Simplicity
-- Speed
-- Safety
+Focus on simplicity, speed and safety.
 
 ```shell
 go get -u github.com/andypangaribuan/gmod
@@ -25,7 +23,7 @@ If you fixed a bug or implemented a feature, please send a [`pull request`](http
 
 MIT License
 
-Copyright (c) 2022 Andy Pangaribuan
+Copyright (c) 2024 Andy Pangaribuan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
