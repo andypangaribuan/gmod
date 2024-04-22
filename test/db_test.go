@@ -35,14 +35,14 @@ func TestDbInsert(t *testing.T) {
 			GoldAmount: fm.Ptr(fc.New(100.0)),
 		}
 
-		err := repo.User.Insert(e)
+		err := repo.User.Insert(nil, e)
 		require.Nil(t, err)
 	})
 }
 
 func TestDbFetches(t *testing.T) {
 	gm.Test.Start(t, func(t *testing.T) {
-		entities, err := repo.User.Fetches("name=?", "andy")
+		entities, err := repo.User.Fetches(nil, "name=?", "andy")
 		require.Nil(t, err)
 		require.Greater(t, len(entities), 0)
 		gm.Test.Printf(t, "length: %v\n", len(entities))
@@ -51,6 +51,6 @@ func TestDbFetches(t *testing.T) {
 
 func TestDbDelete(t *testing.T) {
 	gm.Test.Start(t, func(t *testing.T) {
-		
+
 	})
 }

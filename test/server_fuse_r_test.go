@@ -179,7 +179,7 @@ func sfrHi(ctx server.FuseRContext) any {
 }
 
 func sfrFetch(ctx server.FuseRContext) any {
-	entities, err := repo.User.Fetches("name=?", "andy")
+	entities, err := repo.User.Fetches(ctx.Clog(), "name=?", "andy")
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
 	}

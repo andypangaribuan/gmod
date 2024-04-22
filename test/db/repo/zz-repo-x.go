@@ -9,20 +9,23 @@
 
 package repo
 
-import "github.com/andypangaribuan/gmod/core/db"
+import (
+	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/core/db"
+)
 
 type xrepo[T any] struct {
 	repo db.Repo[T]
 }
 
-func (slf *xrepo[T]) Insert(e *T) error {
-	return slf.repo.Insert(e)
+func (slf *xrepo[T]) Insert(clog clog.Instance, e *T) error {
+	return slf.repo.Insert(clog, e)
 }
 
-func (slf *xrepo[T]) Fetches(condition string, args ...any) ([]*T, error) {
-	return slf.repo.Fetches(condition, args...)
+func (slf *xrepo[T]) Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error) {
+	return slf.repo.Fetches(clog, condition, args...)
 }
 
-func (slf *xrepo[T]) Execute(condition string, args ...any) error {
-	return slf.repo.Execute(condition, args...)
+func (slf *xrepo[T]) Execute(clog clog.Instance, condition string, args ...any) error {
+	return slf.repo.Execute(clog, condition, args...)
 }
