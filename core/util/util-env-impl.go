@@ -10,6 +10,7 @@
 package util
 
 import (
+	"log"
 	"strconv"
 	"strings"
 
@@ -79,4 +80,22 @@ func (slf *stuUtilEnv) GetBool(key string, dval ...bool) bool {
 
 	slf.invalid(key, sval, "boolean")
 	return false
+}
+
+func (slf *stuUtilEnv) GetStringSlice(key string, separator string, dval ...[]string) []string {
+	value := getEnvVal(key)
+
+	switch {
+	case value == "" && len(dval) > 0:
+		return dval[0]
+	case value == "":
+		log.Fatalf(`env key "%v" doesn't exists`, key)
+	}
+
+	ls := strings.Split(value, separator)
+	for i, v := range ls {
+		ls[i] = strings.TrimSpace(v)
+	}
+
+	return ls
 }

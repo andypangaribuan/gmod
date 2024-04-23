@@ -16,4 +16,6 @@ type UtilEnv interface {
 	GetInt32(key string, dval ...int32) int32
 	GetInt64(key string, dval ...int64) int64
 	GetBool(key string, dval ...bool) bool
+
+	GetStringSlice(key string, separator string, dval ...[]string) []string
 }

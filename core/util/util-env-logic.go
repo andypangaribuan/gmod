@@ -73,10 +73,7 @@ func getFromZxEnv(key string) string {
 }
 
 func getEnv[T any](key string, dval ...T) (string, *T) {
-	value := getFromZxEnv(key)
-	if value == "" {
-		value = strings.TrimSpace(os.Getenv(key))
-	}
+	value := getEnvVal(key)
 
 	switch {
 	case value == "" && len(dval) > 0:
@@ -86,6 +83,15 @@ func getEnv[T any](key string, dval ...T) (string, *T) {
 	}
 
 	return value, nil
+}
+
+func getEnvVal(key string) string {
+	value := getFromZxEnv(key)
+	if value == "" {
+		value = strings.TrimSpace(os.Getenv(key))
+	}
+
+	return value
 }
 
 func (*stuUtilEnv) invalid(key string, sval string, typ string, err ...error) {
