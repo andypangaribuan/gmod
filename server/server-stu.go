@@ -93,6 +93,7 @@ type stuFuseRVal struct {
 	fromSvcName    *string
 	fromSvcVersion *string
 	reqVersion     *string
+	reqSource      *string
 	reqHeader      *string
 	reqParam       *string
 	reqQuery       *string

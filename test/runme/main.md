@@ -17,14 +17,14 @@ headers = {
     'X-From-SvcName': 'x-service',
     'X-From-SvcVersion': '1.0.0',
     'X-Version': '1.0',
-    'X-Source': 'gmod-test'
+    'X-Source': 'android'
 }
 
 get(url, style=0, headers=headers)
 ```
 
-<br/><br/> 
----
+## 
+
 insert a user
 
 ```python {"id":"01HW39Y545VB3R2QSTE1X29X9G","interactive":"false","mimeType":"text/x-json"}
@@ -37,7 +37,7 @@ headers = {
     'X-From-SvcName': 'x-service',
     'X-From-SvcVersion': '1.0.0',
     'X-Version': '1.0',
-    'X-Source': 'gmod-test'
+    'X-Source': 'ios'
 }
 body = {
     'name': 'andy',
@@ -49,8 +49,8 @@ body = {
 post(url=url, style=0, headers=headers, json=body)
 ```
 
-<br/><br/> 
----
+## 
+
 delete user with name
 
 ```python {"id":"01HW3FFB9CTGS1CD3VJS9MM6V2","interactive":"false","mimeType":"text/x-json"}
@@ -72,8 +72,8 @@ params = {
 post(url=url, style=0, headers=headers, params=params)
 ```
 
-<br/><br/>  
----
+## 
+
 test multipart form data
 
 ```python {"id":"01HW3BASFFKS3GSH3YJ6KEVG71","interactive":"false","mimeType":"text/x-json"}

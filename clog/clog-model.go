@@ -33,6 +33,7 @@ type ServicePieceV1 struct {
 	Endpoint         string
 	Url              string
 	ReqVersion       *string
+	ReqSource        *string
 	ReqHeader        *string
 	ReqParam         *string
 	ReqQuery         *string
@@ -51,6 +52,7 @@ type ServiceV1 struct {
 	ExecPath         string
 	ExecFunc         string
 	ReqVersion       *string
+	ReqSource        *string
 	ReqHeader        *string
 	ReqParam         *string
 	ReqQuery         *string

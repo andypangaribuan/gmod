@@ -99,6 +99,9 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 
 			case "x-version":
 				mcx.val.reqVersion = &val
+
+			case "x-source":
+				mcx.val.reqSource = &val
 			}
 		}
 	}
@@ -165,6 +168,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			Endpoint:         mcx.val.endpoint,
 			Url:              mcx.val.url,
 			ReqVersion:       mcx.val.reqVersion,
+			ReqSource:        mcx.val.reqSource,
 			ReqHeader:        mcx.val.reqHeader,
 			ReqParam:         mcx.val.reqParam,
 			ReqQuery:         mcx.val.reqQuery,
@@ -207,6 +211,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				ExecPath:         mcx.execPath,
 				ExecFunc:         mcx.execFunc,
 				ReqVersion:       mcx.val.reqVersion,
+				ReqSource:        mcx.val.reqSource,
 				ReqHeader:        mcx.val.reqHeader,
 				ReqParam:         mcx.val.reqParam,
 				ReqQuery:         mcx.val.reqQuery,
