@@ -28,6 +28,11 @@ func (slf *stuConf) SetCLogAddress(address string, svcName string, svcVersion st
 	return slf
 }
 
+func (slf *stuConf) SetInternalBaseUrls(urls []string) ice.Conf {
+	slf.internalBaseUrls = urls
+	return slf
+}
+
 func (slf *stuConf) Commit() {
 	mainConfCommit()
 }

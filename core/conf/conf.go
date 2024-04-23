@@ -11,6 +11,7 @@ package conf
 
 func init() {
 	iceConf = &stuConf{
-		zxEnvName: "ZX_ENV",
+		zxEnvName:        "ZX_ENV",
+		internalBaseUrls: make([]string, 0),
 	}
 }

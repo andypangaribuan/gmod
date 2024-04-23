@@ -33,10 +33,45 @@ func (*stuHttp) Delete(url string) ice.HttpBuilder {
 	return newHttp(url, "delete")
 }
 
-func newHttp(url, method string) ice.HttpBuilder {
-	return &stuHttpBuilder{
-		url:         url,
-		method:      method,
-		fileReaders: make([]*stuFileReader, 0),
+func (slf *stuHttp) GetJsonHeader(url string, opt ...any) map[string]string {
+	var (
+		reqVer *string
+		add    = make(map[string]string, 0)
+		header = map[string]string{
+			"Accept":       "application/json",
+			"Content-Type": "application/json",
+		}
+	)
+
+	if len(opt) > 0 {
+		for _, o := range opt {
+			switch v := o.(type) {
+			case string:
+				reqVer = &v
+			case *string:
+				reqVer = v
+
+			case map[string]string:
+				add = v
+			case *map[string]string:
+				if v != nil {
+					add = *v
+				}
+			}
+		}
 	}
+
+	if slf.isInternalSvc(url) {
+		header["X-From-SvcName"] = svcName
+		header["X-From-SvcVersion"] = svcVersion
+		if reqVer != nil {
+			header["X-Version"] = *reqVer
+		}
+	}
+
+	for k, v := range add {
+		header[k] = v
+	}
+
+	return header
 }

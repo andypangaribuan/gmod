@@ -10,13 +10,19 @@
 package http
 
 func xinit() {
+	internalBaseUrls = make([]string, 0)
+
 	mainHttpCallback = func() {
-		if val := getConfValue("svcName"); val != "" {
+		if val := getConfVal[string]("svcName"); val != "" {
 			svcName = val
 		}
 
-		if val := getConfValue("svcVersion"); val != "" {
+		if val := getConfVal[string]("svcVersion"); val != "" {
 			svcVersion = val
+		}
+
+		if val := getConfVal[[]string]("internalBaseUrls"); val != nil {
+			internalBaseUrls = val
 		}
 	}
 }

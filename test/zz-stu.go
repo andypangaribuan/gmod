@@ -20,7 +20,8 @@ type stuEnv struct {
 	AppAutoRecover        bool
 	AppServerPrintOnError bool
 
-	ClogAddress string
+	ClogAddress         string
+	SvcInternalBaseUrls []string
 
 	DbHost string
 	DbPort int

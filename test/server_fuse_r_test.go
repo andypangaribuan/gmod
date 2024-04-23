@@ -71,10 +71,11 @@ func TestServerFuseR(t *testing.T) {
 		})
 
 		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
-			"GET: /fetch-1":  {sfrFetch},
-			"POS: /insert-1": {sfrInsert},
-			"POS: /delete-1": {sfrDelete},
-			"POS: /form-1":   {sfrForm},
+			"GET: /fetch-1":     {sfrFetch},
+			"POS: /insert-1":    {sfrInsert},
+			"POS: /delete-1":    {sfrDelete},
+			"POS: /form-1":      {sfrForm},
+			"GET: /call-http-1": {sfrCallHttp},
 		})
 	})
 }
@@ -302,4 +303,24 @@ func sfrForm(ctx server.FuseRContext) any {
 	}
 
 	return ctx.R200OK("ok")
+}
+
+func sfrCallHttp(ctx server.FuseRContext) any {
+	url := "http://ipecho.net/plain"
+
+	data, code, err := gm.Http.Get(url).
+		SetHeaders(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
+			"Authorization": "Bearer xyz",
+		})).
+		Call()
+
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+	}
+
+	if code != 200 {
+		return ctx.R400BadRequest(fmt.Sprintf("code: %v", code))
+	}
+
+	return ctx.R200OK(string(data))
 }

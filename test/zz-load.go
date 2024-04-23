@@ -29,7 +29,8 @@ func loadEnv() {
 		AppAutoRecover:        gm.Util.Env.GetBool("APP_AUTO_RECOVER"),
 		AppServerPrintOnError: gm.Util.Env.GetBool("APP_SERVER_PRINT_ON_ERROR"),
 
-		ClogAddress: gm.Util.Env.GetString("CLOG_ADDRESS"),
+		ClogAddress:         gm.Util.Env.GetString("CLOG_ADDRESS"),
+		SvcInternalBaseUrls: gm.Util.Env.GetStringSlice("SVC_INTERNAL_BASE_URLS", "|", []string{}),
 
 		DbHost: gm.Util.Env.GetString("DB_HOST"),
 		DbPort: gm.Util.Env.GetInt("DB_PORT"),

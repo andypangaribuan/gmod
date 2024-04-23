@@ -22,6 +22,7 @@ var iceHttp ice.Http
 var mainHttpCallback func()
 
 var (
-	svcName    string
-	svcVersion string
+	svcName          string
+	svcVersion       string
+	internalBaseUrls []string
 )

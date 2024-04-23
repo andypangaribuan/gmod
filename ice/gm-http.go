@@ -20,6 +20,14 @@ type Http interface {
 	Put(url string) HttpBuilder
 	Patch(url string) HttpBuilder
 	Delete(url string) HttpBuilder
+
+	// Example:
+	//  GetJsonHeader("http://localhost:9000/private/timezone", "1.0", map[string]string{
+	// 		"Authorization": "Bearer xyz",
+	//  })
+	// string "1.0" it will convert to "X-Version"
+	// then map[string]string will added to header value
+	GetJsonHeader(url string, opt ...any) map[string]string
 }
 
 type HttpBuilder interface {

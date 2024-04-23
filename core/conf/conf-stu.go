@@ -10,9 +10,10 @@
 package conf
 
 type stuConf struct {
-	zxEnvName   string
-	timezone    string // accessed from reflection
-	clogAddress string // accessed from reflection
-	svcName     string // accessed from reflection
-	svcVersion  string // accessed from reflection
+	zxEnvName        string
+	timezone         string   // accessed from reflection
+	clogAddress      string   // accessed from reflection
+	svcName          string   // accessed from reflection
+	svcVersion       string   // accessed from reflection
+	internalBaseUrls []string // accessed from reflection
 }
