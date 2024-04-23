@@ -46,6 +46,10 @@ type HttpBuilder interface {
 	EnableTrace(enable ...bool) HttpBuilder
 	SetHeaders(args map[string]string) HttpBuilder
 
+	// this refer to gm.Http.GetJsonHeader
+	// but without url
+	AutoHeaders(opt ...any) HttpBuilder
+
 	// Examples:
 	//
 	//	Get(".../users/{userId}/{subAccountId}/details").

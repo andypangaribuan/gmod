@@ -75,7 +75,8 @@ func TestServerFuseR(t *testing.T) {
 			"POS: /insert-1":    {sfrInsert},
 			"POS: /delete-1":    {sfrDelete},
 			"POS: /form-1":      {sfrForm},
-			"GET: /call-http-1": {sfrCallHttp},
+			"GET: /call-http-1": {sfrCallHttp1},
+			"GET: /call-http-2": {sfrCallHttp2},
 		})
 	})
 }
@@ -305,13 +306,31 @@ func sfrForm(ctx server.FuseRContext) any {
 	return ctx.R200OK("ok")
 }
 
-func sfrCallHttp(ctx server.FuseRContext) any {
+func sfrCallHttp1(ctx server.FuseRContext) any {
 	url := "http://ipecho.net/plain"
 
 	data, code, err := gm.Http.Get(url).
 		SetHeaders(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		})).
+		Call()
+
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+	}
+
+	if code != 200 {
+		return ctx.R400BadRequest(fmt.Sprintf("code: %v", code))
+	}
+
+	return ctx.R200OK(string(data))
+}
+
+func sfrCallHttp2(ctx server.FuseRContext) any {
+	data, code, err := gm.Http.Get("http://ipecho.net/plain").
+		AutoHeaders("1.0", map[string]string{
+			"Authorization": "Bearer xyz",
+		}).
 		Call()
 
 	if err != nil {

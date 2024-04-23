@@ -55,6 +55,12 @@ func (slf *stuHttpBuilder) SetHeaders(args map[string]string) ice.HttpBuilder {
 	return slf
 }
 
+func (slf *stuHttpBuilder) AutoHeaders(opt ...any) ice.HttpBuilder {
+	header := gm.Http.GetJsonHeader(slf.url, opt...)
+	slf.headers = &header
+	return slf
+}
+
 func (slf *stuHttpBuilder) SetQueryParams(args map[string]string) ice.HttpBuilder {
 	slf.queryParams = &args
 	return slf
