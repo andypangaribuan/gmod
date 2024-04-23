@@ -44,11 +44,11 @@ type HttpBuilder interface {
 	SetMaxRetry(max int) HttpBuilder
 
 	EnableTrace(enable ...bool) HttpBuilder
-	SetHeaders(args map[string]string) HttpBuilder
+	SetHeader(args map[string]string) HttpBuilder
 
 	// this refer to gm.Http.GetJsonHeader
 	// but without url
-	AutoHeaders(opt ...any) HttpBuilder
+	JsonHeader(opt ...any) HttpBuilder
 
 	// Examples:
 	//
@@ -57,9 +57,9 @@ type HttpBuilder interface {
 	//		"userId": "sample@sample.com",
 	//		"subAccountId": "100002",
 	//	})
-	SetPathParams(args map[string]string) HttpBuilder
+	SetPathParam(args map[string]string) HttpBuilder
 
-	SetQueryParams(args map[string]string) HttpBuilder
+	SetQueryParam(args map[string]string) HttpBuilder
 	SetFormData(args map[string]string) HttpBuilder
 
 	// Examples:

@@ -50,23 +50,23 @@ func (slf *stuHttpBuilder) EnableTrace(enable ...bool) ice.HttpBuilder {
 	return slf
 }
 
-func (slf *stuHttpBuilder) SetHeaders(args map[string]string) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetHeader(args map[string]string) ice.HttpBuilder {
 	slf.headers = &args
 	return slf
 }
 
-func (slf *stuHttpBuilder) AutoHeaders(opt ...any) ice.HttpBuilder {
+func (slf *stuHttpBuilder) JsonHeader(opt ...any) ice.HttpBuilder {
 	header := gm.Http.GetJsonHeader(slf.url, opt...)
 	slf.headers = &header
 	return slf
 }
 
-func (slf *stuHttpBuilder) SetQueryParams(args map[string]string) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetQueryParam(args map[string]string) ice.HttpBuilder {
 	slf.queryParams = &args
 	return slf
 }
 
-func (slf *stuHttpBuilder) SetPathParams(args map[string]string) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetPathParam(args map[string]string) ice.HttpBuilder {
 	slf.pathParams = &args
 	return slf
 }
