@@ -55,7 +55,7 @@ func (slf *stuHttpBuilder) SetHeader(args map[string]string) ice.HttpBuilder {
 	return slf
 }
 
-func (slf *stuHttpBuilder) JsonHeader(opt ...any) ice.HttpBuilder {
+func (slf *stuHttpBuilder) SetJsonHeader(opt ...any) ice.HttpBuilder {
 	header := gm.Http.GetJsonHeader(slf.url, opt...)
 	slf.headers = &header
 	return slf

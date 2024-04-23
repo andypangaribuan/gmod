@@ -25,7 +25,7 @@ type Http interface {
 	//  GetJsonHeader("http://localhost:9000/private/timezone", "1.0", map[string]string{
 	// 		"Authorization": "Bearer xyz",
 	//  })
-	// string "1.0" it will convert to "X-Version"
+	// string "1.0" it will convert to "X-Version",
 	// then map[string]string will added to header value
 	GetJsonHeader(url string, opt ...any) map[string]string
 }
@@ -46,9 +46,9 @@ type HttpBuilder interface {
 	EnableTrace(enable ...bool) HttpBuilder
 	SetHeader(args map[string]string) HttpBuilder
 
-	// this refer to gm.Http.GetJsonHeader
+	// this refer to gm.Http.GetJsonHeader,
 	// but without url
-	JsonHeader(opt ...any) HttpBuilder
+	SetJsonHeader(opt ...any) HttpBuilder
 
 	// Examples:
 	//

@@ -310,7 +310,7 @@ func sfrCallHttp1(ctx server.FuseRContext) any {
 	url := "http://ipecho.net/plain"
 
 	data, code, err := gm.Http.Get(url).
-		SetHeaders(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
+		SetHeader(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		})).
 		Call()
@@ -328,7 +328,7 @@ func sfrCallHttp1(ctx server.FuseRContext) any {
 
 func sfrCallHttp2(ctx server.FuseRContext) any {
 	data, code, err := gm.Http.Get("http://ipecho.net/plain").
-		AutoHeaders("1.0", map[string]string{
+		SetJsonHeader("1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		}).
 		Call()
