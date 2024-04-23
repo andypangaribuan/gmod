@@ -9,7 +9,18 @@
 
 package http
 
-func init() {
-	iceHttp = new(stuHttp)
-	xinit()
+import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/gm"
+)
+
+func getConfValue(name string) (value string) {
+	val, err := gm.Util.ReflectionGet(gm.Conf, name)
+	if err == nil {
+		if v, ok := val.(string); ok {
+			value = strings.TrimSpace(v)
+		}
+	}
+	return
 }

@@ -52,8 +52,9 @@ var (
 )
 
 var (
-	mainUtilCallback func()
+	mainHttpCallback func()
 	mainJsonCallback func()
+	mainUtilCallback func()
 
 	mainCLogCallback func()
 )
@@ -75,8 +76,9 @@ func init() {
 		SetUtil(iceUtil, iceUtilEnv)
 
 	mainConfCommit = func() {
-		mainUtilCallback()
+		mainHttpCallback()
 		mainJsonCallback()
+		mainUtilCallback()
 
 		mainCLogCallback()
 	}

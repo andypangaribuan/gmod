@@ -9,7 +9,14 @@
 
 package http
 
-func init() {
-	iceHttp = new(stuHttp)
-	xinit()
+func xinit() {
+	mainHttpCallback = func() {
+		if val := getConfValue("svcName"); val != "" {
+			svcName = val
+		}
+
+		if val := getConfValue("svcVersion"); val != "" {
+			svcVersion = val
+		}
+	}
 }

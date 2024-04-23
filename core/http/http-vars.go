@@ -17,3 +17,11 @@ import (
 
 //go:linkname iceHttp github.com/andypangaribuan/gmod.iceHttp
 var iceHttp ice.Http
+
+//go:linkname mainHttpCallback github.com/andypangaribuan/gmod.mainHttpCallback
+var mainHttpCallback func()
+
+var (
+	svcName    string
+	svcVersion string
+)
