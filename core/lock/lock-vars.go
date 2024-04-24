@@ -25,7 +25,8 @@ var iceLock ice.Lock
 var mainLockCallback func()
 
 var (
-	dvalTxTimeout time.Duration
-	dvalTxTryFor  *time.Duration
-	txLockEngine  *redislock.Client
+	dvalTxTimeout       time.Duration
+	dvalTxTryFor        *time.Duration
+	txLockEngine        *redislock.Client
+	txLockEngineAddress string
 )

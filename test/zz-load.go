@@ -31,8 +31,10 @@ func loadEnv() {
 
 		ClogAddress:         gm.Util.Env.GetString("CLOG_ADDRESS"),
 		SvcInternalBaseUrls: gm.Util.Env.GetStringSlice("SVC_INTERNAL_BASE_URLS", "|", []string{}),
-		
+
 		TxLockEngineAddress: gm.Util.Env.GetString("TX_LOCK_ENGINE_ADDRESS"),
+		TxLockTimeout:       gm.Util.Env.GetDurationMs("TX_LOCK_TIMEOUT_MS"),
+		TxLockTryFor:        gm.Util.Env.GetDurationMs("TX_LOCK_TRY_FOR_MS"),
 
 		DbHost: gm.Util.Env.GetString("DB_HOST"),
 		DbPort: gm.Util.Env.GetInt("DB_PORT"),

@@ -9,13 +9,32 @@
 
 package lock
 
-import "time"
+import (
+	"time"
+)
 
 func (slf *stuLockInstance) Release() {
+	if isTxOnDevMode() {
+		return
+	}
+
+	if slf.lock == nil {
+		return
+	}
+
 	slf.lock.Release(slf.ctx)
 }
 
 func (slf *stuLockInstance) IsLocked() (bool, error) {
+	if isTxOnDevMode() {
+		return true, nil
+	}
+
+	err := slf.isHaveLock()
+	if err != nil {
+		return false, err
+	}
+
 	ttl, err := slf.lock.TTL(slf.ctx)
 	if err != nil {
 		return false, err
@@ -25,5 +44,14 @@ func (slf *stuLockInstance) IsLocked() (bool, error) {
 }
 
 func (slf *stuLockInstance) Extend(duration time.Duration) error {
+	if isTxOnDevMode() {
+		return nil
+	}
+
+	err := slf.isHaveLock()
+	if err != nil {
+		return err
+	}
+
 	return slf.lock.Refresh(slf.ctx, duration, nil)
 }

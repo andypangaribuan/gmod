@@ -9,7 +9,11 @@
 
 package test
 
-import "github.com/andypangaribuan/gmod/ice"
+import (
+	"time"
+
+	"github.com/andypangaribuan/gmod/ice"
+)
 
 type stuEnv struct {
 	AppName               string
@@ -20,9 +24,12 @@ type stuEnv struct {
 	AppAutoRecover        bool
 	AppServerPrintOnError bool
 
-	TxLockEngineAddress string
 	ClogAddress         string
 	SvcInternalBaseUrls []string
+
+	TxLockEngineAddress string
+	TxLockTimeout       time.Duration
+	TxLockTryFor        time.Duration
 
 	DbHost string
 	DbPort int

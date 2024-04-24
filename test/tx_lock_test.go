@@ -24,6 +24,7 @@ func testTxLock(t *testing.T) {
 	// startedAt := time.Now().Add(time.Second * 5)
 
 	lock, err := gm.Lock.Tx("1")
+	defer lock.Release()
 	require.Nil(t, err)
 	require.NotNil(t, lock)
 }

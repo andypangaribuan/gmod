@@ -21,5 +21,6 @@ func init() {
 		SetTimezone(env.AppTimezone).
 		SetCLogAddress(env.ClogAddress, env.AppName, env.AppVersion).
 		SetInternalBaseUrls(env.SvcInternalBaseUrls).
+		SetTxLockEngine(env.TxLockEngineAddress, env.TxLockTimeout, &env.TxLockTryFor).
 		Commit()
 }

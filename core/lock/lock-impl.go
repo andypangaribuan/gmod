@@ -19,8 +19,12 @@ func (slf *stuLock) NewOpt() ice.LockOpt {
 }
 
 func (slf *stuLock) Tx(id string, opt ...ice.LockOpt) (ice.LockInstance, error) {
+	if isTxOnDevMode() {
+		return new(stuLockInstance), nil
+	}
+
 	if txLockEngine == nil {
-		return nil, errors.New("doesn't have lock engine, please set from gm.Conf.SetTxLockEngineAddress")
+		return new(stuLockInstance), errors.New("doesn't have lock engine, please set from gm.Conf.SetTxLockEngine")
 	}
 
 	var (

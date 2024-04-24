@@ -22,3 +22,7 @@ func getConfVal[T any](name string) (value T) {
 	}
 	return
 }
+
+func isTxOnDevMode() bool {
+	return txLockEngineAddress == "-"
+}

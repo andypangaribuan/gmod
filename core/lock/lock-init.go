@@ -19,6 +19,7 @@ import (
 func xinit() {
 	mainLockCallback = func() {
 		if val := getConfVal[string]("txLockEngineAddress"); val != "" {
+			txLockEngineAddress = val
 			client := redis.NewClient(&redis.Options{
 				Network: "tcp",
 				Addr:    val,

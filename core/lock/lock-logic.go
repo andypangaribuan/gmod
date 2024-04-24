@@ -13,30 +13,25 @@ import (
 	"context"
 	"time"
 
-	"github.com/pkg/errors"
-
 	"github.com/andypangaribuan/gmod/ice"
 )
 
 func getTxLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
-	if txLockEngine == nil {
-		return nil, errors.New("tx lock engine address is empty, please set from gm.Conf.SetTxLockEngineAddress")
-	}
-
-	startedAt := time.Now()
-	ins := &stuLockInstance{
-		ctx: context.Background(),
-	}
+	var (
+		startedAt = time.Now()
+		ins       = new(stuLockInstance)
+	)
 
 	for {
 		lock, err := txLockEngine.Obtain(ins.ctx, key, timeout, nil)
 		if err != nil {
 			if tryFor != nil && time.Since(startedAt) > *tryFor {
-				return nil, err
+				return ins, err
 			}
 
 			time.Sleep(time.Millisecond * 10)
 		} else {
+			ins.ctx = context.Background()
 			ins.lock = lock
 			break
 		}

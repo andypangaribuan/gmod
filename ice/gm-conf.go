@@ -16,6 +16,9 @@ type Conf interface {
 	SetTimezone(timezone string) Conf
 	SetCLogAddress(address string, svcName string, svcVersion string) Conf
 	SetInternalBaseUrls(urls []string) Conf
-	SetTxLockEngineAddress(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) Conf
+
+	// address "-" means no engine, so all the feature will success every time, used when on development
+	SetTxLockEngine(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) Conf
+
 	Commit()
 }
