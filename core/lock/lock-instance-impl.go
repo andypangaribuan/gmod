@@ -12,3 +12,12 @@ package lock
 func (slf *stuLockInstance) Release() {
 	slf.lock.Release(slf.ctx)
 }
+
+func (slf *stuLockInstance) IsLocked() (bool, error) {
+	ttl, err := slf.lock.TTL(slf.ctx)
+	if err != nil {
+		return false, err
+	}
+
+	return ttl > 0, nil
+}

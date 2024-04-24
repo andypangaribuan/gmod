@@ -29,4 +29,5 @@ type LockOpt interface {
 
 type LockInstance interface {
 	Release()
+	IsLocked() (bool, error)
 }
