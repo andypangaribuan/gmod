@@ -9,7 +9,11 @@
 
 package conf
 
-import "github.com/andypangaribuan/gmod/ice"
+import (
+	"time"
+
+	"github.com/andypangaribuan/gmod/ice"
+)
 
 func (slf *stuConf) SetZxEnvName(name string) ice.Conf {
 	slf.zxEnvName = name
@@ -33,8 +37,10 @@ func (slf *stuConf) SetInternalBaseUrls(urls []string) ice.Conf {
 	return slf
 }
 
-func (slf *stuConf) SetTxLockEngineAddress(address string) ice.Conf {
+func (slf *stuConf) SetTxLockEngineAddress(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) ice.Conf {
 	slf.txLockEngineAddress = address
+	slf.txLockDvalTimeout = dvalTimeout
+	slf.txLockDvalTryFor = dvalTryFor
 	return slf
 }
 

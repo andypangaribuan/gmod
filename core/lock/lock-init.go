@@ -10,6 +10,8 @@
 package lock
 
 import (
+	"time"
+
 	"github.com/bsm/redislock"
 	"github.com/redis/go-redis/v9"
 )
@@ -25,5 +27,8 @@ func xinit() {
 
 			txLockEngine = redislock.New(client)
 		}
+
+		dvalTxTryFor = getConfVal[*time.Duration]("txLockDvalTryFor")
+		dvalTxTimeout = getConfVal[time.Duration]("txLockDvalTimeout")
 	}
 }

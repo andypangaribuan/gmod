@@ -22,6 +22,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/db"
 	_ "github.com/andypangaribuan/gmod/core/http"
 	_ "github.com/andypangaribuan/gmod/core/json"
+	_ "github.com/andypangaribuan/gmod/core/lock"
 	_ "github.com/andypangaribuan/gmod/core/net"
 	_ "github.com/andypangaribuan/gmod/core/test"
 	_ "github.com/andypangaribuan/gmod/core/util"
@@ -73,6 +74,7 @@ func init() {
 		SetDb(iceDb).
 		SetHttp(iceHttp).
 		SetJson(iceJson).
+		SetLock(iceLock).
 		SetNet(iceNet).
 		SetTest(iceTest).
 		SetUtil(iceUtil, iceUtilEnv)

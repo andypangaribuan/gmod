@@ -9,11 +9,13 @@
 
 package ice
 
+import "time"
+
 type Conf interface {
 	SetZxEnvName(name string) Conf
 	SetTimezone(timezone string) Conf
 	SetCLogAddress(address string, svcName string, svcVersion string) Conf
 	SetInternalBaseUrls(urls []string) Conf
-	SetTxLockEngineAddress(address string) Conf
+	SetTxLockEngineAddress(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) Conf
 	Commit()
 }

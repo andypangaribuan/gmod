@@ -18,7 +18,7 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func getLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
+func getTxLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
 	if txLockEngine == nil {
 		return nil, errors.New("tx lock engine address is empty, please set from gm.Conf.SetTxLockEngineAddress")
 	}
