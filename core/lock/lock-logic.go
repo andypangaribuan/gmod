@@ -19,7 +19,7 @@ import (
 func getTxLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
 	var (
 		startedAt = time.Now()
-		ins       = new(stuLockInstance)
+		ins       = &stuLockInstance{ctx: context.Background()}
 	)
 
 	for {
@@ -31,7 +31,6 @@ func getTxLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.Lo
 
 			time.Sleep(time.Millisecond * 10)
 		} else {
-			ins.ctx = context.Background()
 			ins.lock = lock
 			break
 		}

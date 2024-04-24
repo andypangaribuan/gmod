@@ -10,10 +10,12 @@
 package test
 
 import (
+	"fmt"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/andypangaribuan/gmod/gm"
-	"github.com/stretchr/testify/require"
 )
 
 func TestTxLock(t *testing.T) {
@@ -21,12 +23,39 @@ func TestTxLock(t *testing.T) {
 }
 
 func testTxLock(t *testing.T) {
-	// startedAt := time.Now().Add(time.Second * 5)
+	var (
+		wg        = new(sync.WaitGroup)
+		startedAt = time.Now().Add(time.Second * 3)
+	)
 
-	lock, err := gm.Lock.Tx("1")
-	defer lock.Release()
-	require.Nil(t, err)
-	require.NotNil(t, lock)
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		// key := fmt.Sprint(i) // all unique
+		key := fmt.Sprint(i % 10) // only 10 unique key
+		go txLockIns(t, wg, startedAt, key)
+	}
+
+	wg.Wait()
 }
 
-// func txLockIns()
+func txLockIns(t *testing.T, wg *sync.WaitGroup, startedAt time.Time, key string) {
+	defer wg.Done()
+
+	for {
+		if time.Now().After(startedAt) {
+			break
+		} else {
+			time.Sleep(time.Millisecond)
+		}
+	}
+
+	lock, err := gm.Lock.Tx(key)
+	defer lock.Release()
+
+	if err != nil {
+		gm.Test.Printf(t, "%v: have an error when get the lock\n", key)
+	} else {
+		time.Sleep(time.Millisecond * 3100)
+		gm.Test.Printf(t, "%v: done\n", key)
+	}
+}
