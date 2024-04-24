@@ -9,6 +9,8 @@
 
 package ice
 
+import "time"
+
 type UtilEnv interface {
 	GetAppEnv(key string) AppEnv
 	GetString(key string, dval ...string) string
@@ -18,4 +20,5 @@ type UtilEnv interface {
 	GetBool(key string, dval ...bool) bool
 
 	GetStringSlice(key string, separator string, dval ...[]string) []string
+	GetDurationMs(key string, dval ...time.Duration) time.Duration
 }

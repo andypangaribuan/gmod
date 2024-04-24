@@ -13,6 +13,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/andypangaribuan/gmod/ice"
 )
@@ -98,4 +99,20 @@ func (slf *stuUtilEnv) GetStringSlice(key string, separator string, dval ...[]st
 	}
 
 	return ls
+}
+
+func (slf *stuUtilEnv) GetDurationMs(key string, dval ...time.Duration) time.Duration {
+	val := getEnvVal(key)
+	if val == "" {
+		if len(dval) > 0 {
+			return dval[0]
+		}
+
+		log.Fatalf(`env key "%v" doesn't exists`, key)
+	}
+
+	value, err := strconv.Atoi(val)
+	slf.invalid(key, val, "duration-ms (int)", err)
+
+	return time.Millisecond * time.Duration(value)
 }
