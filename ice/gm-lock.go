@@ -15,7 +15,7 @@ type Lock interface {
 	NewOpt() LockOpt
 
 	// code
-	// -1: 
+	// -1:
 	//  0: have an error
 	//  1: locked
 	Tx(id string, opt ...LockOpt) (LockInstance, error)
@@ -30,4 +30,5 @@ type LockOpt interface {
 type LockInstance interface {
 	Release()
 	IsLocked() (bool, error)
+	Extend(duration time.Duration) error
 }

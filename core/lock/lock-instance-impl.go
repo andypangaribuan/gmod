@@ -9,6 +9,8 @@
 
 package lock
 
+import "time"
+
 func (slf *stuLockInstance) Release() {
 	slf.lock.Release(slf.ctx)
 }
@@ -20,4 +22,8 @@ func (slf *stuLockInstance) IsLocked() (bool, error) {
 	}
 
 	return ttl > 0, nil
+}
+
+func (slf *stuLockInstance) Extend(duration time.Duration) error {
+	return slf.lock.Refresh(slf.ctx, duration, nil)
 }
