@@ -20,6 +20,7 @@ type stuEnv struct {
 	AppAutoRecover        bool
 	AppServerPrintOnError bool
 
+	TxLockEngineAddress string
 	ClogAddress         string
 	SvcInternalBaseUrls []string
 
