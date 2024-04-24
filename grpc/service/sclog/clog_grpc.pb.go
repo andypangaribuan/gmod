@@ -27,9 +27,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CLogService_DbqV1_FullMethodName          = "/sclog.CLogService/DbqV1"
-	CLogService_ServicePieceV1_FullMethodName = "/sclog.CLogService/ServicePieceV1"
-	CLogService_ServiceV1_FullMethodName      = "/sclog.CLogService/ServiceV1"
+	CLogService_DbqV1_FullMethodName           = "/sclog.CLogService/DbqV1"
+	CLogService_HttpCallPieceV1_FullMethodName = "/sclog.CLogService/HttpCallPieceV1"
+	CLogService_HttpCallV1_FullMethodName      = "/sclog.CLogService/HttpCallV1"
+	CLogService_ServicePieceV1_FullMethodName  = "/sclog.CLogService/ServicePieceV1"
+	CLogService_ServiceV1_FullMethodName       = "/sclog.CLogService/ServiceV1"
 )
 
 // CLogServiceClient is the client API for CLogService service.
@@ -37,6 +39,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CLogServiceClient interface {
 	DbqV1(ctx context.Context, in *RequestDbqV1, opts ...grpc.CallOption) (*Response, error)
+	HttpCallPieceV1(ctx context.Context, in *RequestHttpCallPieceV1, opts ...grpc.CallOption) (*Response, error)
+	HttpCallV1(ctx context.Context, in *RequestHttpCallV1, opts ...grpc.CallOption) (*Response, error)
 	ServicePieceV1(ctx context.Context, in *RequestServicePieceV1, opts ...grpc.CallOption) (*Response, error)
 	ServiceV1(ctx context.Context, in *RequestServiceV1, opts ...grpc.CallOption) (*Response, error)
 }
@@ -52,6 +56,24 @@ func NewCLogServiceClient(cc grpc.ClientConnInterface) CLogServiceClient {
 func (c *cLogServiceClient) DbqV1(ctx context.Context, in *RequestDbqV1, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, CLogService_DbqV1_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cLogServiceClient) HttpCallPieceV1(ctx context.Context, in *RequestHttpCallPieceV1, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, CLogService_HttpCallPieceV1_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cLogServiceClient) HttpCallV1(ctx context.Context, in *RequestHttpCallV1, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, CLogService_HttpCallV1_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +103,8 @@ func (c *cLogServiceClient) ServiceV1(ctx context.Context, in *RequestServiceV1,
 // for forward compatibility
 type CLogServiceServer interface {
 	DbqV1(context.Context, *RequestDbqV1) (*Response, error)
+	HttpCallPieceV1(context.Context, *RequestHttpCallPieceV1) (*Response, error)
+	HttpCallV1(context.Context, *RequestHttpCallV1) (*Response, error)
 	ServicePieceV1(context.Context, *RequestServicePieceV1) (*Response, error)
 	ServiceV1(context.Context, *RequestServiceV1) (*Response, error)
 	mustEmbedUnimplementedCLogServiceServer()
@@ -92,6 +116,12 @@ type UnimplementedCLogServiceServer struct {
 
 func (UnimplementedCLogServiceServer) DbqV1(context.Context, *RequestDbqV1) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DbqV1 not implemented")
+}
+func (UnimplementedCLogServiceServer) HttpCallPieceV1(context.Context, *RequestHttpCallPieceV1) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HttpCallPieceV1 not implemented")
+}
+func (UnimplementedCLogServiceServer) HttpCallV1(context.Context, *RequestHttpCallV1) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HttpCallV1 not implemented")
 }
 func (UnimplementedCLogServiceServer) ServicePieceV1(context.Context, *RequestServicePieceV1) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServicePieceV1 not implemented")
@@ -126,6 +156,42 @@ func _CLogService_DbqV1_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CLogServiceServer).DbqV1(ctx, req.(*RequestDbqV1))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CLogService_HttpCallPieceV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestHttpCallPieceV1)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CLogServiceServer).HttpCallPieceV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CLogService_HttpCallPieceV1_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CLogServiceServer).HttpCallPieceV1(ctx, req.(*RequestHttpCallPieceV1))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CLogService_HttpCallV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestHttpCallV1)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CLogServiceServer).HttpCallV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CLogService_HttpCallV1_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CLogServiceServer).HttpCallV1(ctx, req.(*RequestHttpCallV1))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,6 +242,14 @@ var CLogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DbqV1",
 			Handler:    _CLogService_DbqV1_Handler,
+		},
+		{
+			MethodName: "HttpCallPieceV1",
+			Handler:    _CLogService_HttpCallPieceV1_Handler,
+		},
+		{
+			MethodName: "HttpCallV1",
+			Handler:    _CLogService_HttpCallV1_Handler,
 		},
 		{
 			MethodName: "ServicePieceV1",
