@@ -7,27 +7,19 @@
  * All Rights Reserved.
  */
 
-package gm
+package lock
 
 import (
+	"time"
+
 	"github.com/andypangaribuan/gmod/ice"
 
 	_ "unsafe"
 )
 
-//go:linkname iceGM github.com/andypangaribuan/gmod.iceGM
-var iceGM ice.GM
+//go:linkname iceLock github.com/andypangaribuan/gmod.iceLock
+var iceLock ice.Lock
 
 var (
-	Box    ice.Box
-	Conf   ice.Conf
-	Conv   *stuConv
-	Crypto ice.Crypto
-	Db     ice.Db
-	Http   ice.Http
-	Json   ice.Json
-	Lock   ice.Lock
-	Net    ice.Net
-	Test   ice.Test
-	Util   *stuUtil
+	dvalTxTimeout = time.Second * 3
 )

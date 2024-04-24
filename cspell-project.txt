@@ -37,3 +37,4 @@ svcversion
 jons
 fastly
 xrepo
+redislock

@@ -41,6 +41,7 @@ var (
 	iceDb       ice.Db
 	iceHttp     ice.Http
 	iceJson     ice.Json
+	iceLock     ice.Lock
 	iceNet      ice.Net
 	iceTest     ice.Test
 	iceUtil     ice.Util

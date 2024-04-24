@@ -48,6 +48,8 @@ function reset {
   cd res
   docker-compose down
   rm -rf pgdata
+  rm -rf mcache
+  
   docker-compose up -d
   sleep 5
   docker-compose ps -a

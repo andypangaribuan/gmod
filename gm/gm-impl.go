@@ -49,6 +49,11 @@ func (slf *stuGM) SetJson(json ice.Json) ice.GM {
 	return slf
 }
 
+func (slf *stuGM) SetLock(lock ice.Lock) ice.GM {
+	Lock = lock
+	return slf
+}
+
 func (slf *stuGM) SetNet(net ice.Net) ice.GM {
 	Net = net
 	return slf

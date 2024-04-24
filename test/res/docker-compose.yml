@@ -1,9 +1,11 @@
-version: "3.8"
+version: '3.8'
 name: gmod-pro
+
 
 networks:
   gmod-net:
     name: gmod-net
+
 
 services:
   gmod-db:
@@ -22,3 +24,15 @@ services:
       POSTGRES_DB: gmoddb
       POSTGRES_USER: gmoduser
       POSTGRES_PASSWORD: gmodpass
+
+  gmod-cache:
+    container_name: gmod-cache
+    image: redis:7.2.4-alpine3.19
+    restart: always
+    ports:
+      - 4411:6379
+    networks:
+      - gmod-net
+    command: redis-server --save 300 10 --loglevel warning
+    volumes:
+      - ./mcache:/data
