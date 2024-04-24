@@ -40,6 +40,32 @@ func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 	return grpcCall(*fm.GetFirst(async, true), client.DbqV1, req)
 }
 
+func (slf *stuInstance) HttpCallV1(mol *HttpCallV1, async ...bool) error {
+	req := &sclog.RequestHttpCallV1{
+		Uid:        slf.uid,
+		UserId:     fm.PbwString(slf.userId),
+		PartnerId:  fm.PbwString(slf.partnerId),
+		SvcName:    svcName,
+		SvcVersion: svcVersion,
+		Url:        mol.Url,
+		Severity:   mol.Severity,
+		ReqHeader:  fm.PbwString(mol.ReqHeader),
+		ReqParam:   fm.PbwString(mol.ReqParam),
+		ReqQuery:   fm.PbwString(mol.ReqQuery),
+		ReqForm:    fm.PbwString(mol.ReqForm),
+		ReqFiles:   fm.PbwString(mol.ReqFiles),
+		ReqBody:    fm.PbwString(mol.ReqBody),
+		ResData:    fm.PbwString(mol.ResData),
+		ResCode:    int32(mol.ResCode),
+		ErrMessage: fm.PbwString(mol.ErrMessage),
+		StackTrace: fm.PbwString(mol.StackTrace),
+		StartedAt:  gm.Conv.Time.ToStrFull(mol.StartedAt),
+		FinishedAt: gm.Conv.Time.ToStrFull(mol.FinishedAt),
+	}
+
+	return grpcCall(*fm.GetFirst(async, true), client.HttpCallV1, req)
+}
+
 func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error {
 	req := &sclog.RequestServicePieceV1{
 		Uid:              slf.uid,

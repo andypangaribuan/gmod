@@ -27,6 +27,23 @@ type DbqV1 struct {
 	FinishedAt   time.Time
 }
 
+type HttpCallV1 struct {
+	Url        string
+	Severity   string
+	ReqHeader  *string
+	ReqParam   *string
+	ReqQuery   *string
+	ReqForm    *string
+	ReqFiles   *string
+	ReqBody    *string
+	ResData    *string
+	ResCode    int
+	ErrMessage *string
+	StackTrace *string
+	StartedAt  time.Time
+	FinishedAt time.Time
+}
+
 type ServicePieceV1 struct {
 	SvcParentName    *string
 	SvcParentVersion *string
