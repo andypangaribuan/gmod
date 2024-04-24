@@ -9,22 +9,6 @@
 
 package lock
 
-import (
-	"context"
-	"time"
-
-	"github.com/bsm/redislock"
-)
-
-type stuLock struct{}
-
-type stuLockOpt struct {
-	timeout *time.Duration
-	tryFor  *time.Duration
-	prefix  *string
-}
-
-type stuLockInstance struct {
-	ctx  context.Context
-	lock *redislock.Lock
+func (slf *stuLockInstance) Release() {
+	slf.lock.Release(slf.ctx)
 }

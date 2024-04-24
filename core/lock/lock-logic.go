@@ -13,21 +13,34 @@ import (
 	"context"
 	"time"
 
-	"github.com/bsm/redislock"
-	"github.com/redis/go-redis/v9"
+	"github.com/pkg/errors"
+
+	"github.com/andypangaribuan/gmod/ice"
 )
 
-func getLock(key string, timeout time.Duration) {
-	client := redis.NewClient(&redis.Options{
-		Network: "tcp",
-		Addr:    "127.0.0.1:6379",
-	})
-	defer client.Close()
+func getLock(key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
+	if txLockEngine == nil {
+		return nil, errors.New("tx lock engine address is empty, please set from gm.Conf.SetTxLockEngineAddress")
+	}
 
-	var (
-		locker = redislock.New(client)
-		ctx    = context.Background()
-	)
+	startedAt := time.Now()
+	ins := &stuLockInstance{
+		ctx: context.Background(),
+	}
 
-	locker.Obtain(ctx, key, timeout, nil)
+	for {
+		lock, err := txLockEngine.Obtain(ins.ctx, key, timeout, nil)
+		if err != nil {
+			if tryFor != nil && time.Since(startedAt) > *tryFor {
+				return nil, err
+			}
+
+			time.Sleep(time.Millisecond * 10)
+		} else {
+			ins.lock = lock
+			break
+		}
+	}
+
+	return ins, nil
 }

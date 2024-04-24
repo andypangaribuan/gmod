@@ -10,21 +10,20 @@
 package lock
 
 import (
-	"context"
-	"time"
-
 	"github.com/bsm/redislock"
+	"github.com/redis/go-redis/v9"
 )
 
-type stuLock struct{}
+func xinit() {
+	mainLockCallback = func() {
+		if val := getConfVal[string]("txLockEngineAddress"); val != "" {
+			client := redis.NewClient(&redis.Options{
+				Network: "tcp",
+				Addr:    val,
+			})
+			// defer client.Close()
 
-type stuLockOpt struct {
-	timeout *time.Duration
-	tryFor  *time.Duration
-	prefix  *string
-}
-
-type stuLockInstance struct {
-	ctx  context.Context
-	lock *redislock.Lock
+			txLockEngine = redislock.New(client)
+		}
+	}
 }

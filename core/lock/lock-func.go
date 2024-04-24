@@ -10,21 +10,15 @@
 package lock
 
 import (
-	"context"
-	"time"
-
-	"github.com/bsm/redislock"
+	"github.com/andypangaribuan/gmod/gm"
 )
 
-type stuLock struct{}
-
-type stuLockOpt struct {
-	timeout *time.Duration
-	tryFor  *time.Duration
-	prefix  *string
-}
-
-type stuLockInstance struct {
-	ctx  context.Context
-	lock *redislock.Lock
+func getConfVal[T any](name string) (value T) {
+	v, err := gm.Util.ReflectionGet(gm.Conf, name)
+	if err == nil {
+		if v, ok := v.(T); ok {
+			value = v
+		}
+	}
+	return
 }

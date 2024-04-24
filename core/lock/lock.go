@@ -11,4 +11,5 @@ package lock
 
 func init() {
 	iceLock = new(stuLock)
+	xinit()
 }

@@ -26,3 +26,7 @@ type LockOpt interface {
 	TryFor(duration time.Duration) LockOpt
 	SetPrefix(prefix string) LockOpt
 }
+
+type LockInstance interface {
+	Release()
+}

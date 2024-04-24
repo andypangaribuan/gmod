@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/andypangaribuan/gmod/ice"
+	"github.com/bsm/redislock"
 
 	_ "unsafe"
 )
@@ -20,6 +21,10 @@ import (
 //go:linkname iceLock github.com/andypangaribuan/gmod.iceLock
 var iceLock ice.Lock
 
+//go:linkname mainLockCallback github.com/andypangaribuan/gmod.mainLockCallback
+var mainLockCallback func()
+
 var (
 	dvalTxTimeout = time.Second * 3
+	txLockEngine  *redislock.Client
 )

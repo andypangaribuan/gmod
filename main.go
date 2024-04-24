@@ -55,6 +55,7 @@ var (
 var (
 	mainHttpCallback func()
 	mainJsonCallback func()
+	mainLockCallback func()
 	mainUtilCallback func()
 
 	mainCLogCallback func()
@@ -80,6 +81,7 @@ func init() {
 		mainHttpCallback()
 		mainJsonCallback()
 		mainUtilCallback()
+		mainLockCallback()
 
 		mainCLogCallback()
 	}

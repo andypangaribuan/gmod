@@ -14,5 +14,6 @@ type Conf interface {
 	SetTimezone(timezone string) Conf
 	SetCLogAddress(address string, svcName string, svcVersion string) Conf
 	SetInternalBaseUrls(urls []string) Conf
+	SetTxLockEngineAddress(address string) Conf
 	Commit()
 }

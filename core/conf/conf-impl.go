@@ -33,6 +33,11 @@ func (slf *stuConf) SetInternalBaseUrls(urls []string) ice.Conf {
 	return slf
 }
 
+func (slf *stuConf) SetTxLockEngineAddress(address string) ice.Conf {
+	slf.txLockEngineAddress = address
+	return slf
+}
+
 func (slf *stuConf) Commit() {
 	mainConfCommit()
 }
