@@ -20,5 +20,5 @@ import (
 func TestServerFuseRHttp(t *testing.T) {
 	baseUrl := fmt.Sprintf("http://127.0.0.1:%v", env.AppRestPort)
 	url := baseUrl + "/private/status"
-	gm.Http.Get(url).Call()
+	gm.Http.Get(url).Call(nil)
 }

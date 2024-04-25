@@ -10,12 +10,11 @@
 package lock
 
 import (
+	_ "unsafe"
 	"time"
 
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/bsm/redislock"
-
-	_ "unsafe"
 )
 
 //go:linkname iceLock github.com/andypangaribuan/gmod.iceLock

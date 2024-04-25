@@ -12,6 +12,8 @@ package ice
 import (
 	"io"
 	"time"
+
+	"github.com/andypangaribuan/gmod/clog"
 )
 
 type Http interface {
@@ -104,7 +106,7 @@ type HttpBuilder interface {
 	//	})
 	SetFiles(files map[string]string) HttpBuilder
 
-	Call() (data []byte, code int, err error)
+	Call(clog clog.Instance) (data []byte, code int, err error)
 }
 
 type HttpResponse interface {

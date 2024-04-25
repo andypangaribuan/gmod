@@ -13,15 +13,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/andypangaribuan/gmod/fm"
-	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
 func xinit() {
 	mainCLogCallback = func() {
 		if val := getConfValue("clogAddress"); val != "" {
-			c, err := fm.GrpcClient(val, sclog.NewCLogServiceClient)
+			c, err := createClient(val, sclog.NewCLogServiceClient)
 			if err != nil {
 				go connect(val)
 			} else {
@@ -45,7 +43,7 @@ func xinit() {
 		}
 
 		return &stuInstance{
-			uid: gm.Util.UID(),
+			uid: mainCLogUtilUid(),
 		}
 	}
 
@@ -71,7 +69,7 @@ func xinit() {
 func connect(address string) {
 	for {
 		time.Sleep(time.Millisecond * 300)
-		c, err := fm.GrpcClient(address, sclog.NewCLogServiceClient)
+		c, err := createClient(address, sclog.NewCLogServiceClient)
 		if err == nil {
 			client = c
 			fmt.Println("connected to central log")

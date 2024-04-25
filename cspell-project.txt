@@ -38,3 +38,4 @@ jons
 fastly
 xrepo
 redislock
+cins

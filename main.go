@@ -13,7 +13,7 @@ import (
 	"log"
 
 	_ "github.com/andypangaribuan/gmod/clog"
-	_ "github.com/andypangaribuan/gmod/gm"
+	"github.com/andypangaribuan/gmod/gm"
 
 	_ "github.com/andypangaribuan/gmod/core/box"
 	_ "github.com/andypangaribuan/gmod/core/conf"
@@ -29,6 +29,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/ice"
 	"go.uber.org/automaxprocs/maxprocs"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -50,7 +51,11 @@ var (
 )
 
 var (
-	mainConfCommit func() // accessed through unsafe
+	mainConfCommit                func()                                                 // accessed through unsafe
+	mainFmIceNet                  func() ice.Net                                         // accessed through unsafe
+	mainCLogUtilReflectionGetConf func(fieldName string) (any, error)                    // accessed through unsafe
+	mainCLogNetGrpcConnection     func(address string) (grpc.ClientConnInterface, error) // accessed through unsafe
+	mainCLogUtilUid               func() string                                          // accessed through unsafe
 )
 
 var (
@@ -86,5 +91,21 @@ func init() {
 		mainLockCallback()
 
 		mainCLogCallback()
+	}
+
+	mainFmIceNet = func() ice.Net {
+		return iceNet
+	}
+
+	mainCLogUtilReflectionGetConf = func(fieldName string) (any, error) {
+		return iceUtil.ReflectionGet(gm.Conf, fieldName)
+	}
+
+	mainCLogNetGrpcConnection = func(address string) (grpc.ClientConnInterface, error) {
+		return iceNet.GrpcConnection(address)
+	}
+
+	mainCLogUtilUid = func() string {
+		return iceUtil.UID()
 	}
 }

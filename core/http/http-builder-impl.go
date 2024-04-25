@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
@@ -95,8 +96,24 @@ func (slf *stuHttpBuilder) SetFiles(files map[string]string) ice.HttpBuilder {
 	return slf
 }
 
-func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
-	client := resty.New()
+func (slf *stuHttpBuilder) Call(cins clog.Instance) (data []byte, code int, err error) {
+	var (
+		startedAt = gm.Util.Timenow()
+		client    = resty.New()
+		resp      *resty.Response
+
+		joinedFiles = make(map[string][]string, 0)
+		severity    = "unknown"
+		reqHeader   *string
+		reqParam    *string
+		reqQuery    *string
+		reqForm     *string
+		reqFiles    *string
+		reqBody     *string
+		resData     *string
+		errMessage  *string
+		stackTrace  *string
+	)
 
 	if slf.timeout != nil {
 		client.SetTimeout(*slf.timeout)
@@ -112,10 +129,7 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 		})
 	}
 
-	var (
-		req  = client.R()
-		resp *resty.Response
-	)
+	req := client.R()
 
 	if slf.enableTrace {
 		req.EnableTrace()
@@ -123,32 +137,80 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 
 	if slf.headers != nil && len(*slf.headers) > 0 {
 		req.SetHeaders(*slf.headers)
+		jons, err := gm.Json.Encode(slf.headers)
+		if err == nil {
+			reqHeader = &jons
+		}
 	}
 
 	if slf.pathParams != nil && len(*slf.pathParams) > 0 {
 		req.SetPathParams(*slf.pathParams)
+		jons, err := gm.Json.Encode(slf.pathParams)
+		if err == nil {
+			reqParam = &jons
+		}
 	}
 
 	if slf.queryParams != nil && len(*slf.queryParams) > 0 {
 		req.SetQueryParams(*slf.queryParams)
+		jons, err := gm.Json.Encode(slf.queryParams)
+		if err == nil {
+			reqQuery = &jons
+		}
 	}
 
 	if slf.formData != nil && len(*slf.formData) > 0 {
 		req.SetFormData(*slf.formData)
+		jons, err := gm.Json.Encode(slf.formData)
+		if err == nil {
+			reqForm = &jons
+		}
 	}
 
 	if slf.body != nil {
 		req.SetBody(slf.body)
+		jons, err := gm.Json.Encode(slf.body)
+		if err == nil {
+			reqBody = &jons
+		}
 	}
 
 	if len(slf.fileReaders) > 0 {
 		for _, f := range slf.fileReaders {
 			req.SetFileReader(f.param, f.fileName, f.reader)
+			ls, ok := joinedFiles[f.param]
+			if ok {
+				joinedFiles[f.param] = append(ls, f.fileName)
+			} else {
+				joinedFiles[f.param] = []string{f.fileName}
+			}
 		}
+
+		// if len(files) > 0 {
+		// 	jons, err := gm.Json.Encode(files)
+		// 	if err == nil {
+		// 		reqFiles = &jons
+		// 	}
+		// }
 	}
 
 	if slf.files != nil && len(*slf.files) > 0 {
 		req.SetFiles(*slf.files)
+		for k, v := range *slf.files {
+			ls, ok := joinedFiles[k]
+			if ok {
+				joinedFiles[k] = append(ls, v)
+			} else {
+				joinedFiles[k] = []string{v}
+			}
+		}
+	}
+
+	if len(joinedFiles) > 0 {
+		jons, err := gm.Json.Encode(joinedFiles)
+		if err == nil {
+			reqFiles = &jons
+		}
 	}
 
 	for {
@@ -292,6 +354,54 @@ RemoteAddr    : %v
 		)
 
 		fmt.Println(msg)
+	}
+
+	if err != nil {
+		errMessage = fm.Ptr(err.Error())
+		stackTrace = fm.Ptr(fmt.Sprintf("%+v", err))
+	}
+
+	switch {
+	case statusCode >= 100 && statusCode <= 199:
+		severity = "server"
+
+	case statusCode >= 200 && statusCode <= 299:
+		severity = "success"
+
+	case statusCode >= 300 && statusCode <= 399:
+		severity = "server"
+
+	case statusCode >= 400 && statusCode <= 499:
+		severity = "warning"
+
+	case statusCode >= 500 && statusCode <= 599:
+		severity = "error"
+	}
+
+	if len(body) > 0 {
+		resData = fm.Ptr(string(body))
+	}
+
+	// clog.Instance.HttpCallV1(httpCall, true)
+	if cins != nil {
+		mol := &clog.HttpCallV1{
+			Url:        slf.url,
+			Severity:   severity,
+			ReqHeader:  reqHeader,
+			ReqParam:   reqParam,
+			ReqQuery:   reqQuery,
+			ReqForm:    reqForm,
+			ReqFiles:   reqFiles,
+			ReqBody:    reqBody,
+			ResData:    resData,
+			ResCode:    statusCode,
+			ErrMessage: errMessage,
+			StackTrace: stackTrace,
+			StartedAt:  startedAt,
+			FinishedAt: gm.Util.Timenow(),
+		}
+
+		cins.HttpCallV1(mol, true)
 	}
 
 	return body, statusCode, err

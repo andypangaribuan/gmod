@@ -313,7 +313,7 @@ func sfrCallHttp1(ctx server.FuseRContext) any {
 		SetHeader(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		})).
-		Call()
+		Call(nil)
 
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
@@ -331,7 +331,7 @@ func sfrCallHttp2(ctx server.FuseRContext) any {
 		SetJsonHeader("1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		}).
-		Call()
+		Call(nil)
 
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
