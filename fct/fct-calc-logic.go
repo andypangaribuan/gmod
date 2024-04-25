@@ -15,12 +15,6 @@ import (
 )
 
 // supported operator: +, -, *, /, %
-func ptrCalc(val ...any) (*FCT, error) {
-	v, err := calc(val...)
-	return &v, err
-}
-
-// supported operator: +, -, *, /, %
 func calc(val ...any) (FCT, error) {
 	fv := FCT{
 		v1: "0",
