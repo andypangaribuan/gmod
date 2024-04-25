@@ -10,8 +10,8 @@
 package lock
 
 import (
-	_ "unsafe"
 	"time"
+	_ "unsafe"
 
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/bsm/redislock"

@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2024.
+ * Created by Andy Pangaribuan <https://github.com/apangaribuan>.
+ *
+ * This product is protected by copyright and distributed under
+ * licenses restricting copying, distribution and decompilation.
+ * All Rights Reserved.
+ */
+
+package fct
+
+import (
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
+)
+
+// supported operator: +, -, *, /, %
+func ptrCalc(val ...any) (*FCT, error) {
+	v, err := calc(val...)
+	return &v, err
+}
+
+// supported operator: +, -, *, /, %
+func calc(val ...any) (FCT, error) {
+	fv := FCT{
+		v1: "0",
+		v2: "0",
+	}
+
+	length := len(val)
+
+	if length%2 == 0 || length < 2 {
+		return fv, errors.New("fct calc: wrong implementation")
+	}
+
+	lsv := make([]any, 0)
+
+	for i := 0; i < length; i++ {
+		if i%2 == 0 {
+			vd, err := convert(val[i])
+			if err != nil {
+				return fv, err
+			}
+
+			lsv = append(lsv, vd)
+		} else {
+			operator, ok := isOperator(val[i])
+			if !ok {
+				return fv, errors.New("fct calc: invalid operator")
+			}
+
+			lsv = append(lsv, operator)
+		}
+	}
+
+	for i := 0; i < len(lsv); i++ {
+		if i%2 == 0 && i < len(lsv)-1 {
+			operator := lsv[i+1].(string)
+
+			if operator == "*" || operator == "/" || operator == "%" {
+				vd1 := lsv[i].(*decimal.Decimal)
+				vd2 := lsv[i+2].(*decimal.Decimal)
+
+				switch operator {
+				case "*":
+					lsv[i] = vd1.Mul(*vd2)
+
+				case "/":
+					lsv[i] = vd1.Div(*vd2)
+
+				case "%":
+					lsv[i] = vd1.Mod(*vd2)
+				}
+
+				lsv = removeIndex(lsv, i+2)
+				lsv = removeIndex(lsv, i+1)
+				i--
+			}
+		}
+	}
+
+	for i := 0; i < len(lsv); i++ {
+		if i%2 == 0 && i < len(lsv)-1 {
+			operator := lsv[i+1].(string)
+
+			if operator == "+" || operator == "-" {
+				vd1 := lsv[i].(*decimal.Decimal)
+				vd2 := lsv[i+2].(*decimal.Decimal)
+
+				switch operator {
+				case "+":
+					lsv[i] = vd1.Add(*vd2)
+
+				case "-":
+					lsv[i] = vd1.Sub(*vd2)
+				}
+
+				lsv = removeIndex(lsv, i+2)
+				lsv = removeIndex(lsv, i+1)
+				i--
+			}
+		}
+	}
+
+	if len(lsv) != 1 {
+		return fv, errors.New("fct calc: something went wrong")
+	}
+
+	finalVal := lsv[0].(*decimal.Decimal)
+	fv.set(*finalVal)
+	return fv, nil
+}

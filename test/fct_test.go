@@ -22,13 +22,41 @@ func TestFCT(t *testing.T) {
 }
 
 func testFCT(t *testing.T) {
-	// v1, err := fct.New("a")
-	// require.NotNil(t, err)
-	// require.Nil(t, v1)
+	v1, err := fct.New("a")
+	require.NotNil(t, err)
+	require.Nil(t, v1)
 
-	// v2 := fct.UnsafeNew("10000")
-	// require.NotNil(t, v2)
+	v2 := fct.UnsafeNew("10000")
+	require.NotNil(t, v2)
+	require.Equal(t, "10000", v2.UnsafeToString())
 
-	v3 := fct.UnsafeNew("10000.12345678901234")
+	var (
+		val    = "10000"
+		points = "12345678901234"
+		amount = val + "." + points
+	)
+
+	v3 := fct.UnsafeNew(amount)
 	require.NotNil(t, v3)
+	require.Equal(t, amount, v3.UnsafeToString())
+
+	type model struct {
+		F1 fct.FCT  `json:"f1"`
+		F2 *fct.FCT `json:"f2"`
+		F3 *fct.FCT `json:"f3"`
+	}
+
+	m1 := &model{
+		F1: v3,
+		F2: &v3,
+		F3: nil,
+	}
+
+	jons, err := gm.Json.Encode(m1)
+	require.Nil(t, err)
+	require.Contains(t, jons, amount)
+
+	var m2 *model
+	err = gm.Json.Decode(jons, &m2)
+	require.Nil(t, err)
 }

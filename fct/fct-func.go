@@ -70,10 +70,37 @@ func getString(deci decimal.Decimal) (string, string) {
 
 		if len(decimalValue) > 0 {
 			v2 += "." + decimalValue
+		} else {
+			v1 = ls[0]
 		}
 	}
 
 	return v1, v2
+}
+
+func ifHaveIn[T comparable](val T, in ...T) bool {
+	for _, v := range in {
+		if val == v {
+			return true
+		}
+	}
+
+	return false
+}
+
+func isOperator(val any) (string, bool) {
+	switch v := val.(type) {
+	case string:
+		if v == "+" || v == "-" || v == "*" || v == "/" || v == "%" {
+			return v, true
+		}
+	}
+
+	return "", false
+}
+
+func removeIndex[T any](ls []T, index int) []T {
+	return append(ls[:index], ls[index+1:]...)
 }
 
 func convert(value any) (*decimal.Decimal, error) {
