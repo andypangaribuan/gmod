@@ -22,11 +22,11 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type FCT struct {
-	vd decimal.Decimal
-	V1 string
-	V2 string
-}
+// type FCT struct {
+// 	vd decimal.Decimal
+// 	V1 string
+// 	V2 string
+// }
 
 func New(val any) FCT {
 	fv, err := SNew(val)
@@ -52,23 +52,6 @@ func SNew(val any) (FCT, error) {
 
 	fv.set(dv)
 	return fv, nil
-}
-
-func (slf *FCT) set(vd decimal.Decimal) {
-	exp := int(vd.Exponent())
-	if exp < 0 {
-		exp *= -1
-	}
-
-	if exp < 1 {
-		exp = 1
-	}
-
-	format := "%." + strconv.Itoa(exp) + "f"
-
-	slf.vd = vd
-	slf.V1 = fmt.Sprintf(format, slf.vd.InexactFloat64())
-	slf.V2 = printer.Sprintf(format, slf.vd.InexactFloat64())
 }
 
 func (slf *FCT) GetDefault(val any) FCT {
