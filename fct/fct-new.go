@@ -25,7 +25,8 @@ func New(val any, dval ...FCT) (*FCT, error) {
 	return create(*deci), nil
 }
 
-func UNew(val any, dval ...FCT) FCT {
+// be careful, unsafe perform panic if theres an error
+func UnsafeNew(val any, dval ...FCT) FCT {
 	deci, err := convert(val)
 	if err != nil {
 		dv := dvalFCT(dval...)
@@ -39,7 +40,7 @@ func UNew(val any, dval ...FCT) FCT {
 	return *create(*deci)
 }
 
-func NNew(val any, dval ...FCT) *FCT {
+func NilNew(val any, dval ...FCT) *FCT {
 	v, _ := New(val, dval...)
 	return v
 }

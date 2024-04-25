@@ -91,3 +91,45 @@ func (slf *FCT) unsafePtrCeil(places int, dval ...FCT) *FCT {
 	slf.panic(err)
 	return val
 }
+
+func (slf *FCT) truncate(places int, dval ...FCT) (FCT, error) {
+	val, err := slf.ptrTruncate(places, dval...)
+	if err != nil {
+		return emptyFCT, err
+	}
+
+	return *val, nil
+}
+
+func (slf *FCT) unsafeTruncate(places int, dval ...FCT) FCT {
+	val, err := slf.ptrTruncate(places, dval...)
+	slf.panic(err)
+	return *val
+}
+
+func (slf *FCT) unsafePtrTruncate(places int, dval ...FCT) *FCT {
+	val, err := slf.ptrTruncate(places, dval...)
+	slf.panic(err)
+	return val
+}
+
+func (slf *FCT) pow(val any, dval ...FCT) (FCT, error) {
+	v, err := slf.ptrPow(val, dval...)
+	if err != nil {
+		return emptyFCT, err
+	}
+
+	return *v, nil
+}
+
+func (slf *FCT) unsafePow(val any, dval ...FCT) FCT {
+	v, err := slf.ptrPow(val, dval...)
+	slf.panic(err)
+	return *v
+}
+
+func (slf *FCT) unsafePtrPow(val any, dval ...FCT) *FCT {
+	v, err := slf.ptrPow(val, dval...)
+	slf.panic(err)
+	return v
+}

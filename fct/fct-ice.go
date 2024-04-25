@@ -80,3 +80,39 @@ func (slf *FCT) UnsafeCeil(places int, dval ...FCT) FCT {
 func (slf *FCT) UnsafePtrCeil(places int, dval ...FCT) *FCT {
 	return slf.unsafePtrCeil(places, dval...)
 }
+
+func (slf *FCT) Truncate(places int, dval ...FCT) (FCT, error) {
+	return slf.truncate(places, dval...)
+}
+
+func (slf *FCT) PtrTruncate(places int, dval ...FCT) (*FCT, error) {
+	return slf.ptrTruncate(places, dval...)
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafeTruncate(places int, dval ...FCT) FCT {
+	return slf.unsafeTruncate(places, dval...)
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafePtrTruncate(places int, dval ...FCT) *FCT {
+	return slf.unsafePtrTruncate(places, dval...)
+}
+
+func (slf *FCT) Pow(val any, dval ...FCT) (FCT, error) {
+	return slf.pow(val, dval...)
+}
+
+func (slf *FCT) PtrPow(val any, dval ...FCT) (*FCT, error) {
+	return slf.ptrPow(val, dval...)
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafePow(val any, dval ...FCT) FCT {
+	return slf.unsafePow(val, dval...)
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafePtrPow(val any, dval ...FCT) *FCT {
+	return slf.unsafePtrPow(val, dval...)
+}

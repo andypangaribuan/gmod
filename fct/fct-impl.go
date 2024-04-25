@@ -118,3 +118,28 @@ func (slf *FCT) ptrCeil(places int, dval ...FCT) (*FCT, error) {
 
 	return slf, nil
 }
+
+func (slf *FCT) ptrTruncate(places int, dval ...FCT) (*FCT, error) {
+	fv, err := getFCT(slf, dval...)
+	if err != nil {
+		return nil, err
+	}
+
+	deci := fv.deci.Truncate(int32(places))
+	return create(deci), nil
+}
+
+func (slf *FCT) ptrPow(val any, dval ...FCT) (*FCT, error) {
+	v, err := New(val)
+	if err != nil {
+		return nil, err
+	}
+
+	fv, err := getFCT(slf, dval...)
+	if err != nil {
+		return nil, err
+	}
+
+	deci := fv.deci.Pow(v.deci)
+	return create(deci), nil
+}

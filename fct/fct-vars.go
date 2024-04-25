@@ -10,7 +10,6 @@
 package fct
 
 import (
-	"github.com/shopspring/decimal"
 	"golang.org/x/text/message"
 )
 
@@ -21,5 +20,4 @@ var (
 var (
 	printer  *message.Printer
 	emptyFCT FCT
-	deciZero = decimal.NewFromInt(0)
 )
