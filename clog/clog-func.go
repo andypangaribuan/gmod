@@ -19,8 +19,32 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
+func mrf1[A any](key string, arg ...any) (va A) {
+	arr := mainReflection(key, arg...)
+
+	if v, ok := arr[0].(A); ok {
+		va = v
+	}
+
+	return
+}
+
+func mrf2[A any, B any](key string, arg ...any) (va A, vb B) {
+	arr := mainReflection(key, arg...)
+
+	if v, ok := arr[0].(A); ok {
+		va = v
+	}
+
+	if v, ok := arr[1].(B); ok {
+		vb = v
+	}
+
+	return
+}
+
 func getConfValue(name string) (value string) {
-	val, err := mainCLogUtilReflectionGetConf(name)
+	val, err := mrf2[any, error]("mrf-conf-val", name)
 	if err == nil {
 		if v, ok := val.(string); ok {
 			value = strings.TrimSpace(v)
@@ -74,7 +98,7 @@ func call[T any, R any](fn func(ctx context.Context, in *T, opts ...grpc.CallOpt
 func createClient[T any](address string, fn func(cc grpc.ClientConnInterface) T) (T, error) {
 	var client T
 
-	conn, err := mainCLogNetGrpcConnection(address)
+	conn, err := mrf2[grpc.ClientConnInterface, error]("mrf-net-grpc-connection", address)
 	if err != nil {
 		return client, err
 	}

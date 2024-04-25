@@ -43,7 +43,7 @@ func xinit() {
 		}
 
 		return &stuInstance{
-			uid: mainCLogUtilUid(),
+			uid: mrf1[string]("mrf-util-uid"),
 		}
 	}
 

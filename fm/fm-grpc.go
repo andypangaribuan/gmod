@@ -19,8 +19,7 @@ import (
 func GrpcClient[T any](address string, fn func(cc grpc.ClientConnInterface) T) (T, error) {
 	var client T
 
-	// conn, err := gm.Net.GrpcConnection(address)
-	conn, err := mainFmIceNet().GrpcConnection(address)
+	conn, err := mrf2[grpc.ClientConnInterface, error]("mrf-net-grpc-connection", address)
 	if err != nil {
 		return client, err
 	}

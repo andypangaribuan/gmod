@@ -9,11 +9,16 @@
 
 package fm
 
-import (
-	_ "unsafe"
-)
+func mrf2[A any, B any](key string, arg ...any) (va A, vb B) {
+	arr := mainReflection(key, arg...)
 
-var orderedInitLs [][]any
+	if v, ok := arr[0].(A); ok {
+		va = v
+	}
 
-//go:linkname mainReflection github.com/andypangaribuan/gmod.mainReflection
-var mainReflection func(key string, arg ...any) []any
+	if v, ok := arr[1].(B); ok {
+		vb = v
+	}
+
+	return
+}

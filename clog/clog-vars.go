@@ -13,20 +13,13 @@ import (
 	_ "unsafe"
 
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
-	"google.golang.org/grpc"
 )
+
+//go:linkname mainReflection github.com/andypangaribuan/gmod.mainReflection
+var mainReflection func(key string, arg ...any) []any
 
 //go:linkname mainCLogCallback github.com/andypangaribuan/gmod.mainCLogCallback
 var mainCLogCallback func()
-
-//go:linkname mainCLogUtilReflectionGetConf github.com/andypangaribuan/gmod.mainCLogUtilReflectionGetConf
-var mainCLogUtilReflectionGetConf func(fieldName string) (any, error)
-
-//go:linkname mainCLogNetGrpcConnection github.com/andypangaribuan/gmod.mainCLogNetGrpcConnection
-var mainCLogNetGrpcConnection func(address string) (grpc.ClientConnInterface, error)
-
-//go:linkname mainCLogUtilUid github.com/andypangaribuan/gmod.mainCLogUtilUid
-var mainCLogUtilUid func() (string)
 
 //go:linkname clogNew github.com/andypangaribuan/gmod/server.clogNew
 var clogNew func() Instance
