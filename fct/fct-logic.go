@@ -10,9 +10,7 @@
 package fct
 
 import (
-	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/shopspring/decimal"
 )
@@ -24,20 +22,8 @@ func (slf *FCT) panic(err error) {
 }
 
 func (slf *FCT) set(deci decimal.Decimal) *FCT {
-	exp := int(deci.Exponent())
-	if exp < 0 {
-		exp *= -1
-	}
-
-	if exp < 1 {
-		exp = 1
-	}
-
-	format := "%." + strconv.Itoa(exp) + "f"
-
 	slf.deci = deci
-	slf.v1 = fmt.Sprintf(format, deci.InexactFloat64())
-	slf.v2 = printer.Sprintf(format, deci.InexactFloat64())
+	slf.v1, slf.v2 = getString(deci)
 
 	return slf
 }

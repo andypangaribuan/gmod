@@ -116,3 +116,12 @@ func (slf *FCT) UnsafePow(val any, dval ...FCT) FCT {
 func (slf *FCT) UnsafePtrPow(val any, dval ...FCT) *FCT {
 	return slf.unsafePtrPow(val, dval...)
 }
+
+func (slf *FCT) ToString() (string, error) {
+	return slf.toString()
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafeToString() string {
+	return slf.unsafeToString()
+}

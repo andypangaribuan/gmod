@@ -10,6 +10,8 @@
 package fct
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 )
@@ -36,6 +38,42 @@ func getFCT(val *FCT, dval ...FCT) (*FCT, error) {
 	}
 
 	return val, nil
+}
+
+func getString(deci decimal.Decimal) (string, string) {
+	exp := int(deci.Exponent())
+	if exp < 0 {
+		exp *= -1
+	}
+
+	if exp == 0 {
+		exp = 1
+	}
+
+	v1 := deci.StringFixedBank(int32(exp))
+	v2 := printer.Sprintf("%.0f", deci.InexactFloat64())
+
+	ls := strings.Split(v1, ".")
+	if len(ls) > 1 {
+		decimalValue := ls[1]
+		for {
+			if len(decimalValue) == 0 {
+				break
+			}
+
+			if decimalValue[len(decimalValue)-1:] == "0" {
+				decimalValue = decimalValue[:len(decimalValue)-1]
+			} else {
+				break
+			}
+		}
+
+		if len(decimalValue) > 0 {
+			v2 += "." + decimalValue
+		}
+	}
+
+	return v1, v2
 }
 
 func convert(value any) (*decimal.Decimal, error) {

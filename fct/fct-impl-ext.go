@@ -133,3 +133,9 @@ func (slf *FCT) unsafePtrPow(val any, dval ...FCT) *FCT {
 	slf.panic(err)
 	return v
 }
+
+func (slf *FCT) unsafeToString() string {
+	v, err := slf.toString()
+	slf.panic(err)
+	return v
+}

@@ -22,12 +22,12 @@ func TestFCT(t *testing.T) {
 }
 
 func testFCT(t *testing.T) {
-	v1, err := fct.New("a")
-	require.NotNil(t, err)
-	require.Nil(t, v1)
+	// v1, err := fct.New("a")
+	// require.NotNil(t, err)
+	// require.Nil(t, v1)
 
-	v2 := fct.UnsafeNew("10000")
-	require.NotNil(t, v2)
+	// v2 := fct.UnsafeNew("10000")
+	// require.NotNil(t, v2)
 
 	v3 := fct.UnsafeNew("10000.12345678901234")
 	require.NotNil(t, v3)

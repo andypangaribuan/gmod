@@ -143,3 +143,13 @@ func (slf *FCT) ptrPow(val any, dval ...FCT) (*FCT, error) {
 	deci := fv.deci.Pow(v.deci)
 	return create(deci), nil
 }
+
+func (slf *FCT) toString() (string, error) {
+	fv, err := getFCT(slf)
+	if err != nil {
+		return "", err
+	}
+
+	v1, _ := getString(fv.deci)
+	return v1, nil
+}
