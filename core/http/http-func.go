@@ -13,13 +13,15 @@ import (
 	"bytes"
 	"encoding/json"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func newHttp(url, method string) ice.HttpBuilder {
+func newHttp(clog clog.Instance, url, method string) ice.HttpBuilder {
 	return &stuHttpBuilder{
+		clog:        clog,
 		url:         url,
 		method:      method,
 		fileReaders: make([]*stuFileReader, 0),

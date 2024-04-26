@@ -94,3 +94,19 @@ headers = {
 
 post(url=url, style=0, headers=headers, files=files)
 ```
+
+```python {"id":"01HWCSEDH6ZZ07NA3JSJH7NMVD"}
+from helper.http import get, post
+
+url = "http://localhost:3321/call-http-2"
+headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-From-SvcName': 'x-service',
+    'X-From-SvcVersion': '1.0.0',
+    'X-Version': '1.0',
+    'X-Source': 'android'
+}
+
+get(url, style=0, headers=headers)
+```

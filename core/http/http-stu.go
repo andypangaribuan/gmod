@@ -13,6 +13,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/go-resty/resty/v2"
 )
@@ -20,6 +21,7 @@ import (
 type stuHttp struct{}
 
 type stuHttpBuilder struct {
+	clog               clog.Instance
 	url                string
 	method             string
 	timeout            *time.Duration

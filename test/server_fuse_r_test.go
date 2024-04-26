@@ -318,11 +318,11 @@ func sfrForm(ctx server.FuseRContext) any {
 func sfrCallHttp1(ctx server.FuseRContext) any {
 	url := "http://ipecho.net/plain"
 
-	data, code, err := gm.Http.Get(url).
-		SetHeader(gm.Http.GetJsonHeader(url, "1.0", map[string]string{
+	data, code, err := gm.Http.Get(ctx.Clog(), url).
+		SetJsonHeader("1.0", map[string]string{
 			"Authorization": "Bearer xyz",
-		})).
-		Call(nil)
+		}).
+		Call()
 
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
@@ -336,11 +336,23 @@ func sfrCallHttp1(ctx server.FuseRContext) any {
 }
 
 func sfrCallHttp2(ctx server.FuseRContext) any {
-	data, code, err := gm.Http.Get("http://ipecho.net/plain").
+	data, code, err := gm.Http.Get(ctx.Clog(), "http://ipecho.net/plain").
 		SetJsonHeader("1.0", map[string]string{
 			"Authorization": "Bearer xyz",
 		}).
-		Call(nil)
+		SetPathParam(map[string]string{
+			"userId": "sample@sample.id",
+		}).
+		SetQueryParam(map[string]string{
+			"par1": "ok",
+		}).
+		SetFormData(map[string]string{
+			"data1": "data",
+		}).
+		SetBody(map[string]string{
+			"body1": "body",
+		}).
+		Call()
 
 	if err != nil {
 		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))

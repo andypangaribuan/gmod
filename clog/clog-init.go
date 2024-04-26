@@ -64,6 +64,17 @@ func xinit() {
 			}
 		}
 	}
+
+	clogGetId = func(clog Instance) (string, *string, *string) {
+		if clog != nil {
+			v, ok := clog.(*stuInstance)
+			if ok {
+				return v.uid, v.userId, v.partnerId
+			}
+		}
+
+		return "", nil, nil
+	}
 }
 
 func connect(address string) {

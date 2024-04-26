@@ -17,19 +17,11 @@ import (
 )
 
 type Http interface {
-	Get(url string) HttpBuilder
-	Post(url string) HttpBuilder
-	Put(url string) HttpBuilder
-	Patch(url string) HttpBuilder
-	Delete(url string) HttpBuilder
-
-	// Example:
-	//  GetJsonHeader("http://localhost:9000/private/timezone", "1.0", map[string]string{
-	// 		"Authorization": "Bearer xyz",
-	//  })
-	// string "1.0" it will convert to "X-Version",
-	// then map[string]string will added to header value
-	GetJsonHeader(url string, opt ...any) map[string]string
+	Get(clog clog.Instance, url string) HttpBuilder
+	Post(clog clog.Instance, url string) HttpBuilder
+	Put(clog clog.Instance, url string) HttpBuilder
+	Patch(clog clog.Instance, url string) HttpBuilder
+	Delete(clog clog.Instance, url string) HttpBuilder
 }
 
 type HttpBuilder interface {
@@ -48,8 +40,12 @@ type HttpBuilder interface {
 	EnableTrace(enable ...bool) HttpBuilder
 	SetHeader(args map[string]string) HttpBuilder
 
-	// this refer to gm.Http.GetJsonHeader,
-	// but without url
+	// Example:
+	//  SetJsonHeader("1.0", map[string]string{
+	// 		"Authorization": "Bearer xyz",
+	//  })
+	// string "1.0" it will convert to "X-Version",
+	// then map[string]string will added to header value
 	SetJsonHeader(opt ...any) HttpBuilder
 
 	// Examples:
@@ -106,7 +102,7 @@ type HttpBuilder interface {
 	//	})
 	SetFiles(files map[string]string) HttpBuilder
 
-	Call(clog clog.Instance) (data []byte, code int, err error)
+	Call() (data []byte, code int, err error)
 }
 
 type HttpResponse interface {
