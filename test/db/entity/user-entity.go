@@ -23,5 +23,5 @@ type User struct {
 	Name       string     `db:"name"`
 	Address    *string    `db:"address"`
 	Height     *int       `db:"height"`
-	GoldAmount *fct.FCT    `db:"gold_amount"`
+	GoldAmount *fct.FCT   `db:"gold_amount"`
 }
