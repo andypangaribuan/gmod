@@ -18,6 +18,13 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+func (slf *FCT) get(dval FCT) FCT {
+	if slf != nil {
+		return *slf
+	}
+	return dval
+}
+
 func (slf *FCT) float64(dval ...FCT) (float64, error) {
 	fv, err := getFCT(slf, dval...)
 	if err != nil {

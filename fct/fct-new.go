@@ -40,7 +40,8 @@ func UnsafeNew(val any, dval ...FCT) FCT {
 	return *create(*deci)
 }
 
-func NilNew(val any, dval ...FCT) *FCT {
-	v, _ := New(val, dval...)
-	return v
+// be careful, unsafe perform panic if theres an error
+func UnsafePtrNew(val any, dval ...FCT) *FCT {
+	v := UnsafeNew(val, dval...)
+	return &v
 }

@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/andypangaribuan/gmod/fc"
+	"github.com/andypangaribuan/gmod/fct"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
 	"github.com/andypangaribuan/gmod/test/db/entity"
@@ -199,7 +199,7 @@ func sfrFetch(ctx server.FuseRContext) any {
 		Name       string     `json:"name"`
 		Address    *string    `json:"address"`
 		Height     *int       `json:"height"`
-		GoldAmount *fc.FCT    `json:"gold_amount"`
+		GoldAmount *fct.FCT   `json:"gold_amount"`
 	}
 
 	users := make([]response, len(entities))
@@ -212,6 +212,15 @@ func sfrFetch(ctx server.FuseRContext) any {
 			Height:     e.Height,
 			GoldAmount: e.GoldAmount,
 		}
+
+		if i > 0 {
+			calVal, err := fct.Calc2(users[0].GoldAmount.Get(fct.Zero), "+", e.GoldAmount.Get(fct.Zero))
+			if err != nil {
+				return ctx.R500InternalServerError("something went wrong")
+			}
+
+			users[0].GoldAmount = &calVal
+		}
 	}
 
 	return ctx.R200OK(users)
@@ -223,10 +232,10 @@ func sfrInsert(ctx server.FuseRContext) any {
 	}
 
 	type stuRequest struct {
-		Name       string  `json:"name"`
-		Address    *string `json:"address"`
-		Height     *int    `json:"height"`
-		GoldAmount *fc.FCT `json:"gold_amount"`
+		Name       string   `json:"name"`
+		Address    *string  `json:"address"`
+		Height     *int     `json:"height"`
+		GoldAmount *fct.FCT `json:"gold_amount"`
 	}
 
 	var (

@@ -57,13 +57,16 @@ func calc(val ...any) (FCT, error) {
 
 				switch operator {
 				case "*":
-					lsv[i] = vd1.Mul(*vd2)
+					val := vd1.Mul(*vd2)
+					lsv[i] = &val
 
 				case "/":
-					lsv[i] = vd1.Div(*vd2)
+					val := vd1.Div(*vd2)
+					lsv[i] = &val
 
 				case "%":
-					lsv[i] = vd1.Mod(*vd2)
+					val := vd1.Mod(*vd2)
+					lsv[i] = &val
 				}
 
 				lsv = removeIndex(lsv, i+2)
@@ -83,10 +86,12 @@ func calc(val ...any) (FCT, error) {
 
 				switch operator {
 				case "+":
-					lsv[i] = vd1.Add(*vd2)
+					val := vd1.Add(*vd2)
+					lsv[i] = &val
 
 				case "-":
-					lsv[i] = vd1.Sub(*vd2)
+					val := vd1.Sub(*vd2)
+					lsv[i] = &val
 				}
 
 				lsv = removeIndex(lsv, i+2)

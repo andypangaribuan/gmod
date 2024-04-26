@@ -12,7 +12,7 @@ package entity
 import (
 	"time"
 
-	"github.com/andypangaribuan/gmod/fc"
+	"github.com/andypangaribuan/gmod/fct"
 )
 
 type User struct {
@@ -23,5 +23,5 @@ type User struct {
 	Name       string     `db:"name"`
 	Address    *string    `db:"address"`
 	Height     *int       `db:"height"`
-	GoldAmount *fc.FCT    `db:"gold_amount"`
+	GoldAmount *fct.FCT    `db:"gold_amount"`
 }

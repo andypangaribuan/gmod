@@ -43,7 +43,7 @@ body = {
     'name': 'andy',
     'address': 'tangerang',
     'height': 10,
-    'gold_amount': 100.00000000901234
+    'gold_amount': 10000.12345678901234
 }
 
 post(url=url, style=0, headers=headers, json=body)

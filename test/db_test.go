@@ -14,7 +14,7 @@ import (
 
 	_ "github.com/andypangaribuan/gmod"
 
-	"github.com/andypangaribuan/gmod/fc"
+	"github.com/andypangaribuan/gmod/fct"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/test/db/entity"
@@ -32,7 +32,7 @@ func TestDbInsert(t *testing.T) {
 			Name:       "andy",
 			Address:    fm.Ptr("bintaro"),
 			Height:     fm.Ptr(10),
-			GoldAmount: fm.Ptr(fc.New(100.0)),
+			GoldAmount: fct.UnsafePtrNew("10000.12345678901234"),
 		}
 
 		err := repo.User.Insert(nil, e)

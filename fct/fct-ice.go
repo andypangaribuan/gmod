@@ -9,6 +9,10 @@
 
 package fct
 
+func (slf *FCT) Get(dval FCT) FCT {
+	return slf.get(dval)
+}
+
 func (slf *FCT) Float64(dval ...FCT) (float64, error) {
 	return slf.float64(dval...)
 }
