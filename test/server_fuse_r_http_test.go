@@ -14,11 +14,14 @@ import (
 	"testing"
 
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/stretchr/testify/require"
 )
 
 // go test -v -run ^TestServerFuseRHttp$
 func TestServerFuseRHttp(t *testing.T) {
 	baseUrl := fmt.Sprintf("http://127.0.0.1:%v", env.AppRestPort)
 	url := baseUrl + "/private/status"
-	gm.Http.Get(nil, url).Call()
+	_, code, err := gm.Http.Get(nil, url).Call()
+	require.Nil(t, err)
+	require.Equal(t, 200, code)
 }

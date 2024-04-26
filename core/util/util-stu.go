@@ -17,7 +17,6 @@ import (
 type stuUtil struct {
 	initFuncMx         sync.Mutex
 	initFuncExecuteMap map[string]any
-	orderedInitFunc    [][]any
 }
 
 type stuUtilEnv struct{}

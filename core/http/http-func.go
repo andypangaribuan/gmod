@@ -38,23 +38,6 @@ func getConfVal[T any](name string) (value T) {
 	return
 }
 
-func (*stuHttp) isInternalSvc(url string) bool {
-	var (
-		urlLength = len(url)
-		length    = 0
-	)
-
-	for _, base := range internalBaseUrls {
-		length = len(base)
-		if urlLength >= len(base) {
-			if url[:length] == base {
-				return true
-			}
-		}
-	}
-	return false
-}
-
 func getJsonIndent(args *map[string]string) *string {
 	if args != nil && len(*args) > 0 {
 		data, err := gm.Json.Marshal(*args)

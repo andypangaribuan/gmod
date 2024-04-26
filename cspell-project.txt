@@ -41,3 +41,5 @@ redislock
 cins
 deci
 unew
+nolint
+golint

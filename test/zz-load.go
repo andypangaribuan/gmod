@@ -18,7 +18,7 @@ import (
 
 func loadEnv() {
 	dirPath := getDirPath()
-	gm.Util.LoadEnv(dirPath + "/.env")
+	_ = gm.Util.LoadEnv(dirPath + "/.env")
 
 	env = &stuEnv{
 		AppName:               gm.Util.Env.GetString("APP_NAME"),

@@ -178,7 +178,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			StartedAt:        mcx.startedAt,
 		}
 
-		mcx.clog.ServicePieceV1(mol)
+		_ = mcx.clog.ServicePieceV1(mol)
 	}
 
 	defer func() {
@@ -227,7 +227,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				FinishedAt:       gm.Util.Timenow(),
 			}
 
-			mcx.clog.ServiceV1(mol)
+			_ = mcx.clog.ServiceV1(mol)
 		}
 	}()
 

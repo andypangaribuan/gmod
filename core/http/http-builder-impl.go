@@ -412,7 +412,7 @@ RemoteAddr    : %v
 			FinishedAt: gm.Util.Timenow(),
 		}
 
-		slf.clog.HttpCallV1(mol)
+		_ = slf.clog.HttpCallV1(mol)
 	}
 
 	return body, statusCode, err

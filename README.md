@@ -1,11 +1,26 @@
+---
+runme:
+  id: 01HWD8Q46TFH5VSM019VSE0S7D
+  version: v3
+---
+
 # gmod
 
 **Golang Framework**
 
 Focus on simplicity, speed and safety.
 
-```shell
+```shell {"id":"01HWD8Q46TFH5VSM019RG9NTWJ"}
 go get -u github.com/andypangaribuan/gmod
+```
+
+go cli
+
+```sh {"id":"01HWD8SGV3ZPBDF1B6256B580C","interactive":"false"}
+go mod tidy
+go vet
+gofmt -l .
+golangci-lint run
 ```
 
 ## Versioning

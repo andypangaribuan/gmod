@@ -49,9 +49,10 @@ var (
 	iceUtilEnv  ice.UtilEnv
 )
 
+// accessed through injection
 var (
-	mainReflection func(key string, arg ...any) []any // accessed through unsafe
-	mainConfCommit func()                             // accessed through unsafe
+	mainReflection func(key string, arg ...any) []any //nolint:golint,unused
+	mainConfCommit func()                             //nolint:golint,unused
 )
 
 var (
@@ -63,7 +64,7 @@ var (
 )
 
 func init() {
-	maxprocs.Set()
+	_, _ = maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 	mainReflection = reflection
 

@@ -14,7 +14,7 @@ import "github.com/go-resty/resty/v2"
 func (slf *stuHttpBuilder) isInternalUrl() bool {
 	var (
 		urlLength = len(slf.url)
-		length    = 0
+		length    int
 	)
 
 	for _, base := range internalBaseUrls {

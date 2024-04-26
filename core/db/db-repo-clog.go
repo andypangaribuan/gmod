@@ -87,5 +87,5 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		FinishedAt:   report.execReport.FinishedAt,
 	}
 
-	cin.DbqV1(mol)
+	_ = cin.DbqV1(mol)
 }

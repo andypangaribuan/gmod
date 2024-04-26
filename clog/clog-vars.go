@@ -32,7 +32,7 @@ var (
 
 // accessed through injection
 var (
-	clogSetUserId    func(clog Instance, id string)
-	clogSetPartnerId func(clog Instance, id string)
-	clogGetId        func(clog Instance) (string, *string, *string)
+	clogSetUserId    func(clog Instance, id string)                 //nolint:golint,unused
+	clogSetPartnerId func(clog Instance, id string)                 //nolint:golint,unused
+	clogGetId        func(clog Instance) (string, *string, *string) //nolint:golint,unused
 )

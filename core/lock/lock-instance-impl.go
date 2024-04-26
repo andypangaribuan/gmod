@@ -22,7 +22,7 @@ func (slf *stuLockInstance) Release() {
 		return
 	}
 
-	slf.lock.Release(slf.ctx)
+	_ = slf.lock.Release(slf.ctx)
 }
 
 func (slf *stuLockInstance) IsLocked() (bool, error) {
