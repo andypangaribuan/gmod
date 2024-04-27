@@ -77,6 +77,7 @@ func TestServerFuseR(t *testing.T) {
 			"POS: /form-1":      {sfrForm},
 			"GET: /call-http-1": {sfrCallHttp1},
 			"GET: /call-http-2": {sfrCallHttp2},
+			"GET: /call-http-3": {sfrCallHttp3},
 		})
 	})
 }
@@ -351,6 +352,24 @@ func sfrCallHttp2(ctx server.FuseRContext) any {
 		}).
 		SetBody(map[string]string{
 			"body1": "body",
+		}).
+		Call()
+
+	if err != nil {
+		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+	}
+
+	if code != 200 {
+		return ctx.R400BadRequest(fmt.Sprintf("code: %v", code))
+	}
+
+	return ctx.R200OK(string(data))
+}
+
+func sfrCallHttp3(ctx server.FuseRContext) any {
+	data, code, err := gm.Http.Get(ctx.Clog(), "http://localhost:3321/private/status-2").
+		SetJsonHeader("1.0", map[string]string{
+			"Authorization": "Bearer xyz",
 		}).
 		Call()
 

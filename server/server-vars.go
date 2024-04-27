@@ -25,6 +25,6 @@ var clogSetPartnerId func(clog clog.Instance, id string)
 var (
 	serverImpl   server
 	fuseFiberApp *fiber.App
-	clogNew      func() clog.Instance
+	clogNew      func(uid string) clog.Instance // set by reflection from clog package
 	cip          *stuClientIP
 )

@@ -22,7 +22,7 @@ var mainReflection func(key string, arg ...any) []any
 var mainCLogCallback func()
 
 //go:linkname clogNew github.com/andypangaribuan/gmod/server.clogNew
-var clogNew func() Instance
+var clogNew func(uid string) Instance
 
 var (
 	client     sclog.CLogServiceClient

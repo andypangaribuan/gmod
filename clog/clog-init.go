@@ -37,9 +37,15 @@ func xinit() {
 		}
 	}
 
-	clogNew = func() Instance {
+	clogNew = func(uid string) Instance {
 		if client == nil {
 			return nil
+		}
+
+		if uid != "" {
+			return &stuInstance{
+				uid: uid,
+			}
 		}
 
 		return &stuInstance{

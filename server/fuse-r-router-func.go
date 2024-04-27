@@ -57,7 +57,6 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 		mcx = &stuFuseRMainContext{
 			startedAt:    gm.Util.Timenow(),
 			fcx:          fcx,
-			clog:         clogNew(),
 			handlers:     handlers,
 			errorHandler: slf.errorHandler,
 			val: &stuFuseRVal{
@@ -69,11 +68,12 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 			},
 		}
 
-		contentType string
-		reqHeader   = make(map[string]string, 0)
-		reqParam    = fcx.AllParams()
-		reqQueries  = fcx.Queries()
-		reqBody     = fcx.BodyRaw()
+		contentType     string
+		reqHeader       = make(map[string]string, 0)
+		reqParam        = fcx.AllParams()
+		reqQueries      = fcx.Queries()
+		reqBody         = fcx.BodyRaw()
+		overrideClogUid string
 	)
 
 	for key, ls := range fcx.GetReqHeaders() {
@@ -102,9 +102,14 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 
 			case "x-source":
 				mcx.val.reqSource = &val
+
+			case "x-clog-uid":
+				overrideClogUid = val
 			}
 		}
 	}
+
+	mcx.clog = clogNew(overrideClogUid)
 
 	if len(reqHeader) > 0 {
 		mcx.val.header = &reqHeader
