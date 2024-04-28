@@ -63,6 +63,7 @@ func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts
 				if err == nil {
 					break
 				}
+				
 				time.Sleep(time.Millisecond * 300)
 			}
 		}()

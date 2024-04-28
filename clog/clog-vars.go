@@ -32,7 +32,12 @@ var (
 
 // accessed through injection
 var (
-	clogSetUserId    func(clog Instance, id string)                 //nolint:golint,unused
-	clogSetPartnerId func(clog Instance, id string)                 //nolint:golint,unused
-	clogGetId        func(clog Instance) (string, *string, *string) //nolint:golint,unused
+	//lint:ignore U1000 Ignore unused function temporarily for debugging
+	clogSetUserId func(clog Instance, id string) //nolint:golint,unused
+
+	//lint:ignore U1000 Ignore unused function temporarily for debugging
+	clogSetPartnerId func(clog Instance, id string) //nolint:golint,unused
+
+	//lint:ignore U1000 Ignore unused function temporarily for debugging
+	clogGetId func(clog Instance) (string, *string, *string) //nolint:golint,unused
 )
