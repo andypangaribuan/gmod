@@ -12,13 +12,14 @@ package conf
 import "time"
 
 type stuConf struct {
-	zxEnvName           string
-	timezone            string         // accessed from reflection
-	clogAddress         string         // accessed from reflection
-	svcName             string         // accessed from reflection
-	svcVersion          string         // accessed from reflection
-	internalBaseUrls    []string       // accessed from reflection
-	txLockEngineAddress string         // accessed from reflection
-	txLockDvalTimeout   time.Duration  // accessed from reflection
-	txLockDvalTryFor    *time.Duration // accessed from reflection
+	zxEnvName            string
+	timezone             string         // accessed from reflection
+	clogAddress          string         // accessed from reflection
+	clogRetryMaxDuration *time.Duration // accessed from reflection
+	svcName              string         // accessed from reflection
+	svcVersion           string         // accessed from reflection
+	internalBaseUrls     []string       // accessed from reflection
+	txLockEngineAddress  string         // accessed from reflection
+	txLockDvalTimeout    time.Duration  // accessed from reflection
+	txLockDvalTryFor     *time.Duration // accessed from reflection
 }

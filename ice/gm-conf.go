@@ -14,7 +14,8 @@ import "time"
 type Conf interface {
 	SetZxEnvName(name string) Conf
 	SetTimezone(timezone string) Conf
-	SetCLogAddress(address string, svcName string, svcVersion string) Conf
+	SetClogAddress(address string, svcName string, svcVersion string) Conf
+	SetClogRetryMaxDuration(duration time.Duration) Conf
 	SetInternalBaseUrls(urls []string) Conf
 
 	// address "-" means no engine, so all the feature will success every time, used when on development

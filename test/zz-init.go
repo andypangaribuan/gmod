@@ -19,7 +19,7 @@ func init() {
 	loadDb()
 	gm.Conf.
 		SetTimezone(env.AppTimezone).
-		SetCLogAddress(env.ClogAddress, env.AppName, env.AppVersion).
+		SetClogAddress(env.ClogAddress, env.AppName, env.AppVersion).
 		SetInternalBaseUrls(env.SvcInternalBaseUrls).
 		SetTxLockEngine(env.TxLockEngineAddress, env.TxLockTimeout, &env.TxLockTryFor).
 		Commit()
