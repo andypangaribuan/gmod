@@ -58,13 +58,18 @@ func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts
 		_, err = call(fn, req, header...)
 	} else {
 		go func() {
+			startedAt := time.Now()
+
 			for {
 				_, err = call(fn, req, header...)
 				if err == nil {
 					break
 				}
-				
+
 				time.Sleep(time.Millisecond * 300)
+				if time.Since(startedAt) > retryDuration {
+					break
+				}
 			}
 		}()
 	}

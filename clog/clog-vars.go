@@ -10,6 +10,7 @@
 package clog
 
 import (
+	"time"
 	_ "unsafe"
 
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
@@ -25,9 +26,10 @@ var mainCLogCallback func()
 var clogNew func(uid string) Instance
 
 var (
-	client     sclog.CLogServiceClient
-	svcName    string
-	svcVersion string
+	client        sclog.CLogServiceClient
+	svcName       string
+	svcVersion    string
+	retryDuration = time.Second * 10
 )
 
 // accessed through injection
