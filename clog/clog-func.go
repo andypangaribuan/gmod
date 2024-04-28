@@ -67,7 +67,7 @@ func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts
 				}
 
 				time.Sleep(time.Millisecond * 300)
-				if time.Since(startedAt) > retryDuration {
+				if time.Since(startedAt) > retryMaxDuration {
 					break
 				}
 			}

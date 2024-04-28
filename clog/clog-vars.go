@@ -26,10 +26,10 @@ var mainCLogCallback func()
 var clogNew func(uid string) Instance
 
 var (
-	client        sclog.CLogServiceClient
-	svcName       string
-	svcVersion    string
-	retryDuration = time.Second * 10
+	client           sclog.CLogServiceClient
+	svcName          string
+	svcVersion       string
+	retryMaxDuration = time.Minute * 5
 )
 
 // accessed through injection
