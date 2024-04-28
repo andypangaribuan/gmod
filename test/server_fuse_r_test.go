@@ -145,13 +145,6 @@ func sfrAuth(ctx server.FuseRContext) any {
 }
 
 func sfrPrivateStatus1(ctx server.FuseRContext) any {
-	h := ctx.ReqHeader()
-	hj, err := gm.Json.Encode(h)
-	if err == nil {
-		fmt.Println(hj)
-	}
-	fmt.Printf("private-status-1: header: %v\n", ctx.ReqHeader())
-
 	ctx.SetFiles(map[string]string{
 		"file1": "gcs/file1.pdf",
 	})
