@@ -94,10 +94,12 @@ func (slf *stuFuseRRegulator) send() error {
 	)
 
 	if !slf.currentHandlerContext.responseRaw {
-		return ctx.JSON(Response{
+		slf.mcx.responseVal = Response{
 			Meta: slf.currentHandlerContext.responseMeta,
 			Data: resVal,
-		})
+		}
+
+		return ctx.JSON(slf.mcx.responseVal)
 	}
 
 	switch val := resVal.(type) {
