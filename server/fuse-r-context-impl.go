@@ -73,6 +73,21 @@ func (slf *stuFuseRContext) ReqFile() *map[string][]*multipart.FileHeader {
 	return slf.file
 }
 
+func (slf *stuFuseRContext) GetHeader(key string, dval ...string) *string {
+	if slf.header != nil && len(*slf.header) > 0 {
+		val, ok := (*slf.header)[key]
+		if ok {
+			return &val
+		}
+	}
+
+	if len(dval) > 0 {
+		return &dval[0]
+	}
+
+	return nil
+}
+
 func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 	if header != nil {
 		if slf.header == nil || len(*slf.header) == 0 {
