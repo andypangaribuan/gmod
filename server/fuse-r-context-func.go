@@ -30,6 +30,24 @@ func (slf *stuFuseRContext) setResponse(code int, val any, opt ...ResponseOpt) a
 	return nil
 }
 
+func (slf *stuFuseRContext) setErrResponse(code int, errMessage string, stackTrace string, opt ...ResponseOpt) any {
+	slf.setExecPathFunc()
+	slf.mcx.errMessage = &errMessage
+	slf.mcx.stackTrace = &stackTrace
+	
+	slf.responseVal = messageInternalServerError
+	slf.responseMeta.Code = code
+	slf.responseRaw = false
+
+	if len(opt) > 0 {
+		slf.responseMeta.SubCode = opt[0].SubCode
+		slf.responseMeta.Message = opt[0].Message
+		slf.responseMeta.AppMessage = opt[0].AppMessage
+	}
+
+	return nil
+}
+
 func (slf *stuFuseRContext) pushUserIdToClog() {
 	if slf.mcx.clog != nil {
 		id := slf.mcx.getUserId()

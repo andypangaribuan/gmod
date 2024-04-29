@@ -10,10 +10,12 @@
 package server
 
 import (
+	"fmt"
 	"mime/multipart"
 	"strings"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/pkg/errors"
 )
@@ -188,8 +190,14 @@ func (slf *stuFuseRContext) R428PreconditionRequired(val any, opt ...ResponseOpt
 	return slf.setResponse(428, val, opt...)
 }
 
-func (slf *stuFuseRContext) R500InternalServerError(val any, opt ...ResponseOpt) any {
-	return slf.setResponse(500, val, opt...)
+func (slf *stuFuseRContext) R500InternalServerError(err error, opt ...ResponseOpt) any {
+	errMessage := fm.TernaryR(err == nil, "", func() string { return err.Error() })
+	stackTrace := fmt.Sprintf("%+v", err)
+	if errMessage == stackTrace {
+		stackTrace += "\n" + gm.Util.StackTrace(1)
+	}
+
+	return slf.setErrResponse(500, errMessage, stackTrace, opt...)
 }
 
 func (slf *stuFuseRContext) R503ServiceUnavailable(val any, opt ...ResponseOpt) any {

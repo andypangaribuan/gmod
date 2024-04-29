@@ -94,8 +94,8 @@ func sfrUnrouted(ctx server.FuseRContext, method, path, url string) any {
 }
 
 func sfrErrorHandler(ctx server.FuseRContext, err error) any {
-	message := fmt.Sprintf("something went wrong: %v\n%+v", err.Error(), err)
-	return ctx.R500InternalServerError(message)
+	// message := fmt.Sprintf("something went wrong: %v\n%+v", err.Error(), err)
+	return ctx.R500InternalServerError(err)
 }
 
 func sfrRegulator(regulator server.FuseRRegulator) {
@@ -185,7 +185,7 @@ func sfrHi(ctx server.FuseRContext) any {
 func sfrFetch(ctx server.FuseRContext) any {
 	entities, err := repo.User.Fetches(ctx.Clog(), "name=?", "andy")
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	type response struct {
@@ -212,7 +212,7 @@ func sfrFetch(ctx server.FuseRContext) any {
 		if i > 0 {
 			calVal, err := fct.Calc2(users[0].GoldAmount.Get(fct.Zero), "+", e.GoldAmount.Get(fct.Zero))
 			if err != nil {
-				return ctx.R500InternalServerError("something went wrong")
+				return ctx.R500InternalServerError(err)
 			}
 
 			users[0].GoldAmount = &calVal
@@ -241,7 +241,7 @@ func sfrInsert(ctx server.FuseRContext) any {
 
 	err := ctx.ReqParser(&header, &req)
 	if err != nil {
-		return ctx.R500InternalServerError("something went wrong with your request")
+		return ctx.R500InternalServerError(err)
 	}
 
 	timenow := gm.Util.Timenow()
@@ -257,7 +257,7 @@ func sfrInsert(ctx server.FuseRContext) any {
 
 	err = repo.User.Insert(ctx.Clog(), user)
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("found some error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	return ctx.R200OK("success")
@@ -282,7 +282,7 @@ func sfrDelete(ctx server.FuseRContext) any {
 
 	err := repo.User.Delete(ctx.Clog(), "name=?", name)
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	return ctx.R200OK("ok")
@@ -321,7 +321,7 @@ func sfrCallHttp1(ctx server.FuseRContext) any {
 		Call()
 
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	if code != 200 {
@@ -351,7 +351,7 @@ func sfrCallHttp2(ctx server.FuseRContext) any {
 		Call()
 
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	if code != 200 {
@@ -369,7 +369,7 @@ func sfrCallHttp3(ctx server.FuseRContext) any {
 		Call()
 
 	if err != nil {
-		return ctx.R500InternalServerError(fmt.Sprintf("error: %v", err))
+		return ctx.R500InternalServerError(err)
 	}
 
 	if code != 200 {

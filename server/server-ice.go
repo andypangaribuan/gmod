@@ -74,7 +74,7 @@ type FuseRContext interface {
 	R418Teapot(val any, opt ...ResponseOpt) any
 	R428PreconditionRequired(val any, opt ...ResponseOpt) any
 
-	R500InternalServerError(val any, opt ...ResponseOpt) any
+	R500InternalServerError(err error, opt ...ResponseOpt) any
 	R503ServiceUnavailable(val any, opt ...ResponseOpt) any
 }
 

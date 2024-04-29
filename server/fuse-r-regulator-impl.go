@@ -70,7 +70,7 @@ func (slf *stuFuseRRegulator) Recover() {
 		if slf.mcx.errorHandler != nil {
 			slf.mcx.errorHandler(slf.currentHandlerContext, err)
 		} else {
-			slf.currentHandlerContext.R500InternalServerError("We apologize and are fixing the problem. Please try again at a later stage.")
+			slf.currentHandlerContext.R500InternalServerError(err)
 		}
 
 		slf.mcx.errMessage = &errMessage
