@@ -11,7 +11,6 @@ package clog
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -43,11 +42,11 @@ func mrf2[A any, B any](key string, arg ...any) (va A, vb B) {
 	return
 }
 
-func getConfValue(name string) (value string) {
+func getConfVal[T any](name string) (value T) {
 	val, err := mrf2[any, error]("mrf-conf-val", name)
 	if err == nil {
-		if v, ok := val.(string); ok {
-			value = strings.TrimSpace(v)
+		if v, ok := val.(T); ok {
+			value = v
 		}
 	}
 	return

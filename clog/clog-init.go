@@ -18,7 +18,7 @@ import (
 
 func xinit() {
 	mainCLogCallback = func() {
-		if val := getConfValue("clogAddress"); val != "" {
+		if val := getConfVal[string]("clogAddress"); val != "" {
 			c, err := createClient(val, sclog.NewCLogServiceClient)
 			if err != nil {
 				go connect(val)
@@ -28,12 +28,16 @@ func xinit() {
 			}
 		}
 
-		if val := getConfValue("svcName"); val != "" {
+		if val := getConfVal[string]("svcName"); val != "" {
 			svcName = val
 		}
 
-		if val := getConfValue("svcVersion"); val != "" {
+		if val := getConfVal[string]("svcVersion"); val != "" {
 			svcVersion = val
+		}
+
+		if val := getConfVal[*time.Duration]("clogRetryMaxDuration"); val != nil {
+			retryMaxDuration = *val
 		}
 	}
 
