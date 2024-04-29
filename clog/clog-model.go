@@ -78,6 +78,7 @@ type ServiceV1 struct {
 	ReqBody          *string
 	ResData          *string
 	ResCode          int
+	ResSubCode       string
 	ErrMessage       *string
 	StackTrace       *string
 	ClientIp         string

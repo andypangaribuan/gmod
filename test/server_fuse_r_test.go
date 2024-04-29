@@ -118,13 +118,15 @@ func sfrRegulator(regulator server.FuseRRegulator) {
 
 		if regulator.Endpoint() == "GET: /private/status-5" && regulator.IsHandler(sfrPrivateStatus1) {
 			canCall = false
-			code, _ = regulator.Call(handler, regulator.CallOpt().OverrideHeader(map[string]string{
+			_, meta, _ := regulator.Call(handler, regulator.CallOpt().OverrideHeader(map[string]string{
 				"xyz": "Override Header",
 			}))
+			code = meta.Code
 		}
 
 		if canCall {
-			code, _ = regulator.Call(handler)
+			_, meta, _ := regulator.Call(handler)
+			code = meta.Code
 		}
 
 		if code == -1 {

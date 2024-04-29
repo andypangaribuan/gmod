@@ -22,7 +22,7 @@ func init() {
 	gm.Conf.
 		SetTimezone(env.AppTimezone).
 		SetClogAddress(env.ClogAddress, env.AppName, env.AppVersion).
-		SetClogRetryMaxDuration(time.Minute * 5).
+		SetClogRetryMaxDuration(time.Minute*5).
 		SetInternalBaseUrls(env.SvcInternalBaseUrls).
 		SetTxLockEngine(env.TxLockEngineAddress, env.TxLockTimeout, &env.TxLockTryFor).
 		Commit()

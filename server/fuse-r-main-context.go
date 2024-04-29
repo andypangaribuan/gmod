@@ -30,19 +30,19 @@ func (slf *stuFuseRMainContext) severity() string {
 	severity := "unknown"
 
 	switch {
-	case slf.responseCode >= 100 && slf.responseCode <= 199:
+	case slf.responseMeta.Code >= 100 && slf.responseMeta.Code <= 199:
 		severity = "server"
 
-	case slf.responseCode >= 200 && slf.responseCode <= 299:
+	case slf.responseMeta.Code >= 200 && slf.responseMeta.Code <= 299:
 		severity = "success"
 
-	case slf.responseCode >= 300 && slf.responseCode <= 399:
+	case slf.responseMeta.Code >= 300 && slf.responseMeta.Code <= 399:
 		severity = "server"
 
-	case slf.responseCode >= 400 && slf.responseCode <= 499:
+	case slf.responseMeta.Code >= 400 && slf.responseMeta.Code <= 499:
 		severity = "warning"
 
-	case slf.responseCode >= 500 && slf.responseCode <= 599:
+	case slf.responseMeta.Code >= 500 && slf.responseMeta.Code <= 599:
 		severity = "error"
 	}
 

@@ -34,7 +34,7 @@ func (slf *stuFuseRRegulator) IsHandler(handler func(ctx FuseRContext) any) bool
 	return v1 == v2
 }
 
-func (slf *stuFuseRRegulator) Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any) {
+func (slf *stuFuseRRegulator) Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (res any, meta ResponseMeta, raw bool) {
 	return slf.call(handler, nil, opt...)
 }
 
@@ -75,8 +75,9 @@ func (slf *stuFuseRRegulator) Recover() {
 
 		slf.mcx.errMessage = &errMessage
 		slf.mcx.stackTrace = &stackTrace
-		slf.mcx.responseCode = slf.currentHandlerContext.responseCode
 		slf.mcx.responseVal = slf.currentHandlerContext.responseVal
+		slf.mcx.responseMeta = slf.currentHandlerContext.responseMeta
+		slf.mcx.responseRaw = slf.currentHandlerContext.responseRaw
 	}
 
 	_ = slf.send()

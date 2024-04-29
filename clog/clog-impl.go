@@ -111,6 +111,7 @@ func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
 		ReqBody:          pbwString(mol.ReqBody),
 		ResData:          pbwString(mol.ResData),
 		ResCode:          int32(mol.ResCode),
+		ResSubCode:       mol.ResSubCode,
 		ErrMessage:       pbwString(mol.ErrMessage),
 		StackTrace:       pbwString(mol.StackTrace),
 		ClientIp:         mol.ClientIp,

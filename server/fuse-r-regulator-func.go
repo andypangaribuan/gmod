@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted func(ctx FuseRContext, method, path, url string) any, opt ...FuseRCallOpt) (code int, res any) {
+func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted func(ctx FuseRContext, method, path, url string) any, opt ...FuseRCallOpt) (res any, meta ResponseMeta, raw bool) {
 	ctx := slf.buildContext()
 
 	// override request from opt call
@@ -60,10 +60,11 @@ func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted 
 		unrouted(ctx, method, path, slf.mcx.val.url)
 	}
 
-	slf.mcx.responseCode = ctx.responseCode
 	slf.mcx.responseVal = ctx.responseVal
+	slf.mcx.responseMeta = ctx.responseMeta
+	slf.mcx.responseRaw = ctx.responseRaw
 
-	return ctx.responseCode, ctx.responseVal
+	return ctx.responseVal, ctx.responseMeta, ctx.responseRaw
 }
 
 func (slf *stuFuseRRegulator) buildContext() *stuFuseRContext {
@@ -87,9 +88,19 @@ func (slf *stuFuseRRegulator) currentHandler() func(FuseRContext) any {
 }
 
 func (slf *stuFuseRRegulator) send() error {
-	ctx := slf.mcx.fcx.Status(slf.currentHandlerContext.responseCode)
+	var (
+		ctx    = slf.mcx.fcx.Status(slf.currentHandlerContext.responseMeta.Code)
+		resVal = slf.currentHandlerContext.responseVal
+	)
 
-	switch val := slf.currentHandlerContext.responseVal.(type) {
+	if !slf.currentHandlerContext.responseRaw {
+		return ctx.JSON(Response{
+			Meta: slf.currentHandlerContext.responseMeta,
+			Data: resVal,
+		})
+	}
+
+	switch val := resVal.(type) {
 	case string:
 		return ctx.SendString(val)
 	case *string:

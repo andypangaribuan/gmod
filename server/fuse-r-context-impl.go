@@ -11,6 +11,7 @@ package server
 
 import (
 	"mime/multipart"
+	"strings"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/gm"
@@ -75,7 +76,7 @@ func (slf *stuFuseRContext) ReqFile() *map[string][]*multipart.FileHeader {
 
 func (slf *stuFuseRContext) GetHeader(key string, dval ...string) *string {
 	if slf.header != nil && len(*slf.header) > 0 {
-		val, ok := (*slf.header)[key]
+		val, ok := (*slf.header)[strings.ToLower(key)]
 		if ok {
 			return &val
 		}
@@ -123,74 +124,74 @@ func (slf *stuFuseRContext) ReqParserPQF(param any, query any, form any) error {
 	return nil
 }
 
-func (slf *stuFuseRContext) LastResponse() (code int, val any) {
-	return slf.mcx.responseCode, slf.mcx.responseVal
+func (slf *stuFuseRContext) LastResponse() (val any, meta ResponseMeta) {
+	return slf.mcx.responseVal, slf.mcx.responseMeta
 }
 
-func (slf *stuFuseRContext) R200OK(val any) any {
-	return slf.setResponse(200, val)
+func (slf *stuFuseRContext) R200OK(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(200, val, opt...)
 }
 
-func (slf *stuFuseRContext) R201Created(val any) any {
-	return slf.setResponse(201, val)
+func (slf *stuFuseRContext) R201Created(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(201, val, opt...)
 }
 
-func (slf *stuFuseRContext) R202Accepted(val any) any {
-	return slf.setResponse(202, val)
+func (slf *stuFuseRContext) R202Accepted(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(202, val, opt...)
 }
 
-func (slf *stuFuseRContext) R204NoContent(val any) any {
-	return slf.setResponse(204, val)
+func (slf *stuFuseRContext) R204NoContent(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(204, val, opt...)
 }
 
-func (slf *stuFuseRContext) R301MovedPermanently(val any) any {
-	return slf.setResponse(301, val)
+func (slf *stuFuseRContext) R301MovedPermanently(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(301, val, opt...)
 }
 
-func (slf *stuFuseRContext) R307TemporaryRedirect(val any) any {
-	return slf.setResponse(307, val)
+func (slf *stuFuseRContext) R307TemporaryRedirect(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(307, val, opt...)
 }
 
-func (slf *stuFuseRContext) R308PermanentRedirect(val any) any {
-	return slf.setResponse(308, val)
+func (slf *stuFuseRContext) R308PermanentRedirect(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(308, val, opt...)
 }
 
-func (slf *stuFuseRContext) R400BadRequest(val any) any {
-	return slf.setResponse(400, val)
+func (slf *stuFuseRContext) R400BadRequest(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(400, val, opt...)
 }
 
-func (slf *stuFuseRContext) R401Unauthorized(val any) any {
-	return slf.setResponse(401, val)
+func (slf *stuFuseRContext) R401Unauthorized(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(401, val, opt...)
 }
 
-func (slf *stuFuseRContext) R403Forbidden(val any) any {
-	return slf.setResponse(403, val)
+func (slf *stuFuseRContext) R403Forbidden(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(403, val, opt...)
 }
 
-func (slf *stuFuseRContext) R404NotFound(val any) any {
-	return slf.setResponse(404, val)
+func (slf *stuFuseRContext) R404NotFound(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(404, val, opt...)
 }
 
-func (slf *stuFuseRContext) R406NotAcceptable(val any) any {
-	return slf.setResponse(406, val)
+func (slf *stuFuseRContext) R406NotAcceptable(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(406, val, opt...)
 }
 
-func (slf *stuFuseRContext) R412PreconditionFailed(val any) any {
-	return slf.setResponse(412, val)
+func (slf *stuFuseRContext) R412PreconditionFailed(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(412, val, opt...)
 }
 
-func (slf *stuFuseRContext) R418Teapot(val any) any {
-	return slf.setResponse(418, val)
+func (slf *stuFuseRContext) R418Teapot(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(418, val, opt...)
 }
 
-func (slf *stuFuseRContext) R428PreconditionRequired(val any) any {
-	return slf.setResponse(428, val)
+func (slf *stuFuseRContext) R428PreconditionRequired(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(428, val, opt...)
 }
 
-func (slf *stuFuseRContext) R500InternalServerError(val any) any {
-	return slf.setResponse(500, val)
+func (slf *stuFuseRContext) R500InternalServerError(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(500, val, opt...)
 }
 
-func (slf *stuFuseRContext) R503ServiceUnavailable(val any) any {
-	return slf.setResponse(503, val)
+func (slf *stuFuseRContext) R503ServiceUnavailable(val any, opt ...ResponseOpt) any {
+	return slf.setResponse(503, val, opt...)
 }

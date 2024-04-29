@@ -15,10 +15,18 @@ func (slf *stuFuseRContext) setExecPathFunc() {
 	slf.mcx.execPath, slf.mcx.execFunc = gm.Util.GetExecPathFunc(3)
 }
 
-func (slf *stuFuseRContext) setResponse(code int, val any) any {
+func (slf *stuFuseRContext) setResponse(code int, val any, opt ...ResponseOpt) any {
 	slf.setExecPathFunc()
-	slf.responseCode = code
 	slf.responseVal = val
+	slf.responseMeta.Code = code
+	slf.responseRaw = false
+
+	if len(opt) > 0 {
+		slf.responseMeta.SubCode = opt[0].SubCode
+		slf.responseMeta.Message = opt[0].Message
+		slf.responseMeta.AppMessage = opt[0].AppMessage
+	}
+
 	return nil
 }
 

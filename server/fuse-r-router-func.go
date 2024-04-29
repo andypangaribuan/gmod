@@ -224,7 +224,8 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 				ReqFiles:         reqFiles,
 				ReqBody:          mcx.val.reqBody,
 				ResData:          resData,
-				ResCode:          mcx.responseCode,
+				ResCode:          mcx.responseMeta.Code,
+				ResSubCode:       mcx.responseMeta.SubCode,
 				ErrMessage:       mcx.errMessage,
 				StackTrace:       mcx.stackTrace,
 				ClientIp:         mcx.val.clientIP,
@@ -257,12 +258,12 @@ func (slf *stuFuseRRouter) defaultHandlerRegulator(regulator *stuFuseRRegulator,
 			break
 		}
 
-		code, _ := regulator.Call(handler)
-		if code == -1 {
+		_, meta, _ := regulator.Call(handler)
+		if meta.Code == -1 {
 			return
 		}
 
-		if code < 200 || code > 299 {
+		if meta.Code < 200 || meta.Code > 299 {
 			break
 		}
 	}

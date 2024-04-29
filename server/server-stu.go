@@ -54,8 +54,9 @@ type stuFuseRMainContext struct {
 	files     *map[string]string
 
 	val          *stuFuseRVal
-	responseCode int
 	responseVal  any
+	responseMeta ResponseMeta
+	responseRaw  bool
 	execPath     string
 	execFunc     string
 	errMessage   *string
@@ -72,8 +73,9 @@ type stuFuseRContext struct {
 	file       *map[string][]*multipart.FileHeader
 	bodyParser func(out any) error
 
-	responseCode int
 	responseVal  any
+	responseMeta ResponseMeta
+	responseRaw  bool
 }
 
 type stuFuseRVal struct {

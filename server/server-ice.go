@@ -54,28 +54,28 @@ type FuseRContext interface {
 	ReqParser(header any, body any) error
 	ReqParserPQF(param any, query any, form any) error
 
-	LastResponse() (code int, val any)
+	LastResponse() (val any, meta ResponseMeta)
 
-	R200OK(val any) any
-	R201Created(val any) any
-	R202Accepted(val any) any
-	R204NoContent(val any) any
+	R200OK(val any, opt ...ResponseOpt) any
+	R201Created(val any, opt ...ResponseOpt) any
+	R202Accepted(val any, opt ...ResponseOpt) any
+	R204NoContent(val any, opt ...ResponseOpt) any
 
-	R301MovedPermanently(val any) any
-	R307TemporaryRedirect(val any) any
-	R308PermanentRedirect(val any) any
+	R301MovedPermanently(val any, opt ...ResponseOpt) any
+	R307TemporaryRedirect(val any, opt ...ResponseOpt) any
+	R308PermanentRedirect(val any, opt ...ResponseOpt) any
 
-	R400BadRequest(val any) any
-	R401Unauthorized(val any) any
-	R403Forbidden(val any) any
-	R404NotFound(val any) any
-	R406NotAcceptable(val any) any
-	R412PreconditionFailed(val any) any
-	R418Teapot(val any) any
-	R428PreconditionRequired(val any) any
+	R400BadRequest(val any, opt ...ResponseOpt) any
+	R401Unauthorized(val any, opt ...ResponseOpt) any
+	R403Forbidden(val any, opt ...ResponseOpt) any
+	R404NotFound(val any, opt ...ResponseOpt) any
+	R406NotAcceptable(val any, opt ...ResponseOpt) any
+	R412PreconditionFailed(val any, opt ...ResponseOpt) any
+	R418Teapot(val any, opt ...ResponseOpt) any
+	R428PreconditionRequired(val any, opt ...ResponseOpt) any
 
-	R500InternalServerError(val any) any
-	R503ServiceUnavailable(val any) any
+	R500InternalServerError(val any, opt ...ResponseOpt) any
+	R503ServiceUnavailable(val any, opt ...ResponseOpt) any
 }
 
 type FuseRContextBuilder interface {
@@ -85,7 +85,7 @@ type FuseRContextBuilder interface {
 type FuseRRegulator interface {
 	Next() (next bool, handler func(ctx FuseRContext) any)
 	IsHandler(handler func(ctx FuseRContext) any) bool
-	Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (code int, res any)
+	Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (res any, meta ResponseMeta, raw bool)
 	CallOpt() FuseRCallOpt
 	Endpoint() string
 	Recover()
