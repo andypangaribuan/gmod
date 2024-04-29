@@ -14,7 +14,13 @@ go cli
 go mod tidy
 go vet
 gofmt -l .
+```
+
+linter
+
+```sh {"id":"01HWN0CGFAV1V4XZT25HNJ4QNG"}
 golangci-lint run
+staticcheck ./...
 ```
 
 ## Versioning

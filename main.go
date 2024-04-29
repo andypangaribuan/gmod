@@ -51,8 +51,11 @@ var (
 
 // accessed through injection
 var (
+	//lint:ignore U1000 Ignore unused function temporarily for debugging
 	mainReflection func(key string, arg ...any) []any //nolint:golint,unused
-	mainConfCommit func()                             //nolint:golint,unused
+
+	//lint:ignore U1000 Ignore unused function temporarily for debugging
+	mainConfCommit func() //nolint:golint,unused
 )
 
 var (
