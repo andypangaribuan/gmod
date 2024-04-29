@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
@@ -23,6 +24,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/go-resty/resty/v2"
+	"github.com/pkg/errors"
 )
 
 func (slf *stuHttpBuilder) SetTimeout(duration time.Duration) ice.HttpBuilder {
@@ -370,6 +372,10 @@ RemoteAddr    : %v
 		if err != nil {
 			errMessage = fm.Ptr(err.Error())
 			stackTrace = fm.Ptr(fmt.Sprintf("%+v", err))
+
+			if *errMessage == *stackTrace || len(strings.Split(*stackTrace, "\n")) < 3 {
+				stackTrace = fm.Ptr(fmt.Sprintf("%+v", errors.WithStack(err)))
+			}
 		}
 
 		switch {

@@ -16,6 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/pkg/errors"
 )
 
 func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFuncSkipLevel int) {
@@ -50,6 +51,11 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 			trace = fmt.Sprintf("%+v", err)
 			idx   = strings.Index(trace, msg)
 		)
+
+		if msg == trace || len(strings.Split(trace, "\n")) < 3 {
+			trace = fmt.Sprintf("%+v", errors.WithStack(err))
+		}
+		
 		if idx == 0 {
 			trace = strings.Replace(trace, msg, "", 1)
 			trace = strings.TrimSpace(trace)

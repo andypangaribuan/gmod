@@ -62,6 +62,7 @@ func (slf *stuFuseRRegulator) Recover() {
 			stackTrace = fmt.Sprintf("%+v", err)
 			idx        = strings.Index(stackTrace, errMessage)
 		)
+		
 		if idx == 0 {
 			stackTrace = strings.Replace(stackTrace, errMessage, "", 1)
 			stackTrace = strings.TrimSpace(stackTrace)

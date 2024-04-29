@@ -11,7 +11,6 @@ package util
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"net"
 	"net/mail"
@@ -25,6 +24,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
 func (*stuUtil) IsEmailValid(email string, verifyDomain ...bool) bool {
@@ -243,8 +243,7 @@ func (*stuUtil) PanicCatcher(fn func()) (err error) {
 					pv = rv.Elem()
 				}
 
-				msg := fmt.Sprintf("%+v", pv)
-				err = errors.New(msg)
+				err = errors.New(fmt.Sprintf("%+v", pv))
 			}
 		}
 	}()

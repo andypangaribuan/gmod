@@ -12,10 +12,12 @@ package db
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mol"
+	"github.com/pkg/errors"
 )
 
 func updateReport(report *mol.DbExecReport) {
@@ -83,6 +85,10 @@ func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mol.DbExecRep
 			args:    args,
 			message: err.Error(),
 			trace:   fmt.Sprintf("%+v", err),
+		}
+
+		if unsafe.message == unsafe.trace || len(strings.Split(unsafe.trace, "\n")) < 3 {
+			unsafe.trace = fmt.Sprintf("%+v", errors.WithStack(err))
 		}
 
 		slf.onUnsafe(unsafe)

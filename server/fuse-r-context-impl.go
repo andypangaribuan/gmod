@@ -193,8 +193,8 @@ func (slf *stuFuseRContext) R428PreconditionRequired(val any, opt ...ResponseOpt
 func (slf *stuFuseRContext) R500InternalServerError(err error, opt ...ResponseOpt) any {
 	errMessage := fm.TernaryR(err == nil, "", func() string { return err.Error() })
 	stackTrace := fmt.Sprintf("%+v", err)
-	if errMessage == stackTrace {
-		stackTrace += "\n" + gm.Util.StackTrace(1)
+	if errMessage == stackTrace || len(strings.Split(stackTrace, "\n")) < 3 {
+		stackTrace = fmt.Sprintf("%+v", errors.WithStack(err))
 	}
 
 	return slf.setErrResponse(500, errMessage, stackTrace, opt...)
