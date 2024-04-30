@@ -11,6 +11,14 @@ package clog
 
 import "time"
 
+type Note struct {
+	ExecPath string
+	ExecFunc string
+	Key      *string
+	SubKey   *string
+	Data     string
+}
+
 type DbqV1 struct {
 	SqlQuery     string
 	SqlArgs      *string
