@@ -55,7 +55,7 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		if msg == trace || len(strings.Split(trace, "\n")) < 3 {
 			trace = fmt.Sprintf("%+v", errors.WithStack(err))
 		}
-		
+
 		if idx == 0 {
 			trace = strings.Replace(trace, msg, "", 1)
 			trace = strings.TrimSpace(trace)
