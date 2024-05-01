@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fct"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/server"
@@ -71,13 +72,14 @@ func TestServerFuseR(t *testing.T) {
 		})
 
 		router.Endpoints(nil, sfrAuth, map[string][]func(server.FuseRContext) any{
-			"GET: /fetch-1":     {sfrFetch},
-			"POS: /insert-1":    {sfrInsert},
-			"POS: /delete-1":    {sfrDelete},
-			"POS: /form-1":      {sfrForm},
-			"GET: /call-http-1": {sfrCallHttp1},
-			"GET: /call-http-2": {sfrCallHttp2},
-			"GET: /call-http-3": {sfrCallHttp3},
+			"GET: /fetch-1":          {sfrFetch},
+			"POS: /insert-1":         {sfrInsert},
+			"POS: /delete-1":         {sfrDelete},
+			"POS: /form-1":           {sfrForm},
+			"GET: /call-http-1":      {sfrCallHttp1},
+			"GET: /call-http-2":      {sfrCallHttp2},
+			"GET: /call-http-3":      {sfrCallHttp3},
+			"GET: /insert/clog-note": {sfrInsertNote},
 		})
 	})
 }
@@ -377,4 +379,14 @@ func sfrCallHttp3(ctx server.FuseRContext) any {
 	}
 
 	return ctx.R200OK(string(data))
+}
+
+func sfrInsertNote(ctx server.FuseRContext) any {
+	note := &clog.Note{Data: "halo"}
+	err := ctx.Clog().Note(note)
+	if err != nil {
+		return ctx.R500InternalServerError(err)
+	}
+
+	return ctx.R200OK("done")
 }

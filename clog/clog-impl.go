@@ -15,7 +15,7 @@ import (
 
 func (slf *stuInstance) Note(mol *Note, async ...bool) error {
 	if mol.ExecPath == "" && mol.ExecFunc == "" {
-		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 2)
+		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 3)
 	}
 
 	req := &sclog.RequestNote{

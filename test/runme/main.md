@@ -123,3 +123,16 @@ headers = {
 
 get(url, style=0, headers=headers)
 ```
+
+```python {"id":"01HWRVCQ19TC3WTTKT3MF1ZS0W"}
+from helper.http import get, post
+
+url = "http://localhost:3321/insert/clog-note"
+headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-Source': 'android'
+}
+
+get(url, style=0, headers=headers)
+```
