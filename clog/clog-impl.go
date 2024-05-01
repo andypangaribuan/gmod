@@ -14,6 +14,10 @@ import (
 )
 
 func (slf *stuInstance) Note(mol *Note, async ...bool) error {
+	if mol.ExecPath == "" && mol.ExecFunc == "" {
+		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 2)
+	}
+
 	req := &sclog.RequestNote{
 		Uid:          slf.uid,
 		ExecPath:     mol.ExecPath,
