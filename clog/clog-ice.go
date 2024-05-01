@@ -10,6 +10,7 @@
 package clog
 
 type Instance interface {
+	Note(mol *Note, async ...bool) error
 	DbqV1(mol *DbqV1, async ...bool) error
 	HttpCallV1(mol *HttpCallV1, async ...bool) error
 	ServicePieceV1(mol *ServicePieceV1, async ...bool) error

@@ -13,6 +13,19 @@ import (
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
+func (slf *stuInstance) Note(mol *Note, async ...bool) error {
+	req := &sclog.RequestNote{
+		Uid:          slf.uid,
+		ExecPath:     mol.ExecPath,
+		ExecFunction: mol.ExecFunc,
+		Key:          pbwString(mol.Key),
+		SubKey:       pbwString(mol.SubKey),
+		Data:         mol.Data,
+	}
+
+	return grpcCall(*getFirst(async, true), client.Note, req)
+}
+
 func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 	req := &sclog.RequestDbqV1{
 		Uid:          slf.uid,
