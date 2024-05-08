@@ -109,3 +109,19 @@ func PbwInt32(val *int) *wrapperspb.Int32Value {
 
 	return &wrapperspb.Int32Value{Value: int32(*val)}
 }
+
+func PbwFloat(val *float64) *wrapperspb.FloatValue {
+	if val == nil {
+		return nil
+	}
+
+	return &wrapperspb.FloatValue{Value: float32(*val)}
+}
+
+func PbwDouble(val *float64) *wrapperspb.DoubleValue {
+	if val == nil {
+		return nil
+	}
+
+	return &wrapperspb.DoubleValue{Value: *val}
+}

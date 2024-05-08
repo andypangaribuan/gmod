@@ -9,7 +9,11 @@
 
 package ice
 
-import "time"
+import (
+	"time"
+
+	"github.com/andypangaribuan/gmod/fct"
+)
 
 type UtilEnv interface {
 	GetAppEnv(key string) AppEnv
@@ -17,6 +21,9 @@ type UtilEnv interface {
 	GetInt(key string, dval ...int) int
 	GetInt32(key string, dval ...int32) int32
 	GetInt64(key string, dval ...int64) int64
+	GetFloat32(key string, dval ...float32) float32
+	GetFloat64(key string, dval ...float64) float64
+	GetFCT(key string, dval ...fct.FCT) fct.FCT
 	GetBool(key string, dval ...bool) bool
 
 	GetStringSlice(key string, separator string, dval ...[]string) []string

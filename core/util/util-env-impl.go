@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/andypangaribuan/gmod/fct"
 	"github.com/andypangaribuan/gmod/ice"
 )
 
@@ -64,6 +65,39 @@ func (slf *stuUtilEnv) GetInt64(key string, dval ...int64) int64 {
 	value, err := strconv.ParseInt(sval, 10, 64)
 	slf.invalid(key, sval, "int64", err)
 	return value
+}
+
+func (slf *stuUtilEnv) GetFloat32(key string, dval ...float32) float32 {
+	sval, val := getEnv(key, dval...)
+	if val != nil {
+		return *val
+	}
+
+	value, err := strconv.ParseFloat(sval, 32)
+	slf.invalid(key, sval, "float32", err)
+	return float32(value)
+}
+
+func (slf *stuUtilEnv) GetFloat64(key string, dval ...float64) float64 {
+	sval, val := getEnv(key, dval...)
+	if val != nil {
+		return *val
+	}
+
+	value, err := strconv.ParseFloat(sval, 64)
+	slf.invalid(key, sval, "float64", err)
+	return value
+}
+
+func (slf *stuUtilEnv) GetFCT(key string, dval ...fct.FCT) fct.FCT {
+	sval, val := getEnv(key, dval...)
+	if val != nil {
+		return *val
+	}
+
+	value, err := fct.New(sval)
+	slf.invalid(key, sval, "fct.FCT", err)
+	return *value
 }
 
 func (slf *stuUtilEnv) GetBool(key string, dval ...bool) bool {
