@@ -64,7 +64,7 @@ func (*stuNet) GrpcConnection(address string, opt ...mol.NetOpt) (grpc.ClientCon
 		return nil, errors.New("port must be number")
 	}
 
-	if port < 1000 {
+	if port != 443 && port < 1000 {
 		return nil, errors.New("port cannot less than 1000")
 	}
 
