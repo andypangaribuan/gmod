@@ -34,6 +34,7 @@ type RouterR interface {
 type RouterG interface {
 	AutoRecover(autoRecover bool)
 	Server() *grpc.Server
+	RunHealthCheck()
 }
 
 type FuseRContext interface {
