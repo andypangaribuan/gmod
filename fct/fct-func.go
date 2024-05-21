@@ -10,6 +10,7 @@
 package fct
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -51,9 +52,9 @@ func getString(deci decimal.Decimal) (string, string) {
 	}
 
 	v1 := deci.StringFixedBank(int32(exp))
-	v2 := printer.Sprintf("%.0f", deci.InexactFloat64())
+	v2 := printer.Sprintf("%."+strconv.Itoa(exp)+"f", deci.InexactFloat64())
 
-	ls := strings.Split(v1, ".")
+	ls := strings.Split(v2, ".")
 	if len(ls) > 1 {
 		decimalValue := ls[1]
 		for {
@@ -69,9 +70,9 @@ func getString(deci decimal.Decimal) (string, string) {
 		}
 
 		if len(decimalValue) > 0 {
-			v2 += "." + decimalValue
+			v2 = ls[0] + "." + decimalValue
 		} else {
-			v1 = ls[0]
+			v2 = ls[0] + ".0"
 		}
 	}
 
