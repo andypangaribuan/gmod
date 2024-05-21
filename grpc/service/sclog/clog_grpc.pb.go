@@ -32,6 +32,7 @@ const (
 	CLogService_HttpCallV1_FullMethodName     = "/sclog.CLogService/HttpCallV1"
 	CLogService_ServicePieceV1_FullMethodName = "/sclog.CLogService/ServicePieceV1"
 	CLogService_ServiceV1_FullMethodName      = "/sclog.CLogService/ServiceV1"
+	CLogService_GrpcV1_FullMethodName         = "/sclog.CLogService/GrpcV1"
 )
 
 // CLogServiceClient is the client API for CLogService service.
@@ -43,6 +44,7 @@ type CLogServiceClient interface {
 	HttpCallV1(ctx context.Context, in *RequestHttpCallV1, opts ...grpc.CallOption) (*Response, error)
 	ServicePieceV1(ctx context.Context, in *RequestServicePieceV1, opts ...grpc.CallOption) (*Response, error)
 	ServiceV1(ctx context.Context, in *RequestServiceV1, opts ...grpc.CallOption) (*Response, error)
+	GrpcV1(ctx context.Context, in *RequestGrpcV1, opts ...grpc.CallOption) (*Response, error)
 }
 
 type cLogServiceClient struct {
@@ -98,6 +100,15 @@ func (c *cLogServiceClient) ServiceV1(ctx context.Context, in *RequestServiceV1,
 	return out, nil
 }
 
+func (c *cLogServiceClient) GrpcV1(ctx context.Context, in *RequestGrpcV1, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, CLogService_GrpcV1_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CLogServiceServer is the server API for CLogService service.
 // All implementations must embed UnimplementedCLogServiceServer
 // for forward compatibility
@@ -107,6 +118,7 @@ type CLogServiceServer interface {
 	HttpCallV1(context.Context, *RequestHttpCallV1) (*Response, error)
 	ServicePieceV1(context.Context, *RequestServicePieceV1) (*Response, error)
 	ServiceV1(context.Context, *RequestServiceV1) (*Response, error)
+	GrpcV1(context.Context, *RequestGrpcV1) (*Response, error)
 	mustEmbedUnimplementedCLogServiceServer()
 }
 
@@ -128,6 +140,9 @@ func (UnimplementedCLogServiceServer) ServicePieceV1(context.Context, *RequestSe
 }
 func (UnimplementedCLogServiceServer) ServiceV1(context.Context, *RequestServiceV1) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceV1 not implemented")
+}
+func (UnimplementedCLogServiceServer) GrpcV1(context.Context, *RequestGrpcV1) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrpcV1 not implemented")
 }
 func (UnimplementedCLogServiceServer) mustEmbedUnimplementedCLogServiceServer() {}
 
@@ -232,6 +247,24 @@ func _CLogService_ServiceV1_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CLogService_GrpcV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestGrpcV1)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CLogServiceServer).GrpcV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CLogService_GrpcV1_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CLogServiceServer).GrpcV1(ctx, req.(*RequestGrpcV1))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CLogService_ServiceDesc is the grpc.ServiceDesc for CLogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -258,6 +291,10 @@ var CLogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ServiceV1",
 			Handler:    _CLogService_ServiceV1_Handler,
+		},
+		{
+			MethodName: "GrpcV1",
+			Handler:    _CLogService_GrpcV1_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

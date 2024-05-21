@@ -18,7 +18,7 @@ type Db interface {
 
 type DbTx interface {
 	Commit() error
-	Rollback() error
+	Rollback()
 }
 
 type DbPostgresInstance interface {

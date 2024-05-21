@@ -93,3 +93,12 @@ type ServiceV1 struct {
 	StartedAt        time.Time
 	FinishedAt       time.Time
 }
+
+type GrpcV1 struct {
+	Destination string
+	Severity    string
+	ExecPath    string
+	ExecFunc    string
+	ReqHeader   *string
+	Data        *string
+}

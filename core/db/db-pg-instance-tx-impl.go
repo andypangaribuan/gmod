@@ -30,15 +30,17 @@ func (slf *pgInstanceTx) Commit() (err error) {
 	return
 }
 
-func (slf *pgInstanceTx) Rollback() (err error) {
+func (slf *pgInstanceTx) Rollback() {
 	const (
 		min    int64 = 100
 		max    int64 = 300
 		maxTry       = 3
 	)
 
+	var err error
+
 	if slf == nil {
-		return nil
+		return
 	}
 
 	if slf.isCommit || slf.isRollback || slf.tx == nil {
@@ -50,7 +52,7 @@ func (slf *pgInstanceTx) Rollback() (err error) {
 			log.Printf("db.tx.rollback: isRollback = %v\n", slf.isRollback)
 		}
 
-		return nil
+		return
 	}
 
 	iteration := -1
@@ -75,5 +77,4 @@ func (slf *pgInstanceTx) Rollback() (err error) {
 	}
 
 	slf.isRollback = err == nil
-	return
 }

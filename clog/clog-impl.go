@@ -14,6 +14,10 @@ import (
 )
 
 func (slf *stuInstance) Note(mol *Note, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
 	if mol.ExecPath == "" && mol.ExecFunc == "" {
 		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 3)
 	}
@@ -31,6 +35,10 @@ func (slf *stuInstance) Note(mol *Note, async ...bool) error {
 }
 
 func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
 	req := &sclog.RequestDbqV1{
 		Uid:          slf.uid,
 		UserId:       pbwString(slf.userId),
@@ -56,6 +64,10 @@ func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 }
 
 func (slf *stuInstance) HttpCallV1(mol *HttpCallV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
 	req := &sclog.RequestHttpCallV1{
 		Uid:        slf.uid,
 		UserId:     pbwString(slf.userId),
@@ -82,6 +94,10 @@ func (slf *stuInstance) HttpCallV1(mol *HttpCallV1, async ...bool) error {
 }
 
 func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
 	req := &sclog.RequestServicePieceV1{
 		Uid:              slf.uid,
 		SvcName:          svcName,
@@ -105,6 +121,10 @@ func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error
 }
 
 func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
 	req := &sclog.RequestServiceV1{
 		Uid:              slf.uid,
 		UserId:           pbwString(slf.userId),
@@ -137,4 +157,28 @@ func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
 	}
 
 	return grpcCall(*getFirst(async, true), client.ServiceV1, req)
+}
+
+func (slf *stuInstance) GrpcV1(mol *GrpcV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+	
+	req := &sclog.RequestGrpcV1{
+		Uid:              slf.uid,
+		UserId:           pbwString(slf.userId),
+		PartnerId:        pbwString(slf.partnerId),
+		SvcName:          svcName,
+		SvcVersion:       svcVersion,
+		SvcParentName:    pbwString(slf.svcParentName),
+		SvcParentVersion: pbwString(slf.svcParentVersion),
+		Destination:      mol.Destination,
+		Severity:         mol.Severity,
+		ExecPath:         mol.ExecPath,
+		ExecFunction:     mol.ExecFunc,
+		ReqHeader:        pbwString(mol.ReqHeader),
+		Data:             pbwString(mol.Data),
+	}
+
+	return grpcCall(*getFirst(async, true), client.GrpcV1, req)
 }

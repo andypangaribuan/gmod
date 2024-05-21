@@ -41,21 +41,21 @@ func xinit() {
 		}
 	}
 
-	clogNew = func(uid string) Instance {
-		if client == nil {
-			return nil
-		}
+	// clogNew = func(uid string) Instance {
+	// 	if client == nil {
+	// 		return nil
+	// 	}
 
-		if uid != "" {
-			return &stuInstance{
-				uid: uid,
-			}
-		}
+	// 	if uid != "" {
+	// 		return &stuInstance{
+	// 			uid: uid,
+	// 		}
+	// 	}
 
-		return &stuInstance{
-			uid: mrf1[string]("mrf-util-uid"),
-		}
-	}
+	// 	return &stuInstance{
+	// 		uid: mrf1[string]("mrf-util-uid"),
+	// 	}
+	// }
 
 	clogSetUserId = func(clog Instance, id string) {
 		if clog != nil {

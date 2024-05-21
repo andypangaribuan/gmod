@@ -109,7 +109,8 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 		}
 	}
 
-	mcx.clog = clogNew(overrideClogUid)
+	// mcx.clog = clogNew(overrideClogUid)
+	mcx.clog = clog.New(overrideClogUid)
 
 	if len(reqHeader) > 0 {
 		mcx.val.header = &reqHeader

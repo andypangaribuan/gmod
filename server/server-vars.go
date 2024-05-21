@@ -25,8 +25,8 @@ var clogSetPartnerId func(clog clog.Instance, id string)
 var (
 	serverImpl   server
 	fuseFiberApp *fiber.App
-	clogNew      func(uid string) clog.Instance // set by reflection from clog package
-	cip          *stuClientIP
+	// clogNew      func(uid string) clog.Instance // set by reflection from clog package
+	cip *stuClientIP
 )
 
 const messageInternalServerError = "We apologize and are fixing the problem. Please try again at a later stage."

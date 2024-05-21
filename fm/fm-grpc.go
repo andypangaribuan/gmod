@@ -12,6 +12,7 @@ package fm
 import (
 	"context"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -27,10 +28,45 @@ func GrpcClient[T any](address string, fn func(cc grpc.ClientConnInterface) T) (
 	return fn(conn), nil
 }
 
-func GrpcCall[T any, R any](fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), req *T, header ...map[string]string) (*R, error) {
-	ctx := context.Background()
+func GrpcCall[T any, R any](clog clog.Instance, fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), req *T, header ...map[string]string) (*R, error) {
+	var (
+		ctx        = context.Background()
+		metaHeader = make(map[string]string, 0)
+	)
+
+	if clog != nil {
+		uid, userId, partnerId := clogGetId(clog)
+		if uid != "" {
+			metaHeader["gmod-uid"] = uid
+		}
+
+		if userId != nil {
+			metaHeader["gmod-user-id"] = *userId
+		}
+
+		if partnerId != nil {
+			metaHeader["gmod-partner-id"] = *partnerId
+		}
+	}
+
+	svcName, err := mrf2[string, error]("mrf-conf-val", "svcName")
+	if err == nil {
+		metaHeader["gmod-from-svc-name"] = svcName
+	}
+
+	svcVersion, err := mrf2[string, error]("mrf-conf-val", "svcVersion")
+	if err == nil {
+		metaHeader["gmod-from-svc-version"] = svcVersion
+	}
+
 	if len(header) > 0 && len(header[0]) > 0 {
-		ctx = metadata.NewOutgoingContext(ctx, metadata.New(header[0]))
+		for k, v := range header[0] {
+			metaHeader[k] = v
+		}
+	}
+
+	if len(metaHeader) > 0 {
+		ctx = metadata.NewOutgoingContext(ctx, metadata.New(metaHeader))
 	}
 
 	return fn(ctx, req)

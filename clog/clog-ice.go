@@ -15,4 +15,5 @@ type Instance interface {
 	HttpCallV1(mol *HttpCallV1, async ...bool) error
 	ServicePieceV1(mol *ServicePieceV1, async ...bool) error
 	ServiceV1(mol *ServiceV1, async ...bool) error
+	GrpcV1(mol *GrpcV1, async ...bool) error
 }
