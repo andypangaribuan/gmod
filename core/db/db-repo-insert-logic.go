@@ -125,7 +125,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 )`
 
 	for i, args := range partArgs {
-		size := partSize[i]
+		size := partSize[i] / strings.Count(report.insertArgSign, "?")
 		query := strings.ReplaceAll(report.query, "::tableName", report.tableName)
 		query = strings.ReplaceAll(query, "::insertColumn", report.insertColumn)
 		valQuery := strings.ReplaceAll(valFormat, "::insertArgSign", report.insertArgSign)

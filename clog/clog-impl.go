@@ -163,7 +163,7 @@ func (slf *stuInstance) GrpcV1(mol *GrpcV1, async ...bool) error {
 	if client == nil {
 		return nil
 	}
-	
+
 	req := &sclog.RequestGrpcV1{
 		Uid:              slf.uid,
 		UserId:           pbwString(slf.userId),
