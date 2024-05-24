@@ -10,9 +10,19 @@
 package fct
 
 import (
+	"log"
+
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 )
+
+func unsafeCalc(val ...any) FCT {
+	f, err := calc(val...)
+	if err != nil {
+		log.Panicf("fct calc: found some error\n%+v", err)
+	}
+	return f
+}
 
 // supported operator: +, -, *, /, %
 func calc(val ...any) (FCT, error) {

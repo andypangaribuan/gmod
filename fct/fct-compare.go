@@ -45,7 +45,7 @@ func Compare(left FCT, operator string, right FCT) (bool, error) {
 }
 
 // supported operator: ==, !=, <, <=, >, >=
-func UnsecureCompare(left FCT, operator string, right FCT) bool {
+func UnsafeCompare(left FCT, operator string, right FCT) bool {
 	val, err := Compare(left, operator, right)
 	if err != nil {
 		log.Panicf("fct compare: found some error\n%+v", err)
@@ -70,7 +70,7 @@ func AnyCompare(left any, operator string, right any) (bool, error) {
 }
 
 // supported operator: ==, !=, <, <=, >, >=
-func UnsecureAnyCompare(left any, operator string, right any) bool {
+func UnsafeAnyCompare(left any, operator string, right any) bool {
 	val, err := AnyCompare(left, operator, right)
 	if err != nil {
 		log.Panicf("fct compare: found some error\n%+v", err)

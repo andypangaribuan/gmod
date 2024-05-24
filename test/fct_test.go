@@ -61,7 +61,7 @@ func testFCT(t *testing.T) {
 	require.Nil(t, err)
 	require.NotNil(t, m2)
 
-	if fct.UnsecureCompare(v3, "!=", m2.F1) {
+	if fct.UnsafeCompare(v3, "!=", m2.F1) {
 		require.FailNow(t, "not equal")
 	}
 }
