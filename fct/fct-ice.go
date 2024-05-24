@@ -125,7 +125,16 @@ func (slf *FCT) ToString() (string, error) {
 	return slf.toString()
 }
 
+func (slf *FCT) ToStringTrim() (string, error) {
+	return slf.toStringTrim()
+}
+
 // be careful, unsafe perform panic if theres an error
 func (slf *FCT) UnsafeToString() string {
 	return slf.unsafeToString()
+}
+
+// be careful, unsafe perform panic if theres an error
+func (slf *FCT) UnsafeToStringTrim() string {
+	return slf.unsafeToStringTrim()
 }

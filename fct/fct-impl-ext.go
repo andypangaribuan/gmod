@@ -139,3 +139,9 @@ func (slf *FCT) unsafeToString() string {
 	slf.panic(err)
 	return v
 }
+
+func (slf *FCT) unsafeToStringTrim() string {
+	v, err := slf.toStringTrim()
+	slf.panic(err)
+	return v
+}

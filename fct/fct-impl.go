@@ -14,6 +14,7 @@ import (
 	"log"
 	"math/big"
 	"runtime/debug"
+	"strings"
 
 	"github.com/shopspring/decimal"
 )
@@ -158,5 +159,35 @@ func (slf *FCT) toString() (string, error) {
 	}
 
 	v1, _ := getString(fv.deci)
+	return v1, nil
+}
+
+func (slf *FCT) toStringTrim() (string, error) {
+	fv, err := getFCT(slf)
+	if err != nil {
+		return "", err
+	}
+
+	v1, _ := getString(fv.deci)
+	ls := strings.Split(v1, ".")
+	if len(ls) > 1 {
+		var (
+			intValue = ls[0]
+			decimalValue = ls[1]
+			lastDigit = ""
+		)
+
+		for {
+			lastDigit = decimalValue[len(decimalValue)-1:]
+			if len(decimalValue) == 1 || lastDigit != "0" {
+				break
+			}
+			
+			decimalValue = decimalValue[:len(decimalValue)-1]
+		}
+
+		v1 = fmt.Sprintf("%v.%v", intValue, decimalValue)
+	}
+	
 	return v1, nil
 }
