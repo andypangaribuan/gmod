@@ -14,6 +14,7 @@ import "time"
 const (
 	layoutFull = "yyyy-MM-dd HH:mm:ss.SSSSSS TZ"
 	layoutDT   = "yyyy-MM-dd HH:mm:ss TZ"
+	layoutD    = "yyyy-MM-dd TZ"
 )
 
 func (slf *stuConvTime) ToStrFull(val time.Time) string {
@@ -30,4 +31,12 @@ func (slf *stuConvTime) ToTimeFull(val string) (*time.Time, error) {
 
 func (slf *stuConvTime) ToTimeDT(val string) (*time.Time, error) {
 	return slf.toTime(val, layoutDT)
+}
+
+func (slf *stuConvTime) ToTimeD(val string) (*time.Time, error) {
+	return slf.toTime(val, layoutD)
+}
+
+func (slf *stuConvTime) ToTime(val string, layout string) (*time.Time, error) {
+	return slf.toTime(val, layout)
 }

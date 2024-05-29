@@ -17,4 +17,6 @@ type ConvTime interface {
 
 	ToTimeFull(val string) (*time.Time, error)
 	ToTimeDT(val string) (*time.Time, error)
+	ToTimeD(val string) (*time.Time, error)
+	ToTime(val string, layout string) (*time.Time, error)
 }
