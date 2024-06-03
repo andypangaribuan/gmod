@@ -14,12 +14,12 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, args []any) *stuRepoResult[T] {
+func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args []any) *stuRepoResult[T] {
 	var (
 		fullQuery = slf.getQuery("full-query", args)
 		report    = &stuReport{
 			args:  slf.getArgs(args),
-			query: slf.dvalSql,
+			query: slf.dvalSql[sqlName],
 		}
 	)
 

@@ -29,7 +29,7 @@ type stuRepo[T any] struct {
 
 type stuVDB[T any] struct {
 	ins     ice.DbInstance
-	dvalSql string
+	dvalSql map[string]string
 }
 
 type stuConnection struct {

@@ -14,18 +14,18 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func (slf *stuVDB[T]) Fetch(clog clog.Instance, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, nil, args)).fetch()
+func (slf *stuVDB[T]) Fetch(clog clog.Instance, sqlName string, args ...any) (*T, error) {
+	return slf.override(clog, slf.fetches(true, nil, sqlName, args)).fetch()
 }
 
-func (slf *stuVDB[T]) Fetches(clog clog.Instance, args ...any) ([]*T, error) {
-	return slf.override(clog, slf.fetches(false, nil, args)).fetches()
+func (slf *stuVDB[T]) Fetches(clog clog.Instance, sqlName string, args ...any) ([]*T, error) {
+	return slf.override(clog, slf.fetches(false, nil, sqlName, args)).fetches()
 }
 
-func (slf *stuVDB[T]) TxFetch(clog clog.Instance, tx ice.DbTx, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, tx, args)).fetch()
+func (slf *stuVDB[T]) TxFetch(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) (*T, error) {
+	return slf.override(clog, slf.fetches(true, tx, sqlName, args)).fetch()
 }
 
-func (slf *stuVDB[T]) TxFetches(clog clog.Instance, tx ice.DbTx, args ...any) ([]*T, error) {
-	return slf.override(clog, slf.fetches(false, tx, args)).fetches()
+func (slf *stuVDB[T]) TxFetches(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) ([]*T, error) {
+	return slf.override(clog, slf.fetches(false, tx, sqlName, args)).fetches()
 }

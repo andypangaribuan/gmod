@@ -11,7 +11,7 @@ package db
 
 import "github.com/andypangaribuan/gmod/ice"
 
-func NewVDB[T any](db ice.DbInstance, dvalSql string) VDB[T] {
+func NewVDB[T any](db ice.DbInstance, dvalSql map[string]string) VDB[T] {
 	stu := &stuVDB[T]{
 		ins:     db,
 		dvalSql: dvalSql,
