@@ -34,6 +34,8 @@ type Repo[T any] interface {
 }
 
 type VDB[T any] interface {
+	Sql(sqlName string) string
+	
 	Fetch(clog clog.Instance, sqlName string, args ...any) (*T, error)
 	Fetches(clog clog.Instance, sqlName string, args ...any) ([]*T, error)
 

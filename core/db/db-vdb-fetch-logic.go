@@ -10,18 +10,26 @@
 package db
 
 import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mol"
 )
 
 func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args []any) *stuRepoResult[T] {
 	var (
+		endQuery  = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isLimitOne, " LIMIT 1", ""))
 		fullQuery = slf.getQuery("full-query", args)
 		report    = &stuReport{
 			args:  slf.getArgs(args),
 			query: slf.dvalSql[sqlName],
 		}
 	)
+
+	if endQuery != "" {
+		report.query += " " + endQuery
+	}
 
 	if fullQuery != "" {
 		report.query = fullQuery

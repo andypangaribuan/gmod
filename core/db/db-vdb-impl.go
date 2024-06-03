@@ -14,6 +14,10 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
+func (slf *stuVDB[T]) Sql(sqlName string) string {
+	return slf.dvalSql[sqlName]
+}
+
 func (slf *stuVDB[T]) Fetch(clog clog.Instance, sqlName string, args ...any) (*T, error) {
 	return slf.override(clog, slf.fetches(true, nil, sqlName, args)).fetch()
 }
