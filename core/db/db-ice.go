@@ -52,7 +52,7 @@ type FetchOptBuilder interface {
 	WithDeletedAtIsNull(val ...bool) FetchOptBuilder
 	EndQuery(query string) FetchOptBuilder
 	FullQuery(query string) FetchOptBuilder
-	FormatFullQuery(callback func(query string) string) FetchOptBuilder
+	FullQueryFormatter(formatter func(query string) string) FetchOptBuilder
 }
 
 type UpdateBuilder interface {

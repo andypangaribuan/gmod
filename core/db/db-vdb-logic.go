@@ -22,9 +22,9 @@ func (slf *stuVDB[T]) getFunc(typ string, args []any) any {
 			v, ok := val.(*stuFetchOptBuilder)
 			if ok && v != nil {
 				switch typ {
-				case "format-full-query":
-					if v.formatFullQuery != nil {
-						return *v.formatFullQuery
+				case "full-query-formatter":
+					if v.fullQueryFormatter != nil {
+						return *v.fullQueryFormatter
 					}
 				}
 			}
