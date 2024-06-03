@@ -34,11 +34,11 @@ type Repo[T any] interface {
 }
 
 type VDB[T any] interface {
-	Fetch(clog clog.Instance, condition string, args ...any) (*T, error)
-	Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error)
+	Fetch(clog clog.Instance, args ...any) (*T, error)
+	Fetches(clog clog.Instance, args ...any) ([]*T, error)
 
-	TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error)
-	TxFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]*T, error)
+	TxFetch(clog clog.Instance, tx ice.DbTx, args ...any) (*T, error)
+	TxFetches(clog clog.Instance, tx ice.DbTx, args ...any) ([]*T, error)
 }
 
 type RepoOptBuilder interface {

@@ -11,6 +11,7 @@ package db
 
 import "github.com/andypangaribuan/gmod/clog"
 
-func (slf *stuVDB[T]) Fetch(clog clog.Instance, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, nil, condition, args)).fetch()
+func (slf *stuVDB[T]) override(clog clog.Instance, res *stuRepoResult[T]) *stuRepoResult[T] {
+	pushClogReport(clog, res.report, res.err, 4)
+	return res
 }

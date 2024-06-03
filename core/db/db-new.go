@@ -9,8 +9,14 @@
 
 package db
 
-import "github.com/andypangaribuan/gmod/clog"
+func RepoOpt() RepoOptBuilder {
+	return new(stuRepoOptBuilder)
+}
 
-func (slf *stuVDB[T]) Fetch(clog clog.Instance, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, nil, condition, args)).fetch()
+func FetchOpt() FetchOptBuilder {
+	return new(stuFetchOptBuilder)
+}
+
+func Update() UpdateBuilder {
+	return new(stuUpdateBuilder)
 }

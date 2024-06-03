@@ -34,15 +34,3 @@ func NewRepo[T any](db ice.DbInstance, tableName string, opt ...RepoOptBuilder) 
 
 	return stu
 }
-
-func RepoOpt() RepoOptBuilder {
-	return new(stuRepoOptBuilder)
-}
-
-func FetchOpt() FetchOptBuilder {
-	return new(stuFetchOptBuilder)
-}
-
-func Update() UpdateBuilder {
-	return new(stuUpdateBuilder)
-}
