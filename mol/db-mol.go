@@ -17,6 +17,7 @@ type DbConnection struct {
 	Port                int
 	Name                string
 	Scheme              string
+	Timezone            string
 	Username            string
 	Password            string
 	UnsafeCompatibility *bool

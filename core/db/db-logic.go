@@ -33,6 +33,7 @@ func setPgConfDVal(conf *mol.DbConnection) {
 		dvalHost           = gm.Util.Env.GetString("DB_HOST", "127.0.0.1")
 		dvalPort           = gm.Util.Env.GetInt("DB_PORT", 5432)
 		dvalScheme         = gm.Util.Env.GetString("DB_SCHEME", "public")
+		dvalTimezone       = gm.Util.Env.GetString("APP_TIMEZONE", "Asia/Jakarta")
 		dvalMaxLifeTimeIns = gm.Util.Env.GetInt("DB_MAX_LIFE_TIME_INS", 300)
 		dvalMaxIdleTimeIns = gm.Util.Env.GetInt("DB_MAX_IDLE_TIME_INS", 30)
 		dvalMaxIdle        = gm.Util.Env.GetInt("DB_MAX_IDLE", 2)
@@ -47,6 +48,7 @@ func setPgConfDVal(conf *mol.DbConnection) {
 	conf.Host = fm.Ternary(conf.Host != "", conf.Host, dvalHost)
 	conf.Port = fm.Ternary(conf.Port != 0, conf.Port, dvalPort)
 	conf.Scheme = fm.Ternary(conf.Scheme != "", conf.Scheme, dvalScheme)
+	conf.Timezone = fm.Ternary(conf.Timezone != "", conf.Timezone, dvalTimezone)
 	conf.MaxLifeTimeIns = fm.Ternary(conf.MaxLifeTimeIns != 0, conf.MaxLifeTimeIns, dvalMaxLifeTimeIns)
 	conf.MaxIdleTimeIns = fm.Ternary(conf.MaxIdleTimeIns != 0, conf.MaxIdleTimeIns, dvalMaxIdleTimeIns)
 	conf.MaxIdle = fm.Ternary(conf.MaxIdle != 0, conf.MaxIdle, dvalMaxIdle)
@@ -59,7 +61,9 @@ func setPgConfDVal(conf *mol.DbConnection) {
 }
 
 func getPgConnectionString(conf *mol.DbConnection) string {
-	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s search_path=%s application_name=%s sslmode=disable", conf.Host, conf.Port, conf.Username, conf.Password, conf.Name, conf.Scheme, conf.AppName)
+	return fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s search_path=%s application_name=%s timezone=%s sslmode=disable",
+		conf.Host, conf.Port, conf.Username, conf.Password, conf.Name, conf.Scheme, conf.AppName, conf.Timezone)
 }
 
 func (slf *stuConnection) createConnection() error {
