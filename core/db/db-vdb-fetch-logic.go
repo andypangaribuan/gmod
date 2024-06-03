@@ -9,29 +9,19 @@
 
 package db
 
-import "github.com/andypangaribuan/gmod/ice"
+import (
+	"github.com/andypangaribuan/gmod/ice"
+	"github.com/andypangaribuan/gmod/mol"
+)
 
-func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, args []any) *stuRepoResult[T] {
+func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, args []any) *stuRepoResult[T] {
 	var (
-		whereQuery = slf.getWhereQuery(condition, args)
-		endQuery   = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isLimitOne, " LIMIT 1", ""))
-		fullQuery  = slf.getQuery("full-query", args)
-		report     = &stuReport{
-			tableName:     slf.tableName,
-			insertColumn:  slf.insertColumn,
-			insertArgSign: slf.insertArgSign,
-			args:          slf.getArgs(args),
-			query:         "SELECT * FROM ::tableName",
+		fullQuery = slf.getQuery("full-query", args)
+		report    = &stuReport{
+			args:  slf.getArgs(args),
+			query: slf.dvalSql,
 		}
 	)
-
-	if whereQuery != "" {
-		report.query += " " + whereQuery
-	}
-
-	if endQuery != "" {
-		report.query += " " + endQuery
-	}
 
 	if fullQuery != "" {
 		report.query = fullQuery
@@ -51,11 +41,7 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, ar
 	if tx != nil {
 		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 	} else {
-		if slf.rwFetchWhenNull {
-			execReport, err = slf.ins.SelectR2(&out, report.query, report.args, fm.Ptr(func() bool { return len(out) > 0 }))
-		} else {
-			execReport, err = slf.ins.Select(&out, report.query, report.args...)
-		}
+		execReport, err = slf.ins.Select(&out, report.query, report.args...)
 	}
 
 	report.execReport = execReport

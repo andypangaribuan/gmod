@@ -172,22 +172,21 @@ func (slf *FCT) toStringTrim() (string, error) {
 	ls := strings.Split(v1, ".")
 	if len(ls) > 1 {
 		var (
-			intValue = ls[0]
+			intValue     = ls[0]
 			decimalValue = ls[1]
-			lastDigit = ""
 		)
 
 		for {
-			lastDigit = decimalValue[len(decimalValue)-1:]
+			lastDigit := decimalValue[len(decimalValue)-1:]
 			if len(decimalValue) == 1 || lastDigit != "0" {
 				break
 			}
-			
+
 			decimalValue = decimalValue[:len(decimalValue)-1]
 		}
 
 		v1 = fmt.Sprintf("%v.%v", intValue, decimalValue)
 	}
-	
+
 	return v1, nil
 }
