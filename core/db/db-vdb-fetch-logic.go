@@ -35,6 +35,14 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 		report.query = fullQuery
 	}
 
+	formatFullQueryFunc := slf.getFunc("format-full-query", args)
+	if formatFullQueryFunc != nil {
+		fn, ok := formatFullQueryFunc.(func(query string) string)
+		if ok {
+			report.query = fn(report.query)
+		}
+	}
+
 	var (
 		err        error
 		out        []*T

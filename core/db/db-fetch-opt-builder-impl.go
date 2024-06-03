@@ -25,3 +25,8 @@ func (slf *stuFetchOptBuilder) FullQuery(query string) FetchOptBuilder {
 	slf.fullQuery = &query
 	return slf
 }
+
+func (slf *stuFetchOptBuilder) FormatFullQuery(callback func(query string) string) FetchOptBuilder {
+	slf.formatFullQuery = &callback
+	return slf
+}

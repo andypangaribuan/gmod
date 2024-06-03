@@ -15,6 +15,25 @@ import (
 	"github.com/andypangaribuan/gmod/clog"
 )
 
+func (slf *stuVDB[T]) getFunc(typ string, args []any) any {
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil {
+				switch typ {
+				case "format-full-query":
+					if v.formatFullQuery != nil {
+						return *v.formatFullQuery
+					}
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
 func (slf *stuVDB[T]) getQuery(typ string, args []any) string {
 	query := ""
 

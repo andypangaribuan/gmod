@@ -83,6 +83,7 @@ type stuFetchOptBuilder struct {
 	withDeletedAtIsNull *bool
 	endQuery            *string
 	fullQuery           *string
+	formatFullQuery     *func(query string) string
 }
 
 type stuUpdateBuilder struct {

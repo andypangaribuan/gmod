@@ -116,7 +116,7 @@ func (slf *pgInstance) Select(out any, query string, args ...any) (*mol.DbExecRe
 	report.Query = query
 	report.Args = args
 
-	err = slf.execSelect(conn, reportHost, nil, &out, query, args)
+	err = slf.execSelect(conn, reportHost, nil, out, query, args)
 	conn.printSql(reportHost.StartedAt, query, args)
 
 	return report, err
