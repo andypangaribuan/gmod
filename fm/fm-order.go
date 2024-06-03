@@ -13,7 +13,8 @@ import "sort"
 
 const (
 	OrderedLevelRepo    = 2
-	OrderedLevelHandler = 3
+	OrderedLevelVDB     = 3
+	OrderedLevelHandler = 4
 	OrderedLevelService = 9
 )
 

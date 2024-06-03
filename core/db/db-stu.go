@@ -27,6 +27,11 @@ type stuRepo[T any] struct {
 	insertColumnFunc    func(e *T) []any
 }
 
+type stuVDB[T any] struct {
+	ins     ice.DbInstance
+	dvalSql string
+}
+
 type stuConnection struct {
 	conf       *mol.DbConnection
 	sx         *sqlx.DB

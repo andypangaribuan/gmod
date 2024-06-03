@@ -33,6 +33,14 @@ type Repo[T any] interface {
 	TxDelete(clog clog.Instance, tx ice.DbTx, condition string, args ...any) error
 }
 
+type VDB[T any] interface {
+	Fetch(clog clog.Instance, condition string, args ...any) (*T, error)
+	Fetches(clog clog.Instance, condition string, args ...any) ([]*T, error)
+
+	TxFetch(clog clog.Instance, tx ice.DbTx, condition string, args ...any) (*T, error)
+	TxFetches(clog clog.Instance, tx ice.DbTx, condition string, args ...any) ([]*T, error)
+}
+
 type RepoOptBuilder interface {
 	WithDeletedAtIsNull(val ...bool) RepoOptBuilder
 	RWFetchWhenNull(val ...bool) RepoOptBuilder
