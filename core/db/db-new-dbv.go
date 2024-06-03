@@ -9,9 +9,17 @@
 
 package db
 
-import "github.com/andypangaribuan/gmod/ice"
+import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/ice"
+)
 
 func NewVDB[T any](db ice.DbInstance, dvalSql map[string]string) VDB[T] {
+	for k, v := range dvalSql {
+		dvalSql[k] = strings.TrimSpace(v)
+	}
+
 	stu := &stuVDB[T]{
 		ins:     db,
 		dvalSql: dvalSql,
