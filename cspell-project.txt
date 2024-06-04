@@ -43,3 +43,5 @@ deci
 unew
 nolint
 golint
+memlimit
+automemlimit

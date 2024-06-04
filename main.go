@@ -27,6 +27,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/test"
 	_ "github.com/andypangaribuan/gmod/core/util"
 
+	"github.com/KimMachineGun/automemlimit/memlimit"
 	"github.com/andypangaribuan/gmod/ice"
 	"go.uber.org/automaxprocs/maxprocs"
 )
@@ -66,9 +67,32 @@ var (
 	mainCLogCallback func()
 )
 
+const memRation float64 = 0.8
+
 func init() {
 	_, _ = maxprocs.Set()
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+
+	_, _ = memlimit.SetGoMemLimitWithOpts(
+		memlimit.WithRatio(memRation),
+		memlimit.WithProvider(memlimit.FromCgroup),
+	)
+	_, _ = memlimit.SetGoMemLimitWithOpts(
+		memlimit.WithRatio(memRation),
+		memlimit.WithProvider(
+			memlimit.ApplyFallback(
+				memlimit.FromCgroup,
+				memlimit.FromSystem,
+			),
+		),
+	)
+	_, _ = memlimit.SetGoMemLimit(memRation)
+	_, _ = memlimit.SetGoMemLimitWithProvider(memlimit.Limit(1024*1024), memRation)
+	_, _ = memlimit.SetGoMemLimitWithProvider(memlimit.FromCgroup, memRation)
+	_, _ = memlimit.SetGoMemLimitWithProvider(memlimit.FromCgroupV1, memRation)
+	_, _ = memlimit.SetGoMemLimitWithProvider(memlimit.FromCgroupHybrid, memRation)
+	_, _ = memlimit.SetGoMemLimitWithProvider(memlimit.FromCgroupV2, memRation)
+
 	mainReflection = reflection
 
 	iceGM.
