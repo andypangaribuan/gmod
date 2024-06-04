@@ -17,3 +17,10 @@ func Val[T any](condition bool, fn func() T) *T {
 	val := fn()
 	return &val
 }
+
+func DVal[T any](condition bool, dval T, fn func() T) T {
+	if condition {
+		return fn()
+	}
+	return dval
+}
