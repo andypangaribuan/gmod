@@ -33,3 +33,8 @@ type stuConcurrency struct {
 	fn            func(index int)
 	sleepDuration time.Duration
 }
+
+type stuEnvBase64 struct {
+	key  string
+	data []byte
+}

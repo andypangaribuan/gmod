@@ -10,6 +10,7 @@
 package util
 
 import (
+	"encoding/base64"
 	"log"
 	"strconv"
 	"strings"
@@ -149,4 +150,21 @@ func (slf *stuUtilEnv) GetDurationMs(key string, dval ...time.Duration) time.Dur
 	slf.invalid(key, val, "duration-ms (int)", err)
 
 	return time.Millisecond * time.Duration(value)
+}
+
+func (slf *stuUtilEnv) GetBase64(key string) ice.UtilEnvBase64 {
+	val := getEnvVal(key)
+	if val == "" {
+		log.Fatalf(`env key "%v" doesn't exists`, key)
+	}
+
+	data, err := base64.StdEncoding.DecodeString(val)
+	if err != nil {
+		log.Fatalf("base64 decode failed, error: %+v\n", err)
+	}
+
+	return &stuEnvBase64{
+		key:  key,
+		data: data,
+	}
 }

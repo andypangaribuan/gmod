@@ -13,10 +13,12 @@ import (
 	"fmt"
 	"mime/multipart"
 	"strings"
+	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/fm"
 	"github.com/andypangaribuan/gmod/gm"
+	"github.com/andypangaribuan/gmod/mol"
 	"github.com/pkg/errors"
 )
 
@@ -105,6 +107,39 @@ func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 		err = gm.Json.Unmarshal(data, header)
 		if err != nil {
 			return err
+		}
+
+		switch h := header.(type) {
+		case *mol.RequestHeader:
+			if h.RFTimeRaw != "" {
+				tm, err := time.Parse(time.RFC3339, h.RFTimeRaw)
+				if err != nil {
+					rfc3339 := "2006-01-02 15:04:05Z07:00"
+					tm, err = time.Parse(rfc3339, h.RFTimeRaw)
+				}
+
+				if err == nil {
+					h.RFTime = &tm
+				}
+			}
+
+		default:
+			v, err := gm.Util.ReflectionGet(header, "RequestHeader")
+			if err == nil && v != nil {
+				if h, ok := v.(mol.RequestHeader); ok && h.RFTimeRaw != "" {
+					tm, err := time.Parse(time.RFC3339, h.RFTimeRaw)
+					if err != nil {
+						rfc3339 := "2006-01-02 15:04:05Z07:00"
+						tm, err = time.Parse(rfc3339, h.RFTimeRaw)
+					}
+
+					if err == nil {
+						h.RFTime = &tm
+
+						_ = gm.Util.ReflectionSet(header, map[string]interface{}{"RequestHeader": h})
+					}
+				}
+			}
 		}
 	}
 

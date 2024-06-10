@@ -28,4 +28,10 @@ type UtilEnv interface {
 
 	GetStringSlice(key string, separator string, dval ...[]string) []string
 	GetDurationMs(key string, dval ...time.Duration) time.Duration
+	GetBase64(key string) UtilEnvBase64
+}
+
+type UtilEnvBase64 interface {
+	Key() string
+	Data() []byte
 }
