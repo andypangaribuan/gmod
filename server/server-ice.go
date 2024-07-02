@@ -19,6 +19,7 @@ import (
 type server interface {
 	FuseG(grpcPort int, routes func(router RouterG))
 	FuseR(restPort int, routes func(router RouterR))
+	FuseRS(restPort int, routes func(router RouterR), ws func(router RouterS))
 	FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR))
 }
 
@@ -35,6 +36,24 @@ type RouterG interface {
 	AutoRecover(autoRecover bool)
 	Server() *grpc.Server
 	RunHealthCheck()
+}
+
+type RouterS interface {
+	Locals(fn func(sl FuseSLocal))
+	Register(path string, handler func(ctx FuseSContext))
+}
+
+type FuseSLocal interface {
+	Set(key string, header ...string)
+}
+
+type FuseSContext interface {
+	ReadMessage() (message string, err error)
+	WriteMessage(message string) error
+	GetLocal(key string) string
+	GetParam(key string) string
+	GetQuery(key string) string
+	Close()
 }
 
 type FuseRContext interface {

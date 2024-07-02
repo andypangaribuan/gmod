@@ -9,6 +9,8 @@
 
 package server
 
-func (slf *stuServer) FuseR(restPort int, routes func(router RouterR)) {
-	slf.fuseRS(restPort, routes, nil)
+import "github.com/andypangaribuan/gmod/fm"
+
+func (slf *stuFuseSLocal) Set(key string, header ...string) {
+	slf.router.locals[key] = fm.TernaryR(len(header) == 0, key, func() string { return header[0] })
 }

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
 )
@@ -39,6 +40,20 @@ type stuFuseGRouter struct {
 	withAutoRecover     bool
 	stackTraceSkipLevel int
 	fnGetServer         func() *grpc.Server
+}
+
+type stuFuseSRouter struct {
+	app      *fiber.App
+	locals   map[string]string
+	fnLocals *func(sl FuseSLocal)
+}
+
+type stuFuseSLocal struct {
+	router *stuFuseSRouter
+}
+
+type stuFuseSContext struct {
+	conn *websocket.Conn
 }
 
 type stuFuseRMainContext struct {
