@@ -74,6 +74,7 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 		reqQueries      = fcx.Queries()
 		reqBody         = fcx.BodyRaw()
 		overrideClogUid string
+		withClog        = true
 	)
 
 	for key, ls := range fcx.GetReqHeaders() {
@@ -109,8 +110,18 @@ func (slf *stuFuseRRouter) execute(fcx *fiber.Ctx, endpoint string, regulator fu
 		}
 	}
 
-	// mcx.clog = clogNew(overrideClogUid)
-	mcx.clog = clog.New(overrideClogUid)
+	if len(slf.noLogPaths) > 0 {
+		ep := strings.ToLower(mcx.val.endpoint)
+		ep = strings.ReplaceAll(ep, " ", "")
+		_, ok := slf.noLogPaths[ep]
+		if ok {
+			withClog = false
+		}
+	}
+
+	if withClog {
+		mcx.clog = clog.New(overrideClogUid)
+	}
 
 	if len(reqHeader) > 0 {
 		mcx.val.header = &reqHeader

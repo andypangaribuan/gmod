@@ -40,6 +40,7 @@ func (*stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func(rou
 		fiberApp:        fuseFiberApp,
 		withAutoRecover: false,
 		printOnError:    true,
+		noLogPaths:      make(map[string]any, 0),
 	}
 
 	routes(router)

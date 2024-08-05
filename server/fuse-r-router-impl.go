@@ -10,6 +10,8 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -40,6 +42,14 @@ func (slf *stuFuseRRouter) Unrouted(handler func(ctx FuseRContext, method, path,
 
 func (slf *stuFuseRRouter) ErrorHandler(catcher func(ctx FuseRContext, err error) any) {
 	slf.errorHandler = catcher
+}
+
+func (slf *stuFuseRRouter) NoLog(paths []string) {
+	for _, path := range paths {
+		path = strings.ToLower(path)
+		path = strings.ReplaceAll(path, " ", "")
+		slf.noLogPaths[path] = path
+	}
 }
 
 func (slf *stuFuseRRouter) Endpoints(regulator func(regulator FuseRRegulator), auth func(FuseRContext) any, pathHandlers map[string][]func(FuseRContext) any) {

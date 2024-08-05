@@ -33,6 +33,7 @@ type stuFuseRRouter struct {
 	withAutoRecover bool
 	printOnError    bool
 	errorHandler    func(FuseRContext, error) any
+	noLogPaths      map[string]any
 }
 
 type stuFuseGRouter struct {
