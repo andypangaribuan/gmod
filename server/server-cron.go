@@ -9,10 +9,6 @@
 
 package server
 
-import "sync"
-
-func init() {
-	serverImpl = new(stuServer)
-	cronMX = make(map[string]*sync.Mutex, 0)
-	cronIsStartUp = make(map[string]bool, 0)
+func Cron(routes func(router RouterC)) {
+	serverImpl.Cron(routes)
 }

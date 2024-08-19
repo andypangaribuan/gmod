@@ -46,3 +46,4 @@ golint
 memlimit
 automemlimit
 vals
+gocron

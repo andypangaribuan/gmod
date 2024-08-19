@@ -9,10 +9,16 @@
 
 package server
 
-import "sync"
+func mrf2[A any, B any](key string, arg ...any) (va A, vb B) {
+	arr := mainReflection(key, arg...)
 
-func init() {
-	serverImpl = new(stuServer)
-	cronMX = make(map[string]*sync.Mutex, 0)
-	cronIsStartUp = make(map[string]bool, 0)
+	if v, ok := arr[0].(A); ok {
+		va = v
+	}
+
+	if v, ok := arr[1].(B); ok {
+		vb = v
+	}
+
+	return
 }

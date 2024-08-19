@@ -10,11 +10,15 @@
 package server
 
 import (
+	"sync"
 	_ "unsafe"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/gofiber/fiber/v2"
 )
+
+//go:linkname mainReflection github.com/andypangaribuan/gmod.mainReflection
+var mainReflection func(key string, arg ...any) []any
 
 //go:linkname clogSetUserId github.com/andypangaribuan/gmod/clog.clogSetUserId
 var clogSetUserId func(clog clog.Instance, id string)
@@ -27,6 +31,9 @@ var (
 	fuseFiberApp *fiber.App
 	// clogNew      func(uid string) clog.Instance // set by reflection from clog package
 	cip *stuClientIP
+
+	cronMX        map[string]*sync.Mutex
+	cronIsStartUp map[string]bool
 )
 
 const messageInternalServerError = "We apologize and are fixing the problem. Please try again at a later stage."

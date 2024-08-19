@@ -28,6 +28,43 @@ type stuGrpcServerHandler struct {
 	stackTraceSkipLevel int
 }
 
+type stuCronRouter struct {
+	everyItems     []*stuCronEveryItem
+	everyNItems    []*stuCronNEveryItem
+	everyDayItems  []*stuCronEveryDayItem
+	everyDayNItems []*stuCronNEveryDayItem
+}
+
+type stuCronEveryItem struct {
+	uid            string
+	duration       string
+	fn             func()
+	startUpDelayed *time.Duration
+	allowParallel  bool
+}
+
+type stuCronNEveryItem struct {
+	uid            string
+	duration       string
+	fns            []func()
+	startUpDelayed *time.Duration
+	allowParallel  bool
+}
+
+type stuCronEveryDayItem struct {
+	uid           string
+	at            string
+	fn            func()
+	allowParallel bool
+}
+
+type stuCronNEveryDayItem struct {
+	uid           string
+	at            string
+	fns           []func()
+	allowParallel bool
+}
+
 type stuFuseRRouter struct {
 	fiberApp        *fiber.App
 	withAutoRecover bool

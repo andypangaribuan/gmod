@@ -11,16 +11,34 @@ package server
 
 import (
 	"mime/multipart"
+	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/grpc"
 )
 
 type server interface {
+	Cron(routes func(router RouterC))
 	FuseG(grpcPort int, routes func(router RouterG))
 	FuseR(restPort int, routes func(router RouterR))
 	FuseRS(restPort int, routes func(router RouterR), ws func(router RouterS))
 	FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR))
+}
+
+type RouterC interface {
+	// duration like `1m` for every 1 minute, `2h` for every 2 hours.
+	// valid time units: "s", "m", "h".
+	Every(duration string, fn func(), startUpDelayed *time.Duration, allowParallel ...bool)
+
+	// duration like `1m` for every 1 minute, `2h` for every 2 hours.
+	// valid time units: "s", "m", "h".
+	NEvery(duration string, fns []func(), startUpDelayed *time.Duration, allowParallel ...bool)
+
+	// at a specific time of day in the form "HH:MM:SS" or "HH:MM".
+	EveryDay(at string, fn func(), allowParallel ...bool)
+
+	// at a specific time of day in the form "HH:MM:SS" or "HH:MM".
+	NEveryDay(at string, fns []func(), allowParallel ...bool)
 }
 
 type RouterR interface {
