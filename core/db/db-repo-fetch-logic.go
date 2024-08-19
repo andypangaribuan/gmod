@@ -57,10 +57,11 @@ func (slf *stuRepo[T]) fetches(isLimitOne bool, tx ice.DbTx, condition string, a
 	if tx != nil {
 		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 	} else {
-		if slf.rwFetchWhenNull {
+		usingRW := slf.isUsingRW(args)
+		if slf.rwFetchWhenNull && !usingRW {
 			execReport, err = slf.ins.SelectR2(&out, report.query, report.args, fm.Ptr(func() bool { return len(out) > 0 }))
 		} else {
-			execReport, err = slf.ins.Select(&out, report.query, report.args...)
+			execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
 		}
 	}
 

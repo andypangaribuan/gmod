@@ -30,3 +30,8 @@ func (slf *stuFetchOptBuilder) FullQueryFormatter(formatter func(query string) s
 	slf.fullQueryFormatter = &formatter
 	return slf
 }
+
+func (slf *stuFetchOptBuilder) UsingRW(val ...bool) FetchOptBuilder {
+	slf.usingRW = fm.GetFirst(val, true)
+	return slf
+}

@@ -57,7 +57,8 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 	if tx != nil {
 		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 	} else {
-		execReport, err = slf.ins.Select(&out, report.query, report.args...)
+		usingRW := false
+		execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
 	}
 
 	report.execReport = execReport

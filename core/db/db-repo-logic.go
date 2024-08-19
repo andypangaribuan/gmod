@@ -100,6 +100,22 @@ func (slf *stuRepo[T]) isWithDeletedAtIsNull(args []any) bool {
 	return isWith
 }
 
+func (slf *stuRepo[T]) isUsingRW(args []any) bool {
+	usingRW := slf.usingRW
+
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.usingRW != nil {
+				usingRW = *v.usingRW
+			}
+		}
+	}
+
+	return usingRW
+}
+
 func (slf *stuRepo[T]) getQuery(typ string, args []any) string {
 	query := ""
 

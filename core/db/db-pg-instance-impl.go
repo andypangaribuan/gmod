@@ -86,7 +86,7 @@ func (slf *pgInstance) NewTransaction() (ice.DbTx, error) {
 	return insx, err
 }
 
-func (slf *pgInstance) Select(out any, query string, args ...any) (*mol.DbExecReport, error) {
+func (slf *pgInstance) Select(out any, usingRW bool, query string, args ...any) (*mol.DbExecReport, error) {
 	report := &mol.DbExecReport{
 		StartedAt: gm.Util.Timenow(),
 		Hosts:     make([]*mol.DbExecReportHost, 0),
@@ -101,7 +101,7 @@ func (slf *pgInstance) Select(out any, query string, args ...any) (*mol.DbExecRe
 	reportHost := &mol.DbExecReportHost{StartedAt: report.StartedAt}
 	report.Hosts = append(report.Hosts, reportHost)
 
-	if slf.ro != nil {
+	if slf.ro != nil && !usingRW {
 		conn, err = slf.cro()
 	} else {
 		conn, err = slf.crw()

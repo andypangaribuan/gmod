@@ -25,6 +25,7 @@ type stuRepo[T any] struct {
 	withDeletedAtIsNull bool
 	rwFetchWhenNull     bool
 	insertColumnFunc    func(e *T) []any
+	usingRW             bool
 }
 
 type stuVDB[T any] struct {
@@ -84,6 +85,7 @@ type stuFetchOptBuilder struct {
 	endQuery            *string
 	fullQuery           *string
 	fullQueryFormatter  *func(query string) string
+	usingRW             *bool
 }
 
 type stuUpdateBuilder struct {

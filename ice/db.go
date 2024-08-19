@@ -30,7 +30,7 @@ type DbInstance interface {
 	PingRead() (string, error)
 	NewTransaction() (DbTx, error)
 
-	Select(out any, query string, args ...any) (*mol.DbExecReport, error)
+	Select(out any, usingRW bool, query string, args ...any) (*mol.DbExecReport, error)
 	SelectR2(out any, query string, args []any, check *func() bool) (*mol.DbExecReport, error)
 	Execute(query string, args ...any) (*mol.DbExecReport, error)
 	ExecuteRID(query string, args ...any) (*int64, *mol.DbExecReport, error)
