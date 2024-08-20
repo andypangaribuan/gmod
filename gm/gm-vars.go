@@ -29,5 +29,6 @@ var (
 	Lock   ice.Lock
 	Net    ice.Net
 	Test   ice.Test
+	Use    *stuUse
 	Util   *stuUtil
 )

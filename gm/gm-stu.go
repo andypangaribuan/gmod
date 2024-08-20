@@ -18,6 +18,11 @@ type stuConv struct {
 	Time ice.ConvTime
 }
 
+type stuUse struct {
+	iceUse
+	Gcs ice.UseGcs
+}
+
 type stuUtil struct {
 	iceUtil
 	Env ice.UtilEnv

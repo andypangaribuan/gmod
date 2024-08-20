@@ -25,6 +25,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/core/lock"
 	_ "github.com/andypangaribuan/gmod/core/net"
 	_ "github.com/andypangaribuan/gmod/core/test"
+	_ "github.com/andypangaribuan/gmod/core/use"
 	_ "github.com/andypangaribuan/gmod/core/util"
 
 	"github.com/KimMachineGun/automemlimit/memlimit"
@@ -46,6 +47,8 @@ var (
 	iceLock     ice.Lock
 	iceNet      ice.Net
 	iceTest     ice.Test
+	iceUse      ice.Use
+	iceUseGcs   ice.UseGcs
 	iceUtil     ice.Util
 	iceUtilEnv  ice.UtilEnv
 )
@@ -106,6 +109,7 @@ func init() {
 		SetLock(iceLock).
 		SetNet(iceNet).
 		SetTest(iceTest).
+		SetUse(iceUse, iceUseGcs).
 		SetUtil(iceUtil, iceUtilEnv)
 
 	mainConfCommit = func() {

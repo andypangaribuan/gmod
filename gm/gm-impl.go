@@ -64,6 +64,14 @@ func (slf *stuGM) SetTest(test ice.Test) ice.GM {
 	return slf
 }
 
+func (slf *stuGM) SetUse(use ice.Use, gcs ice.UseGcs) ice.GM {
+	Use = &stuUse{
+		iceUse: use,
+		Gcs:    gcs,
+	}
+	return slf
+}
+
 func (slf *stuGM) SetUtil(util ice.Util, env ice.UtilEnv) ice.GM {
 	Util = &stuUtil{
 		iceUtil: util,

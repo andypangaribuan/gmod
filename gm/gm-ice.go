@@ -15,6 +15,10 @@ type iceConv interface {
 	ice.Conv
 }
 
+type iceUse interface {
+	ice.Use
+}
+
 type iceUtil interface {
 	ice.Util
 }

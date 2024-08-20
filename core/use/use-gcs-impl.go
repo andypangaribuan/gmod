@@ -12,6 +12,7 @@ package use
 import (
 	"bytes"
 	"io"
+	"mime/multipart"
 
 	"github.com/andypangaribuan/gmod/ice"
 )
@@ -26,4 +27,8 @@ func (slf *stuUseGcs) Write(filePath string, reader io.Reader) error {
 
 func (slf *stuUseGcs) WriteData(filePath string, data []byte) error {
 	return slf.write(filePath, bytes.NewReader(data))
+}
+
+func (slf *stuUseGcs) WriteReqFile(parts *map[string][]*multipart.FileHeader, key string, dirPath string, overrideFileName string) (fileName string, fileExt string, err error) {
+	return slf.writeReqFile(parts, key, dirPath, overrideFileName)
 }

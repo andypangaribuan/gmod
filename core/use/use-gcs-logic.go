@@ -10,8 +10,11 @@
 package use
 
 import (
+	"bytes"
 	"context"
 	"io"
+	"mime/multipart"
+	"strings"
 
 	"cloud.google.com/go/storage"
 	"github.com/andypangaribuan/gmod/ice"
@@ -50,4 +53,69 @@ func (slf *stuUseGcs) write(filePath string, reader io.Reader) error {
 	}
 
 	return nil
+}
+
+func (slf *stuUseGcs) writeReqFile(parts *map[string][]*multipart.FileHeader, key string, dirPath string, overrideFileName string) (fileName string, fileExt string, err error) {
+	if parts == nil {
+		err = errors.New("no file")
+		return
+	}
+
+	fh, ok := (*parts)[key]
+	if !ok || len(fh) == 0 || fh[0] == nil {
+		err = errors.New("empty file")
+		return
+	}
+
+	var (
+		part     = fh[0]
+		name     = part.Filename
+		fullPath string
+		ls       = strings.Split(name, ".")
+	)
+
+	if len(ls) > 0 {
+		fileExt = strings.TrimSpace(ls[len(ls)-1])
+		fileExt = strings.ToLower(fileExt)
+		name = strings.TrimSpace(name[:len(name)-len(fileExt)-1])
+	}
+
+	if overrideFileName != "" {
+		name = overrideFileName
+	}
+
+	fileName = name
+	fullPath = dirPath
+
+	if fullPath[len(fullPath)-1:] != "/" {
+		fullPath += "/"
+	}
+
+	fullPath += fileName
+
+	if fullPath[len(fullPath)-1:] != "." {
+		fullPath += "."
+	}
+
+	fullPath += fileExt
+
+	file, er := part.Open()
+	defer func() {
+		_ = file.Close()
+	}()
+
+	if er != nil {
+		err = errors.WithStack(er)
+		return
+	}
+
+	buf := bytes.NewBuffer(nil)
+	_, er = io.Copy(buf, file)
+	if er != nil {
+		err = errors.WithStack(er)
+		return
+	}
+
+	err = slf.write(fullPath, buf)
+	return
 }

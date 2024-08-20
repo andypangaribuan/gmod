@@ -20,5 +20,6 @@ type GM interface {
 	SetLock(lock Lock) GM
 	SetNet(net Net) GM
 	SetTest(test Test) GM
+	SetUse(use Use, useGcs UseGcs) GM
 	SetUtil(util Util, env UtilEnv) GM
 }
