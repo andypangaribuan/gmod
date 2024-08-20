@@ -10,21 +10,20 @@
 package use
 
 import (
-	"context"
+	"bytes"
+	"io"
 
-	"cloud.google.com/go/storage"
 	"github.com/andypangaribuan/gmod/ice"
-	"github.com/pkg/errors"
-	"google.golang.org/api/option"
 )
 
 func (slf *stuUseGcs) Init(credential ice.UtilEnvBase64, bucketName string) error {
-	ctx := context.Background()
-	client, err := storage.NewClient(ctx, option.WithCredentialsJSON(credential.Data()))
-	if err != nil {
-		return errors.WithStack(err)
-	}
+	return slf.init(credential, bucketName)
+}
 
-	slf.bucket = client.Bucket(bucketName)
-	return nil
+func (slf *stuUseGcs) Write(filePath string, reader io.Reader) error {
+	return slf.write(filePath, reader)
+}
+
+func (slf *stuUseGcs) WriteData(filePath string, data []byte) error {
+	return slf.write(filePath, bytes.NewReader(data))
 }
