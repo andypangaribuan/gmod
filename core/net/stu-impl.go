@@ -97,7 +97,7 @@ func (*stuNet) GrpcConnection(address string, opt ...mol.NetOpt) (grpc.ClientCon
 
 	dialOpt = append(dialOpt, grpc.WithTransportCredentials(cred))
 
-	conn, err := grpc.Dial(address, dialOpt...)
+	conn, err := grpc.NewClient(address, dialOpt...)
 	if err != nil {
 		return nil, err
 	}
