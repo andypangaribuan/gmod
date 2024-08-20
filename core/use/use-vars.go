@@ -9,7 +9,14 @@
 
 package use
 
-func init() {
-	iceUse = new(stuUse)
-	iceUseGcs = new(stuUseGcs)
-}
+import (
+	"github.com/andypangaribuan/gmod/ice"
+
+	_ "unsafe"
+)
+
+//go:linkname iceUse github.com/andypangaribuan/gmod.iceUse
+var iceUse ice.Use
+
+//go:linkname iceUseGcs github.com/andypangaribuan/gmod.iceUseGcs
+var iceUseGcs ice.UseGcs

@@ -9,6 +9,10 @@
 
 package use
 
+import "cloud.google.com/go/storage"
+
 type stuUse struct{}
 
-type stuUseGcs struct{}
+type stuUseGcs struct {
+	bucket *storage.BucketHandle
+}

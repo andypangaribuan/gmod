@@ -10,6 +10,5 @@
 package ice
 
 type UseGcs interface {
-	Init(key string, credential UtilEnvBase64, bucketName string) error
-	Get(key string) UseGcs
+	Init(credential UtilEnvBase64, bucketName string) error
 }
