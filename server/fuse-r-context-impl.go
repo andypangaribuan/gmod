@@ -158,6 +158,15 @@ func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 }
 
 func (slf *stuFuseRContext) ReqParserPQF(param any, query any, form any) error {
+	if form != nil {
+		if slf.bodyParser != nil {
+			err := slf.bodyParser(form)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
