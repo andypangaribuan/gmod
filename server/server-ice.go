@@ -89,6 +89,7 @@ type FuseRContext interface {
 	ReqFile() *map[string][]*multipart.FileHeader
 
 	GetHeader(key string, dval ...string) *string
+	GetClientIP() string
 
 	ReqParser(header any, body any) error
 	ReqParserPQF(param any, query any, form any) error

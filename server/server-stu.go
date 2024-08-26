@@ -101,6 +101,7 @@ type stuFuseRMainContext struct {
 	handlers     []func(FuseRContext) any
 	errorHandler func(FuseRContext, error) any
 
+	clientIP  string
 	authObj   any
 	userId    any
 	partnerId any

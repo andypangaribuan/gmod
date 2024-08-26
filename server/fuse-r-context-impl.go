@@ -93,6 +93,14 @@ func (slf *stuFuseRContext) GetHeader(key string, dval ...string) *string {
 	return nil
 }
 
+func (slf *stuFuseRContext) GetClientIP() string {
+	if slf.mcx.clientIP == "" {
+		slf.mcx.clientIP = cip.getClientIP(slf.mcx.fcx)
+	}
+
+	return slf.mcx.clientIP
+}
+
 func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 	if header != nil {
 		if slf.header == nil || len(*slf.header) == 0 {
