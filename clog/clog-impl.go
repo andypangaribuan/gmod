@@ -22,8 +22,12 @@ func (slf *stuInstance) Note(mol *Note, async ...bool) error {
 		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 3)
 	}
 
-	req := &sclog.RequestNote{
+	req := &sclog.RequestNoteV1{
 		Uid:          slf.uid,
+		UserId:       pbwString(slf.userId),
+		PartnerId:    pbwString(slf.partnerId),
+		SvcName:      svcName,
+		SvcVersion:   svcVersion,
 		ExecPath:     mol.ExecPath,
 		ExecFunction: mol.ExecFunc,
 		Key:          pbwString(mol.Key),
