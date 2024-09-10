@@ -11,7 +11,7 @@ package clog
 
 import "time"
 
-type Note struct {
+type NoteV1 struct {
 	ExecPath string
 	ExecFunc string
 	Key      *string

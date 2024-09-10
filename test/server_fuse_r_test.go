@@ -382,8 +382,8 @@ func sfrCallHttp3(ctx server.FuseRContext) any {
 }
 
 func sfrInsertNote(ctx server.FuseRContext) any {
-	note := &clog.Note{Data: "halo"}
-	err := ctx.Clog().Note(note)
+	note := &clog.NoteV1{Data: "halo"}
+	err := ctx.Clog().NoteV1(note)
 	if err != nil {
 		return ctx.R500InternalServerError(err)
 	}

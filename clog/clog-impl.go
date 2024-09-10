@@ -13,7 +13,7 @@ import (
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
-func (slf *stuInstance) Note(mol *Note, async ...bool) error {
+func (slf *stuInstance) NoteV1(mol *NoteV1, async ...bool) error {
 	if client == nil {
 		return nil
 	}
@@ -35,7 +35,7 @@ func (slf *stuInstance) Note(mol *Note, async ...bool) error {
 		Data:         mol.Data,
 	}
 
-	return grpcCall(*getFirst(async, true), client.Note, req)
+	return grpcCall(*getFirst(async, true), client.NoteV1, req)
 }
 
 func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
