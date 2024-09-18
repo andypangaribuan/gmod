@@ -23,6 +23,7 @@ type server interface {
 	FuseR(restPort int, routes func(router RouterR))
 	FuseRS(restPort int, routes func(router RouterR), ws func(router RouterS))
 	FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR))
+	FuseGS(port int, routes func(router RouterG), ws func(router RouterS))
 }
 
 type RouterC interface {
@@ -60,6 +61,7 @@ type RouterG interface {
 type RouterS interface {
 	Locals(fn func(sl FuseSLocal))
 	Register(path string, handler func(ctx FuseSContext))
+	Run(path string)
 }
 
 type FuseSLocal interface {

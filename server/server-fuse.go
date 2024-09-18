@@ -23,3 +23,7 @@ func FuseG(grpcPort int, routes func(router RouterG)) {
 func FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR)) {
 	serverImpl.FuseGR(grpcPort, grpcRoutes, restPort, restRoutes)
 }
+
+func FuseGS(port int, routes func(router RouterG), ws func(router RouterS)) {
+	serverImpl.FuseGS(port, routes, ws)
+}

@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/andypangaribuan/gmod/gm"
-	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
@@ -24,7 +23,7 @@ func (slf *stuServer) FuseRS(restPort int, routes func(router RouterR), ws func(
 	slf.fuseRS(restPort, routes, &ws)
 }
 
-func (*stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func(router RouterS)) {
+func (slf *stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func(router RouterS)) {
 	if gm.Net.IsPortUsed(restPort) {
 		fmt.Printf("fuse server [restful]: port %v already in use\n", restPort)
 		os.Exit(100)
@@ -74,32 +73,7 @@ func (*stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func(rou
 		}
 	}()
 
-	if ws != nil {
-		router := &stuFuseSRouter{
-			app:    fuseFiberApp,
-			locals: make(map[string]string, 0),
-		}
-
-		fuseFiberApp.Use("/ws", func(c *fiber.Ctx) error {
-			if websocket.IsWebSocketUpgrade(c) {
-				c.Locals("allowed", true)
-
-				for k, v := range router.locals {
-					c.Locals(k, string(c.Request().Header.Peek(v)))
-				}
-
-				return c.Next()
-			}
-
-			return fiber.ErrUpgradeRequired
-		})
-
-		(*ws)(router)
-		if router.fnLocals != nil {
-			sl := &stuFuseSLocal{router: router}
-			(*router.fnLocals)(sl)
-		}
-	}
+	slf.startWebsocket(fuseFiberApp, ws)
 
 	err := fuseFiberApp.Listen(fmt.Sprintf(":%v", restPort))
 	if err != nil {

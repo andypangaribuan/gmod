@@ -12,6 +12,7 @@ package server
 import (
 	"mime/multipart"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
@@ -92,6 +93,25 @@ type stuFuseSLocal struct {
 
 type stuFuseSContext struct {
 	conn *websocket.Conn
+}
+
+type stuFuseSRunClient struct {
+	ctx FuseSContext
+	uid string
+}
+
+type stuFuseSRunBroadcastMessage struct {
+	from    *stuFuseSRunClient
+	message string
+}
+
+type stuFuseSRunWebsocket struct {
+	register   chan *stuFuseSRunClient
+	unregister chan *stuFuseSRunClient
+	broadcast  chan *stuFuseSRunBroadcastMessage
+
+	mx      sync.Mutex
+	clients map[string]*stuFuseSRunClient
 }
 
 type stuFuseRMainContext struct {
