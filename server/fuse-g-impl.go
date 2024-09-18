@@ -10,5 +10,5 @@
 package server
 
 func (slf *stuServer) FuseG(grpcPort int, routes func(router RouterG)) {
-	slf.fuseGS(grpcPort, routes, nil)
+	slf.fuseGS(grpcPort, routes, 0, nil)
 }

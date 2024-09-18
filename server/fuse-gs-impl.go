@@ -21,19 +21,19 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (slf *stuServer) FuseGS(port int, routes func(router RouterG), ws func(router RouterS)) {
-	slf.fuseGS(port, routes, &ws)
+func (slf *stuServer) FuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPort int, wsRoutes func(router RouterS)) {
+	slf.fuseGS(grpcPort, grpcRoutes, wsPort, &wsRoutes)
 }
 
-func (slf *stuServer) fuseGS(port int, routes func(router RouterG), ws *func(router RouterS)) {
-	if gm.Net.IsPortUsed(port) {
-		fmt.Printf("fuse server [grpc]%v: port %v already in use\n", slf.logSpace, port)
+func (slf *stuServer) fuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPort int, wsRoutes *func(router RouterS)) {
+	if gm.Net.IsPortUsed(grpcPort) {
+		fmt.Printf("fuse server [grpc]     : port %v already in use\n", grpcPort)
 		os.Exit(100)
 	}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", grpcPort))
 	if err != nil {
-		fmt.Printf("fuse server [grpc]%v: failed to listen on port %v\n", slf.logSpace, port)
+		fmt.Printf("fuse server [grpc]     : failed to listen on port %v\n", grpcPort)
 		os.Exit(100)
 	}
 
@@ -60,7 +60,7 @@ func (slf *stuServer) fuseGS(port int, routes func(router RouterG), ws *func(rou
 		return router.server
 	}
 
-	routes(router)
+	grpcRoutes(router)
 
 	isListenFailed := false
 	go func() {
@@ -77,8 +77,8 @@ func (slf *stuServer) fuseGS(port int, routes func(router RouterG), ws *func(rou
 				break
 			}
 
-			if gm.Net.IsPortUsed(port) {
-				fmt.Printf("fuse server [grpc]%v: run at port %v\n", slf.logSpace, port)
+			if gm.Net.IsPortUsed(grpcPort) {
+				fmt.Printf("fuse server [grpc]     : run at port %v\n", grpcPort)
 				break
 			}
 
@@ -86,24 +86,60 @@ func (slf *stuServer) fuseGS(port int, routes func(router RouterG), ws *func(rou
 		}
 	}()
 
-	if ws != nil {
+	go slf.runWS(wsPort, wsRoutes, router.withAutoRecover)
+
+	err = router.server.Serve(listener)
+	if err != nil {
+		isListenFailed = true
+		fmt.Printf("fuse server [grpc]     : failed to listen on port %v\n", grpcPort)
+		os.Exit(100)
+	}
+}
+
+func (slf *stuServer) runWS(wsPort int, wsRoutes *func(router RouterS), withAutoRecover bool) {
+	if wsRoutes != nil {
 		fuseFiberApp = fiber.New(fiber.Config{
 			JSONEncoder:           gm.Json.Marshal,
 			JSONDecoder:           gm.Json.Unmarshal,
 			DisableStartupMessage: true,
 		})
 
-		if router.withAutoRecover {
+		if withAutoRecover {
 			fuseFiberApp.Use(recover.New())
 		}
 
-		slf.startWebsocket(fuseFiberApp, ws)
-	}
+		slf.startWebsocket(fuseFiberApp, wsRoutes)
 
-	err = router.server.Serve(listener)
-	if err != nil {
-		isListenFailed = true
-		fmt.Printf("fuse server [grpc]%v: failed to listen on port %v\n", slf.logSpace, port)
-		os.Exit(100)
+		isListenFailed := false
+		go func() {
+			tryCount := 0
+			maxTry := 30
+			time.Sleep(time.Millisecond * 100)
+
+			for {
+				if isListenFailed {
+					break
+				}
+
+				tryCount++
+				if tryCount > maxTry {
+					break
+				}
+
+				if gm.Net.IsPortUsed(wsPort) {
+					fmt.Printf("fuse server [websocket]: run at port %v\n", wsPort)
+					break
+				}
+
+				time.Sleep(time.Millisecond * 100)
+			}
+		}()
+
+		err := fuseFiberApp.Listen(fmt.Sprintf(":%v", wsPort))
+		if err != nil {
+			isListenFailed = true
+			fmt.Printf("fuse server [websocket]: failed to listen on port %v\n", wsPort)
+			os.Exit(100)
+		}
 	}
 }

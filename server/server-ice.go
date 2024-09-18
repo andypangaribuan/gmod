@@ -23,7 +23,7 @@ type server interface {
 	FuseR(restPort int, routes func(router RouterR))
 	FuseRS(restPort int, routes func(router RouterR), ws func(router RouterS))
 	FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRoutes func(router RouterR))
-	FuseGS(port int, routes func(router RouterG), ws func(router RouterS))
+	FuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPort int, wsRoutes func(router RouterS))
 }
 
 type RouterC interface {

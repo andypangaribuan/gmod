@@ -22,7 +22,7 @@ import (
 )
 
 type stuServer struct {
-	logSpace string
+	// logSpace string
 }
 
 type stuGrpcServerHandler struct {
