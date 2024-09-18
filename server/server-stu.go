@@ -101,7 +101,6 @@ type stuFuseSRunClient struct {
 }
 
 type stuFuseSRunBroadcastMessage struct {
-	from    *stuFuseSRunClient
 	message string
 }
 
@@ -112,6 +111,10 @@ type stuFuseSRunWebsocket struct {
 
 	mx      sync.Mutex
 	clients map[string]*stuFuseSRunClient
+}
+
+type stuFuseSRun struct {
+	sock *stuFuseSRunWebsocket
 }
 
 type stuFuseRMainContext struct {

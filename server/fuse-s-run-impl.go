@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func (slf *stuFuseSRouter) run(path string) {
+func (slf *stuFuseSRouter) run(path string) *stuFuseSRun {
 	sock := &stuFuseSRunWebsocket{
 		register:   make(chan *stuFuseSRunClient),
 		unregister: make(chan *stuFuseSRunClient),
@@ -45,12 +45,15 @@ func (slf *stuFuseSRouter) run(path string) {
 
 			if message != "" {
 				sock.broadcast <- &stuFuseSRunBroadcastMessage{
-					from:    clientObj,
 					message: message,
 				}
 			}
 		}
 	})
+
+	return &stuFuseSRun{
+		sock: sock,
+	}
 }
 
 func (slf *stuFuseSRunWebsocket) handler() {
@@ -132,5 +135,15 @@ func (slf *stuFuseSRunWebsocket) deleteClients(deletedClients []*stuFuseSRunClie
 	for _, client := range deletedClients {
 		delete(slf.clients, client.uid)
 		log.Printf("remove-client: %v\n", client.uid)
+	}
+}
+
+func (slf *stuFuseSRun) Broadcast(message string) {
+	if slf == nil || slf.sock == nil {
+		return
+	}
+
+	slf.sock.broadcast <- &stuFuseSRunBroadcastMessage{
+		message: message,
 	}
 }
