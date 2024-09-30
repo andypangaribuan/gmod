@@ -47,3 +47,5 @@ memlimit
 automemlimit
 vals
 gocron
+fasthttp
+logc
