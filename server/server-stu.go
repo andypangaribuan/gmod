@@ -96,11 +96,13 @@ type stuFuseSContext struct {
 }
 
 type stuFuseSRunClient struct {
-	ctx FuseSContext
-	uid string
+	ctx     FuseSContext
+	uid     string
+	userUid string
 }
 
 type stuFuseSRunBroadcastMessage struct {
+	userUid string
 	message string
 }
 

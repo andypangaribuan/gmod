@@ -61,11 +61,12 @@ type RouterG interface {
 type RouterS interface {
 	Locals(fn func(sl FuseSLocal))
 	Register(path string, handler func(ctx FuseSContext))
-	Run(path string, registerCondition *func(ctx FuseSContext) bool) FuseSRun
+	Run(path string, registerCondition *func(ctx FuseSContext) bool, userUidCondition *func(ctx FuseSContext) (ok bool, userUid string)) FuseSRun
 }
 
 type FuseSRun interface {
 	Broadcast(message string)
+	BroadcastUser(userUid string, message string)
 }
 
 type FuseSLocal interface {

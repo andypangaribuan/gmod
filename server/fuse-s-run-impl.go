@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func (slf *stuFuseSRouter) run(path string, registerCondition *func(ctx FuseSContext) bool) *stuFuseSRun {
+func (slf *stuFuseSRouter) run(path string, registerCondition *func(ctx FuseSContext) bool, userUidCondition *func(ctx FuseSContext) (ok bool, userUid string)) *stuFuseSRun {
 	sock := &stuFuseSRunWebsocket{
 		register:   make(chan *stuFuseSRunClient),
 		unregister: make(chan *stuFuseSRunClient),
@@ -37,22 +37,33 @@ func (slf *stuFuseSRouter) run(path string, registerCondition *func(ctx FuseSCon
 			return
 		}
 
+		if userUidCondition != nil {
+			ok, userUid := (*userUidCondition)(ctx)
+			if !ok {
+				ctx.Close()
+				return
+			}
+
+			clientObj.userUid = userUid
+		}
+
 		sock.register <- clientObj
 		defer func() {
 			sock.unregister <- clientObj
 		}()
 
 		for {
-			message, err := ctx.ReadMessage()
+			// message, err := ctx.ReadMessage()
+			_, err := ctx.ReadMessage()
 			if err != nil {
 				return
 			}
 
-			if message != "" {
-				sock.broadcast <- &stuFuseSRunBroadcastMessage{
-					message: message,
-				}
-			}
+			// if message != "" {
+			// 	sock.broadcast <- &stuFuseSRunBroadcastMessage{
+			// 		message: message,
+			// 	}
+			// }
 		}
 	})
 
@@ -106,6 +117,21 @@ func (slf *stuFuseSRunWebsocket) broadcastMessage(msg *stuFuseSRunBroadcastMessa
 		return
 	}
 
+	if msg.userUid != "" {
+		filtered := make(map[string]*stuFuseSRunClient, 0)
+		for k, c := range clients {
+			if c.userUid == msg.userUid {
+				filtered[k] = c
+			}
+		}
+
+		if len(filtered) == 0 {
+			return
+		}
+
+		clients = filtered
+	}
+
 	for _, client := range clients {
 		err := client.ctx.WriteMessage(msg.message)
 		if err != nil {
@@ -149,6 +175,17 @@ func (slf *stuFuseSRun) Broadcast(message string) {
 	}
 
 	slf.sock.broadcast <- &stuFuseSRunBroadcastMessage{
+		message: message,
+	}
+}
+
+func (slf *stuFuseSRun) BroadcastUser(userUid string, message string) {
+	if slf == nil || slf.sock == nil {
+		return
+	}
+
+	slf.sock.broadcast <- &stuFuseSRunBroadcastMessage{
+		userUid: userUid,
 		message: message,
 	}
 }
