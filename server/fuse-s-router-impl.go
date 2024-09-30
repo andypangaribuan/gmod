@@ -22,6 +22,6 @@ func (slf *stuFuseSRouter) Register(path string, handler func(ctx FuseSContext))
 	}))
 }
 
-func (slf *stuFuseSRouter) Run(path string) FuseSRun {
-	return slf.run(path)
+func (slf *stuFuseSRouter) Run(path string, registerCondition *func(ctx FuseSContext) bool) FuseSRun {
+	return slf.run(path, registerCondition)
 }

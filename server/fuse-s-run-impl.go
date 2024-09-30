@@ -16,7 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/gm"
 )
 
-func (slf *stuFuseSRouter) run(path string) *stuFuseSRun {
+func (slf *stuFuseSRouter) run(path string, registerCondition *func(ctx FuseSContext) bool) *stuFuseSRun {
 	sock := &stuFuseSRunWebsocket{
 		register:   make(chan *stuFuseSRunClient),
 		unregister: make(chan *stuFuseSRunClient),
@@ -30,6 +30,11 @@ func (slf *stuFuseSRouter) run(path string) *stuFuseSRun {
 		clientObj := &stuFuseSRunClient{
 			ctx: ctx,
 			uid: gm.Util.UID(),
+		}
+
+		if registerCondition != nil && !(*registerCondition)(ctx) {
+			ctx.Close()
+			return
 		}
 
 		sock.register <- clientObj

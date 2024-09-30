@@ -61,7 +61,7 @@ type RouterG interface {
 type RouterS interface {
 	Locals(fn func(sl FuseSLocal))
 	Register(path string, handler func(ctx FuseSContext))
-	Run(path string) FuseSRun
+	Run(path string, registerCondition *func(ctx FuseSContext) bool) FuseSRun
 }
 
 type FuseSRun interface {
