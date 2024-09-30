@@ -10,6 +10,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -17,7 +18,11 @@ import (
 	"github.com/fasthttp/websocket"
 )
 
-func WsStream(logc clog.Instance, addr string, header *map[string]string, callback func(logc clog.Instance, message string)) {
+func WsStream(logc clog.Instance, addr string, header *map[string]string, connectedMessage string, callback func(logc clog.Instance, message string)) {
+	go wsStream(logc, addr, header, connectedMessage, callback)
+}
+
+func wsStream(logc clog.Instance, addr string, header *map[string]string, connectedMessage string, callback func(logc clog.Instance, message string)) {
 	var (
 		err       error
 		conn      *websocket.Conn
@@ -38,6 +43,7 @@ func WsStream(logc clog.Instance, addr string, header *map[string]string, callba
 		for {
 			conn, _, err = dialer.Dial(addr, reqHeader)
 			if err == nil {
+				fmt.Println(connectedMessage)
 				break
 			}
 
