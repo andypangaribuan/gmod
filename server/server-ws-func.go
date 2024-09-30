@@ -15,11 +15,16 @@ import (
 	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/fm"
 	"github.com/fasthttp/websocket"
 )
 
-func WsStream(logc clog.Instance, addr string, header *map[string]string, connectedMessage string, callback func(logc clog.Instance, message string)) {
-	go wsStream(logc, addr, header, connectedMessage, callback)
+func WsStream(logc clog.Instance, addr string, header *map[string]string, connectedMessage string, callback func(logc clog.Instance, message string), async ...bool) {
+	if *fm.GetFirst(async, true) {
+		go wsStream(logc, addr, header, connectedMessage, callback)
+	} else {
+		wsStream(logc, addr, header, connectedMessage, callback)
+	}
 }
 
 func wsStream(logc clog.Instance, addr string, header *map[string]string, connectedMessage string, callback func(logc clog.Instance, message string)) {
