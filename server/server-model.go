@@ -19,7 +19,6 @@ type ResponseMeta struct {
 	SubCode     string `json:"sub_code,omitempty"`
 	Message     string `json:"message,omitempty"`
 	AppMessage  string `json:"app_message,omitempty"`
-	rawResponse bool   `json:"-"`
 }
 
 type ResponseOpt struct {
