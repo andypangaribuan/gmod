@@ -221,7 +221,7 @@ func sfrFetch(ctx server.FuseRContext) any {
 		}
 	}
 
-	return ctx.R200OK(users)
+	return ctx.R200OK(users, server.ResponseOpt{RawResponse: true})
 }
 
 func sfrInsert(ctx server.FuseRContext) any {
