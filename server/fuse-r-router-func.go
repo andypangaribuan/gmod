@@ -23,7 +23,7 @@ import (
 func (slf *stuFuseRRouter) register(endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) {
 	index := strings.Index(endpoint, ":")
 	if index == -1 {
-		log.Fatalln("fuse server [restful]: endpoint format must be ▶︎ {Method}: {path}")
+		log.Fatalln("fuse server [restful]  : endpoint format must be ▶︎ {Method}: {path}")
 	}
 
 	method := endpoint[0:index]
@@ -41,7 +41,7 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(FuseRRegulat
 	case "PAT":
 		slf.fiberApp.Patch(path, slf.restProcess(endpoint, regulator, handlers...))
 	default:
-		log.Fatalln("fuse server [restful]: only support method GET, POS, DEL, PUT or PAT")
+		log.Fatalln("fuse server [restful]  : only support method GET, POS, DEL, PUT or PAT")
 	}
 }
 
