@@ -15,10 +15,10 @@ type Response struct {
 }
 
 type ResponseMeta struct {
-	Code        int    `json:"code"`
-	SubCode     string `json:"sub_code,omitempty"`
-	Message     string `json:"message,omitempty"`
-	AppMessage  string `json:"app_message,omitempty"`
+	Code       int    `json:"code"`
+	SubCode    string `json:"sub_code,omitempty"`
+	Message    string `json:"message,omitempty"`
+	AppMessage string `json:"app_message,omitempty"`
 }
 
 type ResponseOpt struct {

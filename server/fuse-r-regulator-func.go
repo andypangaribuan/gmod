@@ -11,6 +11,7 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/andypangaribuan/gmod/fm"
@@ -100,6 +101,17 @@ func (slf *stuFuseRRegulator) send() error {
 		}
 
 		return ctx.JSON(slf.mcx.responseVal)
+	}
+
+	switch slf.currentHandlerContext.responseMeta.Code {
+	case http.StatusMovedPermanently, http.StatusTemporaryRedirect, http.StatusPermanentRedirect:
+		switch val := resVal.(type) {
+		case map[string]string:
+			url, ok := val["redirect"]
+			if ok {
+				return ctx.Redirect(url, slf.currentHandlerContext.responseMeta.Code)
+			}
+		}
 	}
 
 	switch val := resVal.(type) {
