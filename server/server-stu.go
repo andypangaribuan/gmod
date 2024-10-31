@@ -136,6 +136,7 @@ type stuFuseRMainContext struct {
 	responseVal  any
 	responseMeta ResponseMeta
 	responseRaw  bool
+	responseType *string
 	execPath     string
 	execFunc     string
 	errMessage   *string
@@ -155,6 +156,7 @@ type stuFuseRContext struct {
 	responseVal  any
 	responseMeta ResponseMeta
 	responseRaw  bool
+	responseType *string
 }
 
 type stuFuseRVal struct {

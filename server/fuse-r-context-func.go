@@ -27,6 +27,7 @@ func (slf *stuFuseRContext) setResponse(code int, val any, opt ...ResponseOpt) a
 		slf.responseMeta.AppMessage = opt[0].AppMessage
 
 		slf.responseRaw = opt[0].RawResponse
+		slf.responseType = opt[0].ResponseType
 	}
 
 	return nil
@@ -47,6 +48,7 @@ func (slf *stuFuseRContext) setErrResponse(code int, errMessage string, stackTra
 		slf.responseMeta.AppMessage = opt[0].AppMessage
 
 		slf.responseRaw = opt[0].RawResponse
+		slf.responseType = opt[0].ResponseType
 	}
 
 	return nil

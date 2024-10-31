@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/gofiber/fiber/v2"
 )
 
 func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted func(ctx FuseRContext, method, path, url string) any, opt ...FuseRCallOpt) (res any, meta ResponseMeta, raw bool) {
@@ -64,6 +65,7 @@ func (slf *stuFuseRRegulator) call(handler func(ctx FuseRContext) any, unrouted 
 	slf.mcx.responseVal = ctx.responseVal
 	slf.mcx.responseMeta = ctx.responseMeta
 	slf.mcx.responseRaw = ctx.responseRaw
+	slf.mcx.responseType = ctx.responseType
 
 	return ctx.responseVal, ctx.responseMeta, ctx.responseRaw
 }
@@ -103,14 +105,27 @@ func (slf *stuFuseRRegulator) send() error {
 		return ctx.JSON(slf.mcx.responseVal)
 	}
 
-	switch slf.currentHandlerContext.responseMeta.Code {
-	case http.StatusMovedPermanently, http.StatusTemporaryRedirect, http.StatusPermanentRedirect:
-		switch val := resVal.(type) {
-		case map[string]string:
+	switch val := resVal.(type) {
+	case map[string]string:
+		switch slf.currentHandlerContext.responseMeta.Code {
+		case http.StatusMovedPermanently, http.StatusTemporaryRedirect, http.StatusPermanentRedirect:
 			url, ok := val["redirect"]
 			if ok {
 				return ctx.Redirect(url, slf.currentHandlerContext.responseMeta.Code)
 			}
+
+		case http.StatusOK:
+			file, ok := val["download"]
+			if ok {
+				return ctx.Download(file)
+			}
+		}
+	}
+
+	if slf.currentHandlerContext.responseType != nil {
+		switch *slf.currentHandlerContext.responseType {
+		case "html":
+			ctx.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
 		}
 	}
 

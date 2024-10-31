@@ -79,6 +79,7 @@ func (slf *stuFuseRRegulator) Recover() {
 		slf.mcx.responseVal = slf.currentHandlerContext.responseVal
 		slf.mcx.responseMeta = slf.currentHandlerContext.responseMeta
 		slf.mcx.responseRaw = slf.currentHandlerContext.responseRaw
+		slf.mcx.responseType = slf.currentHandlerContext.responseType
 	}
 
 	_ = slf.send()

@@ -22,8 +22,9 @@ type ResponseMeta struct {
 }
 
 type ResponseOpt struct {
-	SubCode     string
-	Message     string
-	AppMessage  string
-	RawResponse bool
+	SubCode      string
+	Message      string
+	AppMessage   string
+	RawResponse  bool
+	ResponseType *string
 }
