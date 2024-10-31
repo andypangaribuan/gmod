@@ -111,12 +111,14 @@ func (slf *stuFuseRRegulator) send() error {
 		case http.StatusMovedPermanently, http.StatusTemporaryRedirect, http.StatusPermanentRedirect:
 			url, ok := val["redirect"]
 			if ok {
+				slf.setCustomHeader(ctx, val)
 				return ctx.Redirect(url, slf.currentHandlerContext.responseMeta.Code)
 			}
 
 		case http.StatusOK:
 			file, ok := val["download"]
 			if ok {
+				slf.setCustomHeader(ctx, val)
 				return ctx.Download(file)
 			}
 		}
@@ -142,5 +144,16 @@ func (slf *stuFuseRRegulator) send() error {
 		return ctx.JSON(val)
 	default:
 		return ctx.SendString("invalid response object")
+	}
+}
+
+func (slf *stuFuseRRegulator) setCustomHeader(ctx *fiber.Ctx, kvs map[string]string) {
+	for key, val := range kvs {
+		if len(key) > 7 && key[:7] == "header:" {
+			key = strings.TrimSpace(key[7:])
+			if key != "" {
+				ctx.Set(key, val)
+			}
+		}
 	}
 }
