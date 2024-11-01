@@ -105,6 +105,13 @@ func (slf *stuFuseRRegulator) send() error {
 		return ctx.JSON(slf.mcx.responseVal)
 	}
 
+	if slf.currentHandlerContext.responseType != nil {
+		switch *slf.currentHandlerContext.responseType {
+		case "html":
+			ctx.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
+		}
+	}
+
 	switch val := resVal.(type) {
 	case map[string]string:
 		switch slf.currentHandlerContext.responseMeta.Code {
@@ -121,13 +128,6 @@ func (slf *stuFuseRRegulator) send() error {
 				slf.setCustomHeader(ctx, val)
 				return ctx.Download(file)
 			}
-		}
-	}
-
-	if slf.currentHandlerContext.responseType != nil {
-		switch *slf.currentHandlerContext.responseType {
-		case "html":
-			ctx.Set(fiber.HeaderContentType, fiber.MIMETextHTML)
 		}
 	}
 
