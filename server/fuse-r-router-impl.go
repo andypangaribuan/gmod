@@ -70,3 +70,9 @@ func (slf *stuFuseRRouter) Endpoints(regulator func(regulator FuseRRegulator), a
 		slf.register(endpoint, regulator, ls...)
 	}
 }
+
+func (slf *stuFuseRRouter) Static(endpointPaths map[string]string) {
+	for endpoint, path := range endpointPaths {
+		slf.static(endpoint, path)
+	}
+}

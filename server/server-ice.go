@@ -50,6 +50,7 @@ type RouterR interface {
 	ErrorHandler(catcher func(ctx FuseRContext, err error) any)
 	NoLog(paths []string)
 	Endpoints(regulator func(regulator FuseRRegulator), auth func(FuseRContext) any, pathHandlers map[string][]func(FuseRContext) any)
+	Static(endpointPaths map[string]string)
 }
 
 type RouterG interface {
