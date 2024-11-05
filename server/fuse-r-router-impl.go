@@ -71,8 +71,8 @@ func (slf *stuFuseRRouter) Endpoints(regulator func(regulator FuseRRegulator), a
 	}
 }
 
-func (slf *stuFuseRRouter) Static(endpointPaths map[string]string) {
+func (slf *stuFuseRRouter) Static(endpointPaths map[string]string, config ...fiber.Static) {
 	for endpoint, path := range endpointPaths {
-		slf.static(endpoint, path)
+		slf.static(endpoint, path, config...)
 	}
 }

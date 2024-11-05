@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
 )
 
@@ -50,7 +51,7 @@ type RouterR interface {
 	ErrorHandler(catcher func(ctx FuseRContext, err error) any)
 	NoLog(paths []string)
 	Endpoints(regulator func(regulator FuseRRegulator), auth func(FuseRContext) any, pathHandlers map[string][]func(FuseRContext) any)
-	Static(endpointPaths map[string]string)
+	Static(endpointPaths map[string]string, config ...fiber.Static)
 }
 
 type RouterG interface {

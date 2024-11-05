@@ -45,8 +45,8 @@ func (slf *stuFuseRRouter) register(endpoint string, regulator func(FuseRRegulat
 	}
 }
 
-func (slf *stuFuseRRouter) static(endpoint string, path string) {
-	slf.fiberApp.Static(endpoint, path)
+func (slf *stuFuseRRouter) static(endpoint string, path string, config ...fiber.Static) {
+	slf.fiberApp.Static(endpoint, path, config...)
 }
 
 func (slf *stuFuseRRouter) restProcess(endpoint string, regulator func(FuseRRegulator), handlers ...func(FuseRContext) any) func(*fiber.Ctx) error {
