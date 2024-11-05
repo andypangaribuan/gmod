@@ -98,6 +98,8 @@ type FuseRContext interface {
 
 	GetHeader(key string, dval ...string) *string
 	GetClientIP() string
+	RouteMethod() string
+	RoutePath() string
 
 	ReqParser(header any, body any) error
 	ReqParserPQF(param any, query any, form any) error

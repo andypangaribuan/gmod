@@ -101,6 +101,14 @@ func (slf *stuFuseRContext) GetClientIP() string {
 	return slf.mcx.clientIP
 }
 
+func (slf *stuFuseRContext) RouteMethod() string {
+	return strings.ToLower(slf.mcx.fcx.Route().Method)
+}
+
+func (slf *stuFuseRContext) RoutePath() string {
+	return slf.mcx.fcx.Route().Path
+}
+
 func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 	if header != nil {
 		if slf.header == nil || len(*slf.header) == 0 {
