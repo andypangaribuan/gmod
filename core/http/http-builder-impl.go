@@ -264,11 +264,16 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 	}
 
 	var (
-		body       = resp.Body()
-		statusCode = resp.StatusCode()
+		body       []byte
+		statusCode int
 	)
 
-	if slf.enableTrace {
+	if resp != nil {
+		body = resp.Body()
+		statusCode = resp.StatusCode()
+	}
+
+	if resp != nil && slf.enableTrace {
 		ti := resp.Request.TraceInfo()
 		msg := `
 !! Response Info
