@@ -362,3 +362,52 @@ func (slf *stuUtil) StackTrace(skip ...int) string {
 
 	return strings.Join(lines, "\n")
 }
+
+func (slf *stuUtil) IsAllowedIp(clientIp string, allowedIps ...string) bool {
+	var (
+		authorized = false
+		clientIp1  = ""
+		clientIp2  = ""
+		clientIp3  = ""
+		clientIp4  = ""
+	)
+
+	ls := strings.Split(clientIp, ".")
+	for i, v := range ls {
+		switch i {
+		case 0:
+			clientIp1 = v
+		case 1:
+			clientIp2 = clientIp1 + "." + v
+		case 2:
+			clientIp3 = clientIp2 + "." + v
+		case 3:
+			clientIp4 = clientIp3 + "." + v
+		}
+	}
+
+	for _, ip := range allowedIps {
+		if ip == "*" {
+			authorized = true
+			break
+		}
+
+		length := len(strings.Split(ip, "."))
+		switch {
+		case length == 1 && clientIp1 == ip:
+			authorized = true
+		case length == 2 && clientIp2 == ip:
+			authorized = true
+		case length == 3 && clientIp3 == ip:
+			authorized = true
+		case length == 4 && clientIp4 == ip:
+			authorized = true
+		}
+
+		if authorized {
+			break
+		}
+	}
+
+	return authorized
+}

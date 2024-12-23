@@ -34,4 +34,5 @@ type Util interface {
 	ReflectionGet(obj any, fieldName string) (any, error)
 	ReflectionSet(obj any, bind map[string]any) error
 	StackTrace(skip ...int) string
+	IsAllowedIp(clientIp string, allowedIps ...string) bool
 }
