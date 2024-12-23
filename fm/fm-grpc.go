@@ -16,6 +16,7 @@ import (
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/peer"
 )
 
 func GrpcClient[T any](address string, fn func(cc grpc.ClientConnInterface) T) (T, error) {
@@ -105,6 +106,26 @@ func GrpcClientIp(ctx context.Context) (clientIp string) {
 				return v
 			}
 		}
+
+		vals = md.Get(":authority")
+		for _, v := range vals {
+			v = strings.ToLower(strings.TrimSpace(v))
+			if strings.Contains(v, ":") {
+				addr := strings.Split(v, ":")[0]
+				if addr == "localhost" || addr == "127.0.0.1" {
+					return "127.0.0.1"
+				}
+			}
+		}
+	}
+
+	p, ok := peer.FromContext(ctx)
+	if ok && p != nil {
+		addr := p.Addr.String()
+		if addr == "localhost" {
+			return "127.0.0.1"
+		}
+		return addr
 	}
 
 	return
