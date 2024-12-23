@@ -11,6 +11,7 @@ package fm
 
 import (
 	"context"
+	"strings"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/grpc"
@@ -84,4 +85,27 @@ func GrpcHeader(ctx context.Context) map[string]string {
 	}
 
 	return header
+}
+
+func GrpcClientIp(ctx context.Context) (clientIp string) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		vals := md.Get("cf-connecting-ip")
+		for _, v := range vals {
+			v = strings.TrimSpace(v)
+			if len(v) > 0 {
+				return v
+			}
+		}
+
+		vals = md.Get("x-original-forwarded-for")
+		for _, v := range vals {
+			v = strings.TrimSpace(v)
+			if len(v) > 0 {
+				return v
+			}
+		}
+	}
+
+	return
 }
