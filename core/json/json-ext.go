@@ -23,6 +23,7 @@ const dvalTimeFormat = "2006-01-02 15:04:05 -07:00"
 
 func init() {
 	api = configWithCustomTimeFormat
+	jsoniter.RegisterTypeEncoder("[]uint8", &uint8Enc{})
 
 	mainJsonCallback = func() {
 		val, err := gm.Util.ReflectionGet(gm.Conf, "timezone")
