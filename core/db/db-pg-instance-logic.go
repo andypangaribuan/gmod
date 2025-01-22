@@ -12,11 +12,14 @@ package db
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 
+	"github.com/andypangaribuan/gmod/fct"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mol"
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
@@ -72,6 +75,53 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any)
 
 func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mol.DbExecReportHost, insTx *pgInstanceTx, out any, query string, args []any) (err error) {
 	defer updateReportHost(conn, reportHost)
+
+	if _, ok := out.(*[]*map[string]any); ok {
+		var (
+			rows *sqlx.Rows
+			err  error
+			arr  = make([]*map[string]any, 0)
+		)
+		if insTx != nil {
+			rows, err = insTx.tx.Queryx(query, args...)
+		} else {
+			rows, err = conn.sx.Queryx(query, args...)
+		}
+
+		if err != nil {
+			return err
+		}
+
+		for rows.Next() {
+			kvs := make(map[string]any, 0)
+
+			err := rows.MapScan(kvs)
+			if err != nil {
+				_ = rows.Close()
+				return err
+			}
+
+			for key, val := range kvs {
+				switch v := val.(type) {
+				case []uint8:
+					fv, err := fct.New(string(v))
+					if err != nil {
+						_ = rows.Close()
+						return err
+					}
+
+					kvs[key] = fv
+				}
+			}
+
+			arr = append(arr, &kvs)
+		}
+
+		elem := reflect.ValueOf(out).Elem()
+		elem.Set(reflect.ValueOf(arr))
+
+		return err
+	}
 
 	if insTx != nil {
 		err = insTx.tx.Select(out, query, args...)

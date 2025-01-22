@@ -14,7 +14,8 @@ import "sort"
 const (
 	OrderedLevelRepo    = 2
 	OrderedLevelVDB     = 3
-	OrderedLevelHandler = 4
+	OrderedLevelXDB     = 4
+	OrderedLevelHandler = 5
 	OrderedLevelService = 9
 )
 

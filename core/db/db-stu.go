@@ -33,6 +33,10 @@ type stuVDB[T any] struct {
 	dvalSql map[string]string
 }
 
+type stuXDB struct {
+	ins ice.DbInstance
+}
+
 type stuConnection struct {
 	conf       *mol.DbConnection
 	sx         *sqlx.DB

@@ -43,6 +43,10 @@ type VDB[T any] interface {
 	TxFetches(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) ([]*T, error)
 }
 
+type XDB interface {
+	Select(logc clog.Instance, query string, args ...any) ([]*map[string]any, error)
+}
+
 type RepoOptBuilder interface {
 	WithDeletedAtIsNull(val ...bool) RepoOptBuilder
 	RWFetchWhenNull(val ...bool) RepoOptBuilder

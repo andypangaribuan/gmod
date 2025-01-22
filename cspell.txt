@@ -1,7 +1,12 @@
+andypangaribuan
+pangaribuan
+decompilation
+
 gmod
 unrouted
 linkname
 gofiber
+protoc
 dval
 sval
 sbox
@@ -49,3 +54,8 @@ vals
 gocron
 fasthttp
 logc
+queryx
+protoreflect
+protoimpl
+idxs
+extendee

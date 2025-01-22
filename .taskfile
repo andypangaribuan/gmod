@@ -28,6 +28,7 @@ function help {
 }
 
 
+
 #: update + check
 function run {
   go mod tidy
@@ -37,10 +38,23 @@ function run {
   staticcheck ./...
 }
 
+
+#: run cspell to check the project words
+function spell {
+  img=ghcr.io/streetsidesoftware/cspell:8.13.3
+  docker run --rm --platform linux/amd64 \
+    -v $PWD:/workdir $img \
+    . -u --quiet \
+    -e go.mod -e go.sum -e README.md -e LICENSE -e .taskfile \
+    -e "res/**" -e "grc/**" -e "test/**" -e "http-client/**" -e ".vscode/**"
+}
+
+
 #: space
+
 
 # ___ do not change ___
 case $1 in
-"") help ;;
-*) "$@" ;;
+  "") help ;;
+  *) "$@" ;;
 esac
