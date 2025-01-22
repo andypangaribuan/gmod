@@ -34,7 +34,8 @@ type stuVDB[T any] struct {
 }
 
 type stuXDB struct {
-	ins ice.DbInstance
+	ins             ice.DbInstance
+	rwFetchWhenNull bool
 }
 
 type stuConnection struct {
@@ -77,6 +78,10 @@ type stuUnsafe struct {
 	args    []any
 	message string
 	trace   string
+}
+
+type stuXdbOptBuilder struct {
+	rwFetchWhenNull *bool
 }
 
 type stuRepoOptBuilder struct {

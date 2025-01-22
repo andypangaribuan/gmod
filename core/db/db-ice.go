@@ -45,6 +45,16 @@ type VDB[T any] interface {
 
 type XDB interface {
 	Select(logc clog.Instance, query string, args ...any) ([]*map[string]any, error)
+	Execute(logc clog.Instance, query string, args ...any) error
+	ExecuteRID(logc clog.Instance, query string, args ...any) (*int64, error)
+
+	TxSelect(logc clog.Instance, tx ice.DbTx, query string, args ...any) ([]*map[string]any, error)
+	TxExecute(logc clog.Instance, tx ice.DbTx, query string, args ...any) error
+	TxExecuteRID(logc clog.Instance, tx ice.DbTx, query string, args ...any) (*int64, error)
+}
+
+type XdbOptBuilder interface {
+	RWFetchWhenNull(val ...bool) XdbOptBuilder
 }
 
 type RepoOptBuilder interface {

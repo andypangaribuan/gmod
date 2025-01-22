@@ -43,3 +43,40 @@ func (slf *stuXDB) fetches(tx ice.DbTx, query string, args []any) *stuRepoResult
 	report.execReport = execReport
 	return slf.result(report, err, nil, out)
 }
+
+func (slf *stuXDB) execute(tx ice.DbTx, rid bool, query string, args []any) *stuRepoResult[map[string]any] {
+	var (
+		report = &stuReport{
+			args:  slf.getArgs(args),
+			query: query,
+		}
+	)
+
+	var (
+		err        error
+		id         *int64
+		execReport *mol.DbExecReport
+	)
+
+	err = report.transform()
+	if err != nil {
+		return slf.result(report, err, nil, nil)
+	}
+
+	if tx != nil {
+		if rid {
+			id, execReport, err = slf.ins.TxExecuteRID(tx, query, args...)
+		} else {
+			execReport, err = slf.ins.TxExecute(tx, query, args...)
+		}
+	} else {
+		if rid {
+			id, execReport, err = slf.ins.ExecuteRID(query, args...)
+		} else {
+			execReport, err = slf.ins.Execute(query, args...)
+		}
+	}
+
+	report.execReport = execReport
+	return slf.result(report, err, id, nil)
+}

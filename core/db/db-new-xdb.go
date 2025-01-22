@@ -11,8 +11,20 @@ package db
 
 import "github.com/andypangaribuan/gmod/ice"
 
-func NewXDB(db ice.DbInstance) XDB {
-	return &stuXDB{
-		ins: db,
+func NewXDB(db ice.DbInstance, opt ...XdbOptBuilder) XDB {
+	stu := &stuXDB{
+		ins:             db,
+		rwFetchWhenNull: true,
 	}
+
+	for _, val := range opt {
+		v, ok := val.(*stuXdbOptBuilder)
+		if ok && v != nil {
+			if v.rwFetchWhenNull != nil {
+				stu.rwFetchWhenNull = *v.rwFetchWhenNull
+			}
+		}
+	}
+
+	return stu
 }

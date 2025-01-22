@@ -9,6 +9,10 @@
 
 package db
 
+func XdbOpt() XdbOptBuilder {
+	return new(stuXdbOptBuilder)
+}
+
 func RepoOpt() RepoOptBuilder {
 	return new(stuRepoOptBuilder)
 }

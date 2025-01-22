@@ -44,7 +44,7 @@ func (slf *stuRepo[T]) Insert(clog clog.Instance, e *T) error {
 }
 
 func (slf *stuRepo[T]) InsertRID(clog clog.Instance, e *T) (*int64, error) {
-	return slf.override(clog, slf.insert(nil, true, slf.insertColumnFunc(e))).insert()
+	return slf.override(clog, slf.insert(nil, true, slf.insertColumnFunc(e))).execute()
 }
 
 func (slf *stuRepo[T]) Update(clog clog.Instance, builder UpdateBuilder) error {
@@ -68,7 +68,7 @@ func (slf *stuRepo[T]) TxInsert(clog clog.Instance, tx ice.DbTx, e *T) error {
 }
 
 func (slf *stuRepo[T]) TxInsertRID(clog clog.Instance, tx ice.DbTx, e *T) (*int64, error) {
-	return slf.override(clog, slf.insert(tx, true, slf.insertColumnFunc(e))).insert()
+	return slf.override(clog, slf.insert(tx, true, slf.insertColumnFunc(e))).execute()
 }
 
 func (slf *stuRepo[T]) TxBulkInsert(clog clog.Instance, tx ice.DbTx, entities []*T, chunkSize ...int) error {
