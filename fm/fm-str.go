@@ -9,7 +9,10 @@
 
 package fm
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func TrimSpace(val *string) *string {
 	if val == nil {
@@ -82,4 +85,34 @@ func FindEmptyString(vals map[string]any) string {
 	}
 
 	return ""
+}
+
+func FindNil(keyVals map[string]any) string {
+	for key, val := range keyVals {
+		switch v := val.(type) {
+		case string:
+			continue
+
+		case *string:
+			if v == nil {
+				return key
+			}
+
+		default:
+			if fmt.Sprintf("%+v", val) == "<nil>" {
+				return key
+			}
+		}
+	}
+
+	return ""
+}
+
+func FindNilOrEmptyString(keyVals map[string]any) string {
+	keyNil := FindNil(keyVals)
+	if keyNil != "" {
+		return keyNil
+	}
+
+	return FindEmptyString(keyVals)
 }
