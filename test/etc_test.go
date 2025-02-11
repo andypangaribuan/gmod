@@ -27,7 +27,7 @@ func TestTimeFormat(t *testing.T) {
 
 	timenow := gm.Util.Timenow()
 	tmFull := gm.Conv.Time.ToStrFull(timenow)
-	tmDT := gm.Conv.Time.ToStrDT(timenow)
+	tmDT := gm.Conv.Time.ToStrDateTime(timenow)
 
 	t.Logf("full: %v\n", tmFull)
 	t.Logf("dt  : %v\n", tmDT)

@@ -28,7 +28,7 @@ func (slf *stuTest) Start(t *testing.T, fn func(t *testing.T)) {
 
 	defer func() {
 		durationMs := float64(time.Since(startedTime).Milliseconds())
-		timenow := gm.Conv.Time.ToStrDT(gm.Util.Timenow())
+		timenow := gm.Conv.Time.ToStrDateTime(gm.Util.Timenow())
 		switch {
 		case durationMs >= oneHour:
 			slf.printf(t, fmt.Sprintf("\n\n%v duration: %.2f h\n", timenow, durationMs/oneHour), false)
@@ -51,7 +51,7 @@ func (slf *stuTest) Printf(t *testing.T, format string, args ...any) {
 
 func (*stuTest) printf(t *testing.T, message string, usingLog bool) {
 	if t != nil {
-		t.Logf(message)
+		t.Log(message)
 	}
 
 	if usingLog {

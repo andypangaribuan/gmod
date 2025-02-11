@@ -24,7 +24,7 @@ import (
 func printLog(t *testing.T, format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
 	if t != nil {
-		t.Logf(message)
+		t.Log(message)
 	}
 	fmt.Print(message)
 }
@@ -63,9 +63,8 @@ func TestDecodeUid(t *testing.T) {
 		milliseconds = raw[14:20]
 	)
 
-	tn := fmt.Sprintf("%v-%v-%v %v:%v:%v.%v", year, month, day, hour, minute, second, milliseconds)
-	printLog(t, tn)
-	assert.Equal(t, "2024-03-28 16:00:01.108160", tn)
+	printLog(t, "%v-%v-%v %v:%v:%v.%v", year, month, day, hour, minute, second, milliseconds)
+	assert.Equal(t, "2024-03-28 16:00:01.108160", fmt.Sprintf("%v-%v-%v %v:%v:%v.%v", year, month, day, hour, minute, second, milliseconds))
 }
 
 func decodeUidL3(uid string, chunk ...int) (string, error) {

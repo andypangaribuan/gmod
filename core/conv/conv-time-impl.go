@@ -21,19 +21,27 @@ func (slf *stuConvTime) ToStrFull(val time.Time) string {
 	return slf.toStr(val, layoutFull)
 }
 
-func (slf *stuConvTime) ToStrDT(val time.Time) string {
+func (slf *stuConvTime) ToStrDateTime(val time.Time) string {
 	return slf.toStr(val, layoutDT)
+}
+
+func (slf *stuConvTime) ToStrDate(val time.Time) string {
+	return slf.toStr(val, layoutD)
+}
+
+func (slf *stuConvTime) ToStr(val time.Time, layout string) string {
+	return slf.toStr(val, layout)
 }
 
 func (slf *stuConvTime) ToTimeFull(val string) (*time.Time, error) {
 	return slf.toTime(val, layoutFull)
 }
 
-func (slf *stuConvTime) ToTimeDT(val string) (*time.Time, error) {
+func (slf *stuConvTime) ToTimeDateTime(val string) (*time.Time, error) {
 	return slf.toTime(val, layoutDT)
 }
 
-func (slf *stuConvTime) ToTimeD(val string) (*time.Time, error) {
+func (slf *stuConvTime) ToTimeDate(val string) (*time.Time, error) {
 	return slf.toTime(val, layoutD)
 }
 

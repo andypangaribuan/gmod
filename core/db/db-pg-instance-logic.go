@@ -165,7 +165,7 @@ func (slf *pgInstance) onUnsafe(unsafe *stuUnsafe) {
 
 	if printUnsafeLog {
 		log.Printf("[%v] db unsafe select\nmessage: %v\nquery: %v\nargs: %v\ntrace: %v\n",
-			gm.Conv.Time.ToStrDT(gm.Util.Timenow()),
+			gm.Conv.Time.ToStrDateTime(gm.Util.Timenow()),
 			unsafe.message,
 			unsafe.query,
 			unsafe.args,
