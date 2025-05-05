@@ -31,11 +31,13 @@ type stuRepo[T any] struct {
 type stuVDB[T any] struct {
 	ins     ice.DbInstance
 	dvalSql map[string]string
+	usingRW bool
 }
 
 type stuXDB struct {
 	ins             ice.DbInstance
 	rwFetchWhenNull bool
+	usingRW         bool
 }
 
 type stuConnection struct {

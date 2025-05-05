@@ -60,7 +60,7 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 		if tx != nil {
 			execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 		} else {
-			usingRW := false
+			usingRW := slf.isUsingRW(args)
 			execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
 		}
 		rows = &out
@@ -68,7 +68,7 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 		if tx != nil {
 			execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 		} else {
-			usingRW := false
+			usingRW := slf.isUsingRW(args)
 			execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
 		}
 	}

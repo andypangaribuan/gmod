@@ -36,7 +36,7 @@ func (slf *stuXDB) fetches(tx ice.DbTx, query string, args []any) *stuRepoResult
 	if tx != nil {
 		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
 	} else {
-		usingRW := false
+		usingRW := slf.isUsingRW(args)
 		execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
 	}
 

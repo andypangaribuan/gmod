@@ -15,6 +15,22 @@ import (
 	"github.com/andypangaribuan/gmod/clog"
 )
 
+func (slf *stuVDB[T]) isUsingRW(args []any) bool {
+	usingRW := slf.usingRW
+
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.usingRW != nil {
+				usingRW = *v.usingRW
+			}
+		}
+	}
+
+	return usingRW
+}
+
 func (slf *stuVDB[T]) getFunc(typ string, args []any) any {
 	for _, arg := range args {
 		switch val := arg.(type) {

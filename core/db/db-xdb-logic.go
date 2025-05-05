@@ -11,6 +11,22 @@ package db
 
 import "github.com/andypangaribuan/gmod/clog"
 
+func (slf *stuXDB) isUsingRW(args []any) bool {
+	usingRW := slf.usingRW
+
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.usingRW != nil {
+				usingRW = *v.usingRW
+			}
+		}
+	}
+
+	return usingRW
+}
+
 func (slf *stuXDB) getArgs(args []any) []any {
 	filtered := make([]any, 0)
 
