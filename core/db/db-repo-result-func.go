@@ -20,6 +20,10 @@ func (slf *stuRepoResult[T]) fetches() ([]*T, error) {
 }
 
 func (slf *stuRepoResult[T]) selectX() ([]map[string]any, error) {
+	if slf.rows == nil {
+		return []map[string]any{}, slf.err
+	}
+
 	return *slf.rows, slf.err
 }
 
