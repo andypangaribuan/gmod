@@ -38,6 +38,7 @@ type VDB[T any] interface {
 
 	Fetch(clog clog.Instance, sqlName string, args ...any) (*T, error)
 	Fetches(clog clog.Instance, sqlName string, args ...any) ([]*T, error)
+	Select(clog clog.Instance, sqlName string, args ...any) ([]map[string]any, error)
 
 	TxFetch(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) (*T, error)
 	TxFetches(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) ([]*T, error)

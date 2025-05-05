@@ -76,11 +76,11 @@ func (slf *pgInstance) execute(rid bool, tx ice.DbTx, query string, args ...any)
 func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mol.DbExecReportHost, insTx *pgInstanceTx, out any, query string, args []any) (err error) {
 	defer updateReportHost(conn, reportHost)
 
-	if _, ok := out.(*[]*map[string]any); ok {
+	if _, ok := out.(*[]map[string]any); ok {
 		var (
 			rows *sqlx.Rows
 			err  error
-			arr  = make([]*map[string]any, 0)
+			arr  = make([]map[string]any, 0)
 		)
 		if insTx != nil {
 			rows, err = insTx.tx.Queryx(query, args...)
@@ -114,7 +114,7 @@ func (slf *pgInstance) execSelect(conn *stuConnection, reportHost *mol.DbExecRep
 				}
 			}
 
-			arr = append(arr, &kvs)
+			arr = append(arr, kvs)
 		}
 
 		elem := reflect.ValueOf(out).Elem()

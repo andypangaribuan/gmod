@@ -59,6 +59,7 @@ type pgInstanceTx struct {
 
 type stuRepoResult[T any] struct {
 	entities []*T
+	rows     *[]map[string]any
 	id       *int64
 	report   *stuReport
 	err      error

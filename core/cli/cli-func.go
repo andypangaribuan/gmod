@@ -8,10 +8,10 @@
  * All Rights Reserved.
  */
 
-package ice
+package cli
 
-type Cli interface {
-	FindSingleArg(command *string, key string) bool
-	GetFirstArg(command *string) string
-	GetFirstArgAsDate(command *string, format ...string) string
+import "slices"
+
+func sliceRemove[T any](slice []T, index int) []T {
+	return slices.Delete(slice, index, index+1)
 }

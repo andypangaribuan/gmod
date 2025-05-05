@@ -17,7 +17,7 @@ import (
 	"github.com/andypangaribuan/gmod/mol"
 )
 
-func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args []any) *stuRepoResult[T] {
+func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args []any, isSelect bool) *stuRepoResult[T] {
 	var (
 		endQuery  = strings.TrimSpace(slf.getQuery("end-query", args) + fm.Ternary(isLimitOne, " LIMIT 1", ""))
 		fullQuery = slf.getQuery("full-query", args)
@@ -46,21 +46,33 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 	var (
 		err        error
 		out        []*T
+		rows       *[]map[string]any
 		execReport *mol.DbExecReport
 	)
 
 	err = report.transform()
 	if err != nil {
-		return slf.result(report, err, nil, nil)
+		return slf.result(report, err, nil, nil, nil)
 	}
 
-	if tx != nil {
-		execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
+	if isSelect {
+		var out []map[string]any
+		if tx != nil {
+			execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
+		} else {
+			usingRW := false
+			execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
+		}
+		rows = &out
 	} else {
-		usingRW := false
-		execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
+		if tx != nil {
+			execReport, err = slf.ins.TxSelect(tx, &out, report.query, report.args...)
+		} else {
+			usingRW := false
+			execReport, err = slf.ins.Select(&out, usingRW, report.query, report.args...)
+		}
 	}
 
 	report.execReport = execReport
-	return slf.result(report, err, nil, out)
+	return slf.result(report, err, nil, out, rows)
 }

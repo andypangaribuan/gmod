@@ -19,17 +19,21 @@ func (slf *stuVDB[T]) Sql(sqlName string) string {
 }
 
 func (slf *stuVDB[T]) Fetch(clog clog.Instance, sqlName string, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, nil, sqlName, args)).fetch()
+	return slf.override(clog, slf.fetches(true, nil, sqlName, args, false)).fetch()
 }
 
 func (slf *stuVDB[T]) Fetches(clog clog.Instance, sqlName string, args ...any) ([]*T, error) {
-	return slf.override(clog, slf.fetches(false, nil, sqlName, args)).fetches()
+	return slf.override(clog, slf.fetches(false, nil, sqlName, args, false)).fetches()
+}
+
+func (slf *stuVDB[T]) Select(clog clog.Instance, sqlName string, args ...any) ([]map[string]any, error) {
+	return slf.override(clog, slf.fetches(false, nil, sqlName, args, true)).selectX()
 }
 
 func (slf *stuVDB[T]) TxFetch(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) (*T, error) {
-	return slf.override(clog, slf.fetches(true, tx, sqlName, args)).fetch()
+	return slf.override(clog, slf.fetches(true, tx, sqlName, args, false)).fetch()
 }
 
 func (slf *stuVDB[T]) TxFetches(clog clog.Instance, tx ice.DbTx, sqlName string, args ...any) ([]*T, error) {
-	return slf.override(clog, slf.fetches(false, tx, sqlName, args)).fetches()
+	return slf.override(clog, slf.fetches(false, tx, sqlName, args, false)).fetches()
 }

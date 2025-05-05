@@ -73,12 +73,13 @@ func (slf *stuVDB[T]) getArgs(args []any) []any {
 	return filtered
 }
 
-func (slf *stuVDB[T]) result(report *stuReport, err error, id *int64, entities []*T) *stuRepoResult[T] {
+func (slf *stuVDB[T]) result(report *stuReport, err error, id *int64, entities []*T, rows *[]map[string]any) *stuRepoResult[T] {
 	return &stuRepoResult[T]{
 		report:   report,
 		err:      err,
 		id:       id,
 		entities: entities,
+		rows:     rows,
 	}
 }
 

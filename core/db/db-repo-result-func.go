@@ -19,6 +19,10 @@ func (slf *stuRepoResult[T]) fetches() ([]*T, error) {
 	return slf.entities, slf.err
 }
 
+func (slf *stuRepoResult[T]) selectX() ([]map[string]any, error) {
+	return *slf.rows, slf.err
+}
+
 func (slf *stuRepoResult[T]) execute() (*int64, error) {
 	return slf.id, slf.err
 }

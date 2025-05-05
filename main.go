@@ -16,6 +16,7 @@ import (
 	_ "github.com/andypangaribuan/gmod/gm"
 
 	_ "github.com/andypangaribuan/gmod/core/box"
+	_ "github.com/andypangaribuan/gmod/core/cli"
 	_ "github.com/andypangaribuan/gmod/core/conf"
 	_ "github.com/andypangaribuan/gmod/core/conv"
 	_ "github.com/andypangaribuan/gmod/core/crypto"
