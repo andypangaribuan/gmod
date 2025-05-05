@@ -67,11 +67,7 @@ func (slf *stuServer) fuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPo
 		tryCount := 0
 		maxTry := 30
 
-		for {
-			if isListenFailed {
-				break
-			}
-
+		for !isListenFailed {
 			tryCount++
 			if tryCount > maxTry {
 				break
@@ -116,11 +112,7 @@ func (slf *stuServer) runWS(wsPort int, wsRoutes *func(router RouterS), withAuto
 			maxTry := 30
 			time.Sleep(time.Millisecond * 100)
 
-			for {
-				if isListenFailed {
-					break
-				}
-
+			for !isListenFailed {
 				tryCount++
 				if tryCount > maxTry {
 					break

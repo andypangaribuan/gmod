@@ -108,7 +108,9 @@ func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...any) (sql.R
 			if err != nil {
 				return nil, err
 			}
-			defer stmt.Close()
+			defer func() {
+				_ = stmt.Close()
+			}()
 
 			res, err := stmt.Exec(args...)
 			return res, err
@@ -119,7 +121,9 @@ func (slf *stuConnection) execute(tx ice.DbTx, query string, args ...any) (sql.R
 	if err != nil {
 		return nil, err
 	}
-	defer stmt.Close()
+	defer func() {
+		_ = stmt.Close()
+	}()
 
 	res, err := stmt.Exec(args...)
 	return res, err
@@ -135,7 +139,9 @@ func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...any) (*i
 			if err != nil {
 				return nil, slf.conf.Host, err
 			}
-			defer stmt.Close()
+			defer func() {
+				_ = stmt.Close()
+			}()
 
 			var id *int64
 			err = stmt.QueryRow(args...).Scan(&id)
@@ -151,7 +157,9 @@ func (slf *stuConnection) executeRID(tx ice.DbTx, query string, args ...any) (*i
 	if err != nil {
 		return nil, slf.conf.Host, err
 	}
-	defer stmt.Close()
+	defer func() {
+		_ = stmt.Close()
+	}()
 
 	var id *int64
 	err = stmt.QueryRow(args...).Scan(&id)

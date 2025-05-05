@@ -94,10 +94,7 @@ func l3uidGenerate() ([]string, map[string]string, map[string]string) {
 }
 
 func l3uidAddZero(length int, v string) string {
-	for {
-		if len(v) >= length {
-			break
-		}
+	for len(v) < length {
 		v = "0" + v
 	}
 
@@ -128,11 +125,7 @@ func l3uidSplitter(uid string) ([]string, error) {
 	}
 
 	uids := make([]string, 0)
-	for {
-		if uid == "" {
-			break
-		}
-
+	for uid != "" {
 		length := len(uid)
 		size := fm.Ternary(length >= 3, 3, length)
 		uids = append(uids, uid[:size])

@@ -50,7 +50,8 @@ func (slf *stuConvTime) toTime(val string, layout string) (*time.Time, error) {
 
 func (slf *stuConvTime) replace(layout string) string {
 	for _, arr := range timeReplacer {
-		layout = strings.Replace(layout, arr[0], arr[1], -1)
+		layout = strings.ReplaceAll(layout, arr[0], arr[1])
 	}
+
 	return layout
 }

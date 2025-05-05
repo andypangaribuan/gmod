@@ -57,11 +57,7 @@ func getString(deci decimal.Decimal) (string, string) {
 	ls := strings.Split(v2, ".")
 	if len(ls) > 1 {
 		decimalValue := ls[1]
-		for {
-			if len(decimalValue) == 0 {
-				break
-			}
-
+		for len(decimalValue) != 0 {
 			if decimalValue[len(decimalValue)-1:] == "0" {
 				decimalValue = decimalValue[:len(decimalValue)-1]
 			} else {

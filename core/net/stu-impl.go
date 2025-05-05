@@ -41,7 +41,9 @@ func (*stuNet) IsPortUsed(port int, host ...string) bool {
 	}
 
 	if conn != nil {
-		defer conn.Close()
+		defer func() {
+			_ = conn.Close()
+		}()
 		return true
 	}
 
@@ -107,7 +109,7 @@ func (*stuNet) GrpcConnection(address string, opt ...mol.NetOpt) (grpc.ClientCon
 	if err != nil {
 		return nil, err
 	}
-	c.Close()
+	_ = c.Close()
 
 	return conn, nil
 }

@@ -175,7 +175,9 @@ func (*stuUtil) ReadTextFile(filePath string) ([]string, error) {
 		return nil, err
 	}
 
-	defer readFile.Close()
+	defer func() {
+		_ = readFile.Close()
+	}()
 
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)

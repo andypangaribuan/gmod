@@ -54,11 +54,7 @@ func (slf *stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func
 		maxTry := 30
 		time.Sleep(time.Millisecond * 100)
 
-		for {
-			if isListenFailed {
-				break
-			}
-
+		for !isListenFailed {
 			tryCount++
 			if tryCount > maxTry {
 				break

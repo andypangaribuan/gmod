@@ -20,6 +20,7 @@ var iceGM ice.GM
 
 var (
 	Box    ice.Box
+	Cli    ice.Cli
 	Conf   ice.Conf
 	Conv   *stuConv
 	Crypto ice.Crypto

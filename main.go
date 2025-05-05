@@ -37,6 +37,7 @@ var (
 	iceGM ice.GM
 
 	iceBox      ice.Box
+	iceCli      ice.Cli
 	iceConf     ice.Conf
 	iceConv     ice.Conv
 	iceConvTime ice.ConvTime
@@ -100,6 +101,7 @@ func init() {
 
 	iceGM.
 		SetBox(iceBox).
+		SetCli(iceCli).
 		SetConf(iceConf).
 		SetConv(iceConv, iceConvTime).
 		SetCrypto(iceCrypto).
