@@ -10,20 +10,23 @@
 
 package fm
 
-import "reflect"
+import (
+	"slices"
+	"sort"
+)
 
-func IsNil(val any) bool {
-	if val == nil {
-		return true
+func SliceRemove[T any](slice []T, index ...int) []T {
+	if len(index) == 0 {
+		return slice
 	}
 
-	v := reflect.ValueOf(val)
-	k := v.Kind()
-	switch k {
-	case reflect.Chan, reflect.Func, reflect.Map, reflect.Pointer,
-		reflect.UnsafePointer, reflect.Interface, reflect.Slice:
-		return v.IsNil()
+	sort.Slice(index, func(i, j int) bool {
+		return index[i] > index[j]
+	})
+
+	for _, idx := range index {
+		slice = slices.Delete(slice, idx, idx+1)
 	}
 
-	return false
+	return slice
 }

@@ -10,7 +10,11 @@
 
 package cli
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/andypangaribuan/gmod/fm"
+)
 
 func cmdLs(command *string) []string {
 	if command == nil {
@@ -27,7 +31,7 @@ func cmdRemoveAtIndex(command *string, index int) {
 
 	ls := cmdLs(command)
 	if len(ls) >= index+1 {
-		*command = strings.Join(sliceRemove(ls, index), " ")
+		*command = strings.Join(fm.SliceRemove(ls, index), " ")
 	}
 }
 
