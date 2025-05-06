@@ -42,12 +42,12 @@ func (slf *stuXDB) getArgs(args []any) []any {
 	return filtered
 }
 
-func (slf *stuXDB) result(report *stuReport, err error, id *int64, entities []*map[string]any) *stuRepoResult[map[string]any] {
+func (slf *stuXDB) result(report *stuReport, err error, id *int64, rows []map[string]any) *stuRepoResult[map[string]any] {
 	return &stuRepoResult[map[string]any]{
-		report:   report,
-		err:      err,
-		id:       id,
-		entities: entities,
+		report: report,
+		err:    err,
+		id:     id,
+		rows:   &rows,
 	}
 }
 

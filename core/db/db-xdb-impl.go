@@ -14,8 +14,8 @@ import (
 	"github.com/andypangaribuan/gmod/ice"
 )
 
-func (slf *stuXDB) Select(logc clog.Instance, query string, args ...any) ([]*map[string]any, error) {
-	return slf.override(logc, slf.fetches(nil, query, args)).fetches()
+func (slf *stuXDB) Select(logc clog.Instance, query string, args ...any) ([]map[string]any, error) {
+	return slf.override(logc, slf.fetches(nil, query, args)).selectX()
 }
 
 func (slf *stuXDB) Execute(logc clog.Instance, query string, args ...any) error {
@@ -26,8 +26,8 @@ func (slf *stuXDB) ExecuteRID(logc clog.Instance, query string, args ...any) (*i
 	return slf.override(logc, slf.execute(nil, true, query, args)).execute()
 }
 
-func (slf *stuXDB) TxSelect(logc clog.Instance, tx ice.DbTx, query string, args ...any) ([]*map[string]any, error) {
-	return slf.override(logc, slf.fetches(tx, query, args)).fetches()
+func (slf *stuXDB) TxSelect(logc clog.Instance, tx ice.DbTx, query string, args ...any) ([]map[string]any, error) {
+	return slf.override(logc, slf.fetches(tx, query, args)).selectX()
 }
 
 func (slf *stuXDB) TxExecute(logc clog.Instance, tx ice.DbTx, query string, args ...any) error {
