@@ -14,9 +14,11 @@ import (
 	"strings"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/ice"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/peer"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func GrpcClient[T any](address string, fn func(cc grpc.ClientConnInterface) T) (T, error) {
@@ -129,4 +131,39 @@ func GrpcClientIp(ctx context.Context) (clientIp string) {
 	}
 
 	return
+}
+
+func GrpcExec[RQ any, RS any](destination string, ctx context.Context, req *RQ, exec func(send ice.GrpcSender[RS], logc clog.Instance, req *RQ) (*RS, error), onError func(code *wrapperspb.StringValue, message *wrapperspb.StringValue) *RS) (*RS, error) {
+	var (
+		header = GrpcHeader(ctx)
+		logc   = clog.New(header)
+		send   = GrpcSender(destination, logc, req, header, onError)
+	)
+
+	return exec(send, logc, req)
+}
+
+func GrpcSender[RQ any, RS any](destination string, logc clog.Instance, req *RQ, header map[string]string, getErrResponse func(code *wrapperspb.StringValue, message *wrapperspb.StringValue) *RS) ice.GrpcSender[RS] {
+	return &stuGrpcSender[RQ, RS]{
+		destination:    destination,
+		logc:           logc,
+		header:         header,
+		req:            req,
+		getErrResponse: getErrResponse,
+	}
+}
+
+func (slf *stuGrpcSender[RQ, RS]) Error(code string, err error) (*RS, error) {
+	var (
+		errCode    = PbwString(&code)
+		errMessage = TernaryR(err == nil, nil, func() *wrapperspb.StringValue { return PbwString(Ptr(err.Error())) })
+	)
+
+	logcSaveGrpcError(slf.destination, slf.logc, slf.req, slf.header, code, err)
+	return slf.getErrResponse(errCode, errMessage), nil
+}
+
+func (slf *stuGrpcSender[RQ, RS]) Success(result *RS) (*RS, error) {
+	logcSaveGrpcResponse(slf.destination, slf.logc, slf.req, slf.header, result)
+	return result, nil
 }
