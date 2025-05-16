@@ -91,6 +91,20 @@ func getEnvVal(key string) string {
 		value = strings.TrimSpace(os.Getenv(key))
 	}
 
+	switch {
+	case strings.Contains(value, " #> "):
+		ls := strings.Split(value, " #> ")
+		value = strings.TrimSpace(ls[0])
+
+	case strings.Contains(value, " ## "):
+		ls := strings.Split(value, " ## ")
+		value = strings.TrimSpace(ls[0])
+
+	case strings.Contains(value, " ### "):
+		ls := strings.Split(value, " ### ")
+		value = strings.TrimSpace(ls[0])
+	}
+
 	return value
 }
 
