@@ -31,13 +31,13 @@ func (slf *stuTest) Start(t *testing.T, fn func(t *testing.T)) {
 		timenow := gm.Conv.Time.ToStrDateTime(gm.Util.Timenow())
 		switch {
 		case durationMs >= oneHour:
-			slf.printf(t, fmt.Sprintf("\n\n%v duration: %.2f h\n", timenow, durationMs/oneHour), false)
+			slf.printf(fmt.Sprintf("\n%v duration: %.2f h\n\n\n", timenow, durationMs/oneHour), false)
 		case durationMs >= 3*oneMinute:
-			slf.printf(t, fmt.Sprintf("\n\n%v duration: %.2f m\n", timenow, durationMs/oneMinute), false)
+			slf.printf(fmt.Sprintf("\n%v duration: %.2f m\n\n\n", timenow, durationMs/oneMinute), false)
 		case durationMs >= oneSecond:
-			slf.printf(t, fmt.Sprintf("\n\n%v duration: %.2f s\n", timenow, durationMs/oneSecond), false)
+			slf.printf(fmt.Sprintf("\n%v duration: %.2f s\n\n\n", timenow, durationMs/oneSecond), false)
 		default:
-			slf.printf(t, fmt.Sprintf("\n\n%v duration: %v ms\n", timenow, int64(durationMs)), false)
+			slf.printf(fmt.Sprintf("\n%v duration: %v ms\n\n\n", timenow, int64(durationMs)), false)
 		}
 	}()
 
@@ -46,12 +46,18 @@ func (slf *stuTest) Start(t *testing.T, fn func(t *testing.T)) {
 
 func (slf *stuTest) Printf(t *testing.T, format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
-	slf.printf(t, message, true)
+	slf.printf(message, true)
 }
 
-func (*stuTest) printf(t *testing.T, message string, usingLog bool) {
-	if t != nil {
-		t.Log(message)
+func (*stuTest) printf(message string, usingLog bool) {
+	newLines := ""
+	for len(message) > 0 && message[:1] == "\n" {
+		newLines += "\n"
+		message = message[1:]
+	}
+
+	if newLines != "" {
+		fmt.Print(newLines)
 	}
 
 	if usingLog {
