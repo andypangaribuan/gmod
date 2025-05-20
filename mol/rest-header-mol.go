@@ -18,6 +18,8 @@ type RequestHeader struct {
 	Version       string `json:"X-Version"`
 	HashKey       string `json:"X-HashKey"`
 	UserHashId    string `json:"X-UserHashId"`
+	Platform      string `json:"X-Platform"`
+	AppVersion    string `json:"X-App-Version"`
 	RFTimeRaw     string `json:"X-RFTime"` // supported format: "2006-01-02T15:04:05+07:00" or "2006-01-02 15:04:05+07:00"
 	RFTime        *time.Time
 }

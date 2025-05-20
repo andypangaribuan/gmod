@@ -190,6 +190,10 @@ func (slf *stuFuseRContext) LastResponse() (val any, meta ResponseMeta) {
 	return slf.mcx.responseVal, slf.mcx.responseMeta
 }
 
+func (slf *stuFuseRContext) RXX(code int, val any, opt ...ResponseOpt) any {
+	return slf.setResponse(code, val, opt...)
+}
+
 func (slf *stuFuseRContext) R200OK(val any, opt ...ResponseOpt) any {
 	return slf.setResponse(200, val, opt...)
 }

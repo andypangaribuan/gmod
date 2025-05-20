@@ -107,6 +107,7 @@ type FuseRContext interface {
 
 	LastResponse() (val any, meta ResponseMeta)
 
+	RXX(code int, val any, opt ...ResponseOpt) any
 	R200OK(val any, opt ...ResponseOpt) any
 	R201Created(val any, opt ...ResponseOpt) any
 	R202Accepted(val any, opt ...ResponseOpt) any
