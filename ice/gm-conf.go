@@ -16,6 +16,7 @@ type Conf interface {
 	SetTimezone(timezone string) Conf
 	SetClogAddress(address string, svcName string, svcVersion string) Conf
 	SetClogRetryMaxDuration(duration time.Duration) Conf
+	SetClogMaxConcurrentPusher(maxConcurrentPusher int) Conf
 	SetInternalBaseUrls(urls []string) Conf
 
 	// address "-" means no engine, so all the feature will success every time, used when on development

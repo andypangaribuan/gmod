@@ -10,5 +10,6 @@
 package clog
 
 func init() {
+	queue = make(map[string]*stuQueue, 0)
 	xinit()
 }

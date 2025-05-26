@@ -31,6 +31,9 @@ func reflection(key string, arg ...any) []any {
 
 	case "mrf-util-get-exec-path-func":
 		return rx(iceUtil.GetExecPathFunc(arg[0].(int)))
+
+	case "mrf-util-concurrent-process":
+		iceUtil.ConcurrentProcess(arg[0].(int), arg[1].(int), arg[2].(func(index int)))
 	}
 
 	return rx()

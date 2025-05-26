@@ -35,7 +35,7 @@ func (slf *stuInstance) NoteV1(mol *NoteV1, async ...bool) error {
 		Data:         mol.Data,
 	}
 
-	return grpcCall(*getFirst(async, true), client.NoteV1, req)
+	return grpcCall(*getFirst(async, true), client.NoteV1, "NoteV1", req)
 }
 
 func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
@@ -64,7 +64,7 @@ func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 		FinishedAt:   timeToStrFull(mol.FinishedAt),
 	}
 
-	return grpcCall(*getFirst(async, true), client.DbqV1, req)
+	return grpcCall(*getFirst(async, true), client.DbqV1, "DbqV1", req)
 }
 
 func (slf *stuInstance) HttpCallV1(mol *HttpCallV1, async ...bool) error {
@@ -94,7 +94,7 @@ func (slf *stuInstance) HttpCallV1(mol *HttpCallV1, async ...bool) error {
 		FinishedAt: timeToStrFull(mol.FinishedAt),
 	}
 
-	return grpcCall(*getFirst(async, true), client.HttpCallV1, req)
+	return grpcCall(*getFirst(async, true), client.HttpCallV1, "HttpCallV1", req)
 }
 
 func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error {
@@ -121,7 +121,7 @@ func (slf *stuInstance) ServicePieceV1(mol *ServicePieceV1, async ...bool) error
 		StartedAt:        timeToStrFull(mol.StartedAt),
 	}
 
-	return grpcCall(*getFirst(async, true), client.ServicePieceV1, req)
+	return grpcCall(*getFirst(async, true), client.ServicePieceV1, "ServicePieceV1", req)
 }
 
 func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
@@ -160,7 +160,7 @@ func (slf *stuInstance) ServiceV1(mol *ServiceV1, async ...bool) error {
 		FinishedAt:       timeToStrFull(mol.FinishedAt),
 	}
 
-	return grpcCall(*getFirst(async, true), client.ServiceV1, req)
+	return grpcCall(*getFirst(async, true), client.ServiceV1, "ServiceV1", req)
 }
 
 func (slf *stuInstance) GrpcV1(mol *GrpcV1, async ...bool) error {
@@ -184,5 +184,5 @@ func (slf *stuInstance) GrpcV1(mol *GrpcV1, async ...bool) error {
 		Data:             pbwString(mol.Data),
 	}
 
-	return grpcCall(*getFirst(async, true), client.GrpcV1, req)
+	return grpcCall(*getFirst(async, true), client.GrpcV1, "GrpcV1", req)
 }

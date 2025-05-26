@@ -50,8 +50,11 @@ func (slf *stuUtil) Timenow(timezone ...string) time.Time {
 	return time.Now().In(location)
 }
 
-func (slf *stuUtil) ConcurrentProcess(total, max int, fn func(index int)) {
-	slf.concurrentProcess(total, max, fn)
+func (slf *stuUtil) ConcurrentProcess(total, max int, callback func(index int)) {
+	// slf.concurrentProcess(total, max, fn)
+	xc := slf.xConcurrentProcess(max, total)
+	xc.Run(total, callback)
+	xc.Prune()
 }
 
 func (slf *stuUtil) XConcurrentProcess(maxConcurrent int, maxJob int) ice.UtilConcurrentProcess {

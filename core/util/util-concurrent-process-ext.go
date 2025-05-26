@@ -9,68 +9,68 @@
 
 package util
 
-import (
-	"time"
+// import (
+// 	"time"
 
-	"github.com/andypangaribuan/gmod/fm"
-)
+// 	"github.com/andypangaribuan/gmod/fm"
+// )
 
-func (*stuUtil) concurrentProcess(total, max int, fn func(index int)) {
-	if total < 1 || max < 1 {
-		return
-	}
+// func (*stuUtil) concurrentProcess(total, max int, fn func(index int)) {
+// 	if total < 1 || max < 1 {
+// 		return
+// 	}
 
-	c := &stuConcurrency{
-		active:        0,
-		total:         total,
-		max:           max,
-		fn:            fn,
-		sleepDuration: time.Millisecond * 5,
-	}
+// 	c := &stuConcurrency{
+// 		active:        0,
+// 		total:         total,
+// 		max:           max,
+// 		fn:            fn,
+// 		sleepDuration: time.Millisecond * 5,
+// 	}
 
-	c.start()
-}
+// 	c.start()
+// }
 
-func (slf *stuConcurrency) start() {
-	n := 0
-	for i := 0; i < slf.total; i++ {
-		if slf.active >= slf.max {
-			for {
-				slf.sleep()
-				if slf.active < slf.max {
-					break
-				}
-			}
-		}
+// func (slf *stuConcurrency) start() {
+// 	n := 0
+// 	for i := 0; i < slf.total; i++ {
+// 		if slf.active >= slf.max {
+// 			for {
+// 				slf.sleep()
+// 				if slf.active < slf.max {
+// 					break
+// 				}
+// 			}
+// 		}
 
-		n++
-		slf.addActive(1)
-		idx := fm.Ptr(i)
-		go slf.execute(*idx)
-	}
+// 		n++
+// 		slf.addActive(1)
+// 		idx := fm.Ptr(i)
+// 		go slf.execute(*idx)
+// 	}
 
-	for {
-		slf.sleep()
-		if slf.active == 0 {
-			break
-		}
-	}
-}
+// 	for {
+// 		slf.sleep()
+// 		if slf.active == 0 {
+// 			break
+// 		}
+// 	}
+// }
 
-func (slf *stuConcurrency) execute(index int) {
-	slf.fn(index)
-	slf.addActive(-1)
-}
+// func (slf *stuConcurrency) execute(index int) {
+// 	slf.fn(index)
+// 	slf.addActive(-1)
+// }
 
-func (slf *stuConcurrency) addActive(add int) {
-	slf.mx.Lock()
-	defer slf.mx.Unlock()
-	slf.active += add
-}
+// func (slf *stuConcurrency) addActive(add int) {
+// 	slf.mx.Lock()
+// 	defer slf.mx.Unlock()
+// 	slf.active += add
+// }
 
-func (slf *stuConcurrency) sleep() {
-	time.Sleep(slf.sleepDuration)
-}
+// func (slf *stuConcurrency) sleep() {
+// 	time.Sleep(slf.sleepDuration)
+// }
 
 func (*stuUtil) xConcurrentProcess(maxConcurrent int, maxJob int) *stuXConcurrency {
 	return &stuXConcurrency{

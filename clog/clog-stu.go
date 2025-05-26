@@ -16,3 +16,8 @@ type stuInstance struct {
 	svcParentName    *string
 	svcParentVersion *string
 }
+
+type stuQueue struct {
+	logType string
+	req     any
+}

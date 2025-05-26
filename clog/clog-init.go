@@ -17,6 +17,8 @@ import (
 )
 
 func xinit() {
+	go pusher()
+
 	mainCLogCallback = func() {
 		if val := getConfVal[string]("clogAddress"); val != "" {
 			c, err := createClient(val, sclog.NewCLogServiceClient)
@@ -38,6 +40,10 @@ func xinit() {
 
 		if val := getConfVal[*time.Duration]("clogRetryMaxDuration"); val != nil {
 			retryMaxDuration = *val
+		}
+
+		if val := getConfVal[int]("clogMaxConcurrentPusher"); val > 0 {
+			maxConcurrentPusher = val
 		}
 	}
 
@@ -79,6 +85,68 @@ func connect(address string) {
 			client = c
 			fmt.Println("connected to central log")
 			break
+		}
+	}
+}
+
+func pusher() {
+	for {
+		size := queueSize()
+		if client == nil || size == 0 {
+			time.Sleep(time.Millisecond * 100)
+			continue
+		}
+
+		concurrentPusher := maxConcurrentPusher
+		if concurrentPusher == 0 {
+			concurrentPusher = 100
+		}
+
+		startAt := time.Now()
+		msg := "\n\n\n\n\n"
+		msg += fmt.Sprintf("before clog queue size: %v\n", size)
+
+		logs := queueList()
+
+		msg += fmt.Sprintf("after clog queue size : %v\n", queueSize())
+		msg += fmt.Sprintf("copy clog logs size   : %v\n", len(logs))
+		if maxConcurrentPusher > 0 {
+			fmt.Printf("%v\n\n\n\n\n", msg)
+		}
+
+		mainReflection("mrf-util-concurrent-process", len(logs), concurrentPusher, func(index int) {
+			sq := logs[index]
+			switch sq.logType {
+			case "NoteV1":
+				req := sq.req.(*sclog.RequestNoteV1)
+				doGrpcCall(client.NoteV1, req)
+
+			case "DbqV1":
+				req := sq.req.(*sclog.RequestDbqV1)
+				doGrpcCall(client.DbqV1, req)
+
+			case "HttpCallV1":
+				req := sq.req.(*sclog.RequestHttpCallV1)
+				doGrpcCall(client.HttpCallV1, req)
+
+			case "ServicePieceV1":
+				req := sq.req.(*sclog.RequestServicePieceV1)
+				doGrpcCall(client.ServicePieceV1, req)
+
+			case "ServiceV1":
+				req := sq.req.(*sclog.RequestServiceV1)
+				doGrpcCall(client.ServiceV1, req)
+
+			case "GrpcV1":
+				req := sq.req.(*sclog.RequestGrpcV1)
+				doGrpcCall(client.GrpcV1, req)
+			}
+		})
+
+		msg += fmt.Sprintf("max concurrent pusher : %v\n", maxConcurrentPusher)
+		msg += fmt.Sprintf("pusher duration       : %v\n", time.Since(startAt))
+		if maxConcurrentPusher > 0 {
+			fmt.Printf("%v\n\n\n\n\n", msg)
 		}
 	}
 }

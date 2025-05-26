@@ -10,6 +10,7 @@
 package clog
 
 import (
+	"sync"
 	"time"
 	_ "unsafe"
 
@@ -23,10 +24,13 @@ var mainReflection func(key string, arg ...any) []any
 var mainCLogCallback func()
 
 var (
-	client           sclog.CLogServiceClient
-	svcName          string
-	svcVersion       string
-	retryMaxDuration = time.Minute * 5
+	client              sclog.CLogServiceClient
+	svcName             string
+	svcVersion          string
+	retryMaxDuration    = time.Minute * 5
+	maxConcurrentPusher = 0
+	queue               map[string]*stuQueue
+	mx                  sync.RWMutex
 )
 
 // accessed through injection

@@ -52,28 +52,38 @@ func getConfVal[T any](name string) (value T) {
 	return
 }
 
-func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), req *T, header ...map[string]string) (err error) {
-	if !async {
-		_, err = call(fn, req, header...)
-	} else {
-		go func() {
-			startedAt := time.Now()
+func grpcCall[T any, R any](async bool, fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), logType string, req *T) (err error) {
+	switch {
+	case !async:
+		_, err = call(fn, req)
 
-			for {
-				_, err = call(fn, req, header...)
-				if err == nil {
-					break
-				}
+	case logType == "":
+		go doGrpcCall(fn, req)
 
-				time.Sleep(time.Millisecond * 300)
-				if time.Since(startedAt) > retryMaxDuration {
-					break
-				}
-			}
-		}()
+	default:
+		queueEntry(mrf1[string]("mrf-util-uid"), &stuQueue{
+			logType: logType,
+			req:     req,
+		})
 	}
 
 	return
+}
+
+func doGrpcCall[T any, R any](fn func(ctx context.Context, in *T, opts ...grpc.CallOption) (*R, error), req *T) {
+	startedAt := time.Now()
+
+	for {
+		_, err := call(fn, req)
+		if err == nil {
+			break
+		}
+
+		time.Sleep(time.Millisecond * 300)
+		if time.Since(startedAt) > retryMaxDuration {
+			break
+		}
+	}
 }
 
 func pbwString(val *string) *wrapperspb.StringValue {
@@ -126,4 +136,33 @@ func getFirst[T any](ls []T, dval ...T) *T {
 
 func timeToStrFull(val time.Time) string {
 	return val.Format("2006-01-02 15:04:05.999999 -07:00")
+}
+
+func queueEntry(uid string, sq *stuQueue) {
+	mx.Lock()
+	defer mx.Unlock()
+
+	queue[uid] = sq
+}
+
+func queueSize() int {
+	mx.RLock()
+	defer mx.RUnlock()
+	return len(queue)
+}
+
+func queueList() []*stuQueue {
+	mx.Lock()
+	defer mx.Unlock()
+
+	i := -1
+	ls := make([]*stuQueue, len(queue))
+
+	for _, v := range queue {
+		i++
+		ls[i] = v
+	}
+
+	queue = make(map[string]*stuQueue, 0)
+	return ls
 }

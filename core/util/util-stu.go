@@ -11,7 +11,7 @@ package util
 
 import (
 	"sync"
-	"time"
+	// "time"
 )
 
 type stuUtil struct {
@@ -25,14 +25,14 @@ type stuUtilEnvAppEnv struct {
 	val string
 }
 
-type stuConcurrency struct {
-	mx            sync.Mutex
-	max           int
-	total         int
-	active        int
-	fn            func(index int)
-	sleepDuration time.Duration
-}
+// type stuConcurrency struct {
+// 	mx            sync.Mutex
+// 	max           int
+// 	total         int
+// 	active        int
+// 	fn            func(index int)
+// 	sleepDuration time.Duration
+// }
 
 type stuXConcurrency struct {
 	hasInit       bool

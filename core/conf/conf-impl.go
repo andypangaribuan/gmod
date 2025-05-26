@@ -37,6 +37,11 @@ func (slf *stuConf) SetClogRetryMaxDuration(duration time.Duration) ice.Conf {
 	return slf
 }
 
+func (slf *stuConf) SetClogMaxConcurrentPusher(maxConcurrentPusher int) ice.Conf {
+	slf.clogMaxConcurrentPusher = maxConcurrentPusher
+	return slf
+}
+
 func (slf *stuConf) SetInternalBaseUrls(urls []string) ice.Conf {
 	slf.internalBaseUrls = urls
 	return slf
