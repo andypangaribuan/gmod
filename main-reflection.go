@@ -9,7 +9,10 @@
 
 package gmod
 
-import "github.com/andypangaribuan/gmod/gm"
+import (
+	"github.com/andypangaribuan/gmod/gm"
+	"github.com/andypangaribuan/gmod/ice"
+)
 
 func rx(val ...any) []any {
 	return val
@@ -34,6 +37,17 @@ func reflection(key string, arg ...any) []any {
 
 	case "mrf-util-concurrent-process":
 		iceUtil.ConcurrentProcess(arg[0].(int), arg[1].(int), arg[2].(func(index int)))
+
+	case "mrf-util-x-concurrent-process":
+		return rx(iceUtil.XConcurrentProcess(arg[0].(int), arg[1].(int)))
+
+	case "mrf-util-x-concurrent-process-run":
+		ucp := arg[0].(ice.UtilConcurrentProcess)
+		ucp.Run(arg[1].(int), arg[2].(func(index int)))
+
+	case "mrf-util-x-concurrent-process-prune":
+		ucp := arg[0].(ice.UtilConcurrentProcess)
+		ucp.Prune()
 	}
 
 	return rx()

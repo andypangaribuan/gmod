@@ -90,6 +90,8 @@ func connect(address string) {
 }
 
 func pusher() {
+	var xcp any
+
 	for {
 		size := queueSize()
 		if client == nil || size == 0 {
@@ -102,11 +104,17 @@ func pusher() {
 			concurrentPusher = 100
 		}
 
+		maxJob := concurrentPusher * 10
+		if xcp == nil {
+			xcp = mrf1[any]("mrf-util-x-concurrent-process", concurrentPusher, maxJob)
+		}
+
 		startAt := time.Now()
 		msg := "\n\n\n\n\n"
 		msg += fmt.Sprintf("before clog queue size: %v\n", size)
 
 		logs := queueList()
+		chunk := chunkSlice(logs, maxJob)
 
 		msg += fmt.Sprintf("after clog queue size : %v\n", queueSize())
 		msg += fmt.Sprintf("copy clog logs size   : %v\n", len(logs))
@@ -114,34 +122,36 @@ func pusher() {
 			fmt.Printf("%v\n\n\n\n\n", msg)
 		}
 
-		mainReflection("mrf-util-concurrent-process", len(logs), concurrentPusher, func(index int) {
-			sq := logs[index]
-			switch sq.logType {
-			case "NoteV1":
-				req := sq.req.(*sclog.RequestNoteV1)
-				doGrpcCall(client.NoteV1, req)
+		for _, logs := range chunk {
+			mainReflection("mrf-util-x-concurrent-process-run", xcp, len(logs), func(index int) {
+				sq := logs[index]
+				switch sq.logType {
+				case "NoteV1":
+					req := sq.req.(*sclog.RequestNoteV1)
+					doGrpcCall(client.NoteV1, req)
 
-			case "DbqV1":
-				req := sq.req.(*sclog.RequestDbqV1)
-				doGrpcCall(client.DbqV1, req)
+				case "DbqV1":
+					req := sq.req.(*sclog.RequestDbqV1)
+					doGrpcCall(client.DbqV1, req)
 
-			case "HttpCallV1":
-				req := sq.req.(*sclog.RequestHttpCallV1)
-				doGrpcCall(client.HttpCallV1, req)
+				case "HttpCallV1":
+					req := sq.req.(*sclog.RequestHttpCallV1)
+					doGrpcCall(client.HttpCallV1, req)
 
-			case "ServicePieceV1":
-				req := sq.req.(*sclog.RequestServicePieceV1)
-				doGrpcCall(client.ServicePieceV1, req)
+				case "ServicePieceV1":
+					req := sq.req.(*sclog.RequestServicePieceV1)
+					doGrpcCall(client.ServicePieceV1, req)
 
-			case "ServiceV1":
-				req := sq.req.(*sclog.RequestServiceV1)
-				doGrpcCall(client.ServiceV1, req)
+				case "ServiceV1":
+					req := sq.req.(*sclog.RequestServiceV1)
+					doGrpcCall(client.ServiceV1, req)
 
-			case "GrpcV1":
-				req := sq.req.(*sclog.RequestGrpcV1)
-				doGrpcCall(client.GrpcV1, req)
-			}
-		})
+				case "GrpcV1":
+					req := sq.req.(*sclog.RequestGrpcV1)
+					doGrpcCall(client.GrpcV1, req)
+				}
+			})
+		}
 
 		msg += fmt.Sprintf("max concurrent pusher : %v\n", maxConcurrentPusher)
 		msg += fmt.Sprintf("pusher duration       : %v\n", time.Since(startAt))

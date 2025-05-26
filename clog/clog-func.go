@@ -166,3 +166,12 @@ func queueList() []*stuQueue {
 	queue = make(map[string]*stuQueue, 0)
 	return ls
 }
+
+func chunkSlice[T any](slice []T, chunkSize int) [][]T {
+	var chunks [][]T
+	for i := 0; i < len(slice); i += chunkSize {
+		end := min(i+chunkSize, len(slice))
+		chunks = append(chunks, slice[i:end])
+	}
+	return chunks
+}
