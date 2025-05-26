@@ -23,6 +23,7 @@ import (
 	"unsafe"
 
 	"github.com/andypangaribuan/gmod/fm"
+	"github.com/andypangaribuan/gmod/ice"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 )
@@ -51,6 +52,10 @@ func (slf *stuUtil) Timenow(timezone ...string) time.Time {
 
 func (slf *stuUtil) ConcurrentProcess(total, max int, fn func(index int)) {
 	slf.concurrentProcess(total, max, fn)
+}
+
+func (slf *stuUtil) XConcurrentProcess(maxConcurrent int, maxJob int) ice.UtilConcurrentProcess {
+	return slf.xConcurrentProcess(maxConcurrent, maxJob)
 }
 
 func (slf *stuUtil) LiteUID() string {

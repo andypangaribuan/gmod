@@ -71,3 +71,42 @@ func (slf *stuConcurrency) addActive(add int) {
 func (slf *stuConcurrency) sleep() {
 	time.Sleep(slf.sleepDuration)
 }
+
+func (*stuUtil) xConcurrentProcess(maxConcurrent int, maxJob int) *stuXConcurrency {
+	return &stuXConcurrency{
+		maxConcurrent: maxConcurrent,
+		job:           make(chan int, maxJob),
+		waiter:        make(chan int, maxJob),
+	}
+}
+
+func (slf *stuXConcurrency) Run(totalJob int, callback func(index int)) {
+	slf.callback = callback
+
+	if !slf.hasInit {
+		slf.hasInit = true
+		for range slf.maxConcurrent {
+			go slf.worker()
+		}
+	}
+
+	for i := range totalJob {
+		slf.job <- i
+	}
+
+	for range totalJob {
+		<-slf.waiter
+	}
+}
+
+func (slf *stuXConcurrency) worker() {
+	for i := range slf.job {
+		slf.callback(i)
+		slf.waiter <- 0
+	}
+}
+
+func (slf *stuXConcurrency) Prune() {
+	close(slf.job)
+	close(slf.waiter)
+}

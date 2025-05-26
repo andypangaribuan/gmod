@@ -19,6 +19,9 @@
     "LICENSE",
     ".gitignore",
     "test/**",
-    "res/**"
+    "res/**",
+    "grc/**",
+    "http-client/**",
+    ".vscode/**"
   ]
 }

@@ -42,11 +42,11 @@ function run {
 #: run cspell to check the project words
 function spell {
   img=ghcr.io/streetsidesoftware/cspell:9.0.1
-  docker run --rm --platform linux/amd64 \
-    -v $PWD:/workdir $img \
-    . -u --quiet \
-    -e .gitignore -e go.mod -e go.sum -e README.md -e LICENSE -e .taskfile \
-    -e "res/**" -e "grc/**" -e "test/**" -e "http-client/**" -e ".vscode/**"
+  docker run --rm \
+    --platform linux/amd64 \
+    -v $PWD:/workdir \
+    $img "**" \
+    --quiet
 }
 
 

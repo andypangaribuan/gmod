@@ -34,6 +34,14 @@ type stuConcurrency struct {
 	sleepDuration time.Duration
 }
 
+type stuXConcurrency struct {
+	hasInit       bool
+	maxConcurrent int
+	job           chan int
+	waiter        chan int
+	callback      func(index int)
+}
+
 type stuEnvBase64 struct {
 	key  string
 	data []byte
