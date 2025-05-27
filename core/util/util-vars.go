@@ -40,6 +40,7 @@ var (
 	timezoneLocking   *sync.Mutex
 	timezones         map[string]*time.Location
 	xRand             *rand.Rand
+	xRandMx           sync.Mutex
 	l3uidLength       int
 	l3uid             []string
 	l3uidN            map[string]string

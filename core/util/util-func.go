@@ -134,3 +134,9 @@ func l3uidSplitter(uid string) ([]string, error) {
 
 	return uids, nil
 }
+
+func getRandom(max int) []int {
+	xRandMx.Lock()
+	defer xRandMx.Unlock()
+	return xRand.Perm(max)
+}

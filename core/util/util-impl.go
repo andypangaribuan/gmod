@@ -126,7 +126,8 @@ func (slf *stuUtil) GetRandom(length int, value string) string {
 	)
 
 	for count < length {
-		perm := xRand.Perm(max)
+		// perm := xRand.Perm(max)
+		perm := getRandom(max)
 		for _, randIndex := range perm {
 			res += value[randIndex : randIndex+1]
 			count++
