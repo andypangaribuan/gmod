@@ -31,8 +31,10 @@ type HttpBuilder interface {
 	InsecureSkipVerify(skip ...bool) HttpBuilder
 
 	// Example:
-	//	SetRetryCondition(func(resp ice.HttpResponse) bool {
-	//		return resp.Code() == http.StatusTooManyRequests
+	//	SetRetryCondition(func(resp ice.HttpResponse, count int) bool {
+	//		return resp.IsConnectionReset() ||
+	//			resp.IsTimeout() ||
+	//			resp.Code() == http.StatusTooManyRequests
 	//	})
 	SetRetryCondition(condition func(resp HttpResponse, count int) bool) HttpBuilder
 	SetMaxRetry(max int) HttpBuilder
