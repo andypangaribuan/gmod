@@ -12,7 +12,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 var (
@@ -24,6 +26,12 @@ func init() {
 }
 
 func main() {
+	fmt.Println(Shuffle(3, "12345"))
+	fmt.Println(Shuffle(4, "12345"))
+	fmt.Println(Shuffle(5, "12345"))
+	fmt.Println(Shuffle(6, "12345"))
+	fmt.Println(Shuffle(7, "12345"))
+
 	for i := range 100 {
 		queue[i] = strconv.Itoa(i)
 	}
@@ -34,7 +42,7 @@ func main() {
 	qe := copy()
 	queue[-1] = "***"
 
-	chunk := chunkSlice(qe, 1000)
+	chunk := chunkSlice(qe, 10)
 
 	fmt.Println(queue)
 	fmt.Println(len(queue))
@@ -45,6 +53,14 @@ func main() {
 	fmt.Println(len(chunk))
 	fmt.Println(chunk[0])
 	fmt.Println(chunk[1])
+
+	xRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	mySlice := []int{10, 20, 30}
+	randomIndex := xRand.Intn(len(mySlice)) - 2
+
+	fmt.Println("Random Index:", randomIndex)
+	fmt.Println("Value at index:", mySlice[randomIndex]) // Potential panic here
 }
 
 func copy() []int {
@@ -67,4 +83,37 @@ func chunkSlice[T any](slice []T, chunkSize int) [][]T {
 		chunks = append(chunks, slice[i:end])
 	}
 	return chunks
+}
+
+var rd = rand.New(rand.NewSource(time.Now().Unix()))
+
+func Shuffle(length int, value string) string {
+	var (
+		// rd    = rand.New(rand.NewSource(time.Now().Unix()))
+		res   = ""
+		max   = len(value)
+		count = 0
+	)
+
+	for count < length {
+		perm := rd.Perm(max)
+		for _, randIndex := range perm {
+			res += value[randIndex : randIndex+1]
+			count++
+			if count == length {
+				break
+			}
+		}
+	}
+
+	// perm := rd.Perm(max)
+	// for i, randIndex := range perm {
+	// 	if i == length {
+	// 		break
+	// 	}
+
+	// 	res += value[randIndex : randIndex+1]
+	// }
+
+	return res
 }

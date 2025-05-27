@@ -97,26 +97,43 @@ func (slf *stuUtil) GetNumeric() string {
 }
 
 func (slf *stuUtil) GetRandom(length int, value string) string {
-	if length < 1 || length >= 100000 || len(value) == 0 {
+	if length < 1 || length >= 1000 || len(value) == 0 {
 		return ""
 	}
 
+	// var (
+	// 	res   = ""
+	// 	count = -1
+	// 	max   = len(value)
+	// 	min   = 1
+	// 	rin   int
+	// )
+
+	// for {
+	// 	count++
+	// 	if count == length {
+	// 		break
+	// 	}
+
+	// 	rin = xRand.Intn(max) + min
+	// 	res += value[rin-1 : rin]
+	// }
+
 	var (
 		res   = ""
-		count = -1
 		max   = len(value)
-		min   = 1
-		rin   int
+		count = 0
 	)
 
-	for {
-		count++
-		if count == length {
-			break
+	for count < length {
+		perm := xRand.Perm(max)
+		for _, randIndex := range perm {
+			res += value[randIndex : randIndex+1]
+			count++
+			if count == length {
+				break
+			}
 		}
-
-		rin = xRand.Intn(max) + min
-		res += value[rin-1 : rin]
 	}
 
 	return res
