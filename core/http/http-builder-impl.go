@@ -245,10 +245,11 @@ func (slf *stuHttpBuilder) Call() (data []byte, code int, err error) {
 
 		if resp != nil {
 			code := strconv.Itoa(resp.StatusCode())
-			if code[:1] != "2" {
+			if len(code) > 1 && code[:1] != "2" {
 				if !slf.callRetryCondition(resp, err) {
 					break
 				} else {
+					time.Sleep(time.Millisecond * 100)
 					continue
 				}
 			}

@@ -16,10 +16,18 @@ func (slf *stuRetryCondition) Body() []byte {
 }
 
 func (slf *stuRetryCondition) IsError() bool {
+	if slf.err != nil {
+		return true
+	}
+
 	return slf.resp.IsError()
 }
 
 func (slf *stuRetryCondition) IsSuccess() bool {
+	if slf.err != nil {
+		return false
+	}
+
 	return slf.resp.IsSuccess()
 }
 
@@ -37,13 +45,15 @@ func (slf *stuRetryCondition) IsTimeout() bool {
 		keyA2     = "i/o timeout"
 		keyB1     = "net/http"
 		keyB2     = "handshake timeout"
+		keyC0     = "context deadline exceeded (client.timeout exceeded while awaiting headers)"
 		isTimeout = false
 	)
 
 	if slf.err != nil {
 		msg := strings.ToLower(slf.err.Error())
 		isTimeout = (strings.Contains(msg, keyA1) && len(msg) > len(keyA2) && msg[len(msg)-len(keyA2):] == keyA2) ||
-			(strings.Contains(msg, keyB1) && len(msg) > len(keyB2) && msg[len(msg)-len(keyB2):] == keyB2)
+			(strings.Contains(msg, keyB1) && len(msg) > len(keyB2) && msg[len(msg)-len(keyB2):] == keyB2) ||
+			(strings.Contains(msg, keyC0))
 	}
 
 	return isTimeout
