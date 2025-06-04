@@ -294,7 +294,7 @@ func (*stuUtil) ReflectionGet(obj any, fieldName string) (any, error) {
 	}
 
 	if val.Kind() == reflect.Struct {
-		for i := 0; i < typ.NumField(); i++ {
+		for i := range typ.NumField() {
 			rs := typ.Field(i)
 			rf := val.Field(i)
 
@@ -329,7 +329,7 @@ func (slf *stuUtil) ReflectionSet(obj any, bind map[string]any) error {
 	}
 
 	if val.Kind() == reflect.Struct {
-		for i := 0; i < typ.NumField(); i++ {
+		for i := range typ.NumField() {
 			rs := typ.Field(i)
 			rf := val.Field(i)
 			fieldName := rs.Name

@@ -46,7 +46,7 @@ func TestRandom(t *testing.T) {
 	doTest := func(title, alphabet string, length int, withSleep bool) {
 		temp := ""
 		random := ""
-		for i := 0; i < loop; i++ {
+		for i := range loop {
 			random = gm.Util.GetRandom(length, alphabet)
 			if i != 0 {
 				temp += ", "

@@ -39,7 +39,7 @@ func calc(val ...any) (FCT, error) {
 
 	lsv := make([]any, 0)
 
-	for i := 0; i < length; i++ {
+	for i := range length {
 		if i%2 == 0 {
 			vd, err := convert(val[i])
 			if err != nil {

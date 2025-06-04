@@ -94,7 +94,7 @@ func (slf *stuServer) scheduleEveryItem(scheduler *gocron.Scheduler, uid string,
 			slf.executeFn(fns[0], nil)
 		} else {
 			wg := new(sync.WaitGroup)
-			for i := 0; i < totalFns; i++ {
+			for i := range totalFns {
 				wg.Add(1)
 				go slf.executeFn(fns[i], wg)
 			}
@@ -129,7 +129,7 @@ func (slf *stuServer) scheduleEveryDayItem(scheduler *gocron.Scheduler, uid stri
 			slf.executeFn(fns[0], nil)
 		} else {
 			wg := new(sync.WaitGroup)
-			for i := 0; i < totalFns; i++ {
+			for i := range totalFns {
 				wg.Add(1)
 				go slf.executeFn(fns[i], wg)
 			}

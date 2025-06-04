@@ -157,18 +157,18 @@ func uidL3() ([]string, map[string]string, map[string]string) {
 		)
 
 		if withNumber {
-			for i := 0; i < 10; i++ {
+			for i := range 10 {
 				index++
 				chars[index] = string(rn + int32(i))
 			}
 		}
 
-		for i := 0; i < 26; i++ {
+		for i := range 26 {
 			index++
 			chars[index] = string(ru + int32(i))
 		}
 
-		for i := 0; i < 26; i++ {
+		for i := range 26 {
 			index++
 			chars[index] = string(rl + int32(i))
 		}

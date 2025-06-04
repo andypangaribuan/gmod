@@ -28,7 +28,7 @@ func testTxLock(t *testing.T) {
 		startedAt = time.Now().Add(time.Second * 3)
 	)
 
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		wg.Add(1)
 		// key := fmt.Sprint(i) // all unique
 		key := fmt.Sprint(i % 10) // only 10 unique key

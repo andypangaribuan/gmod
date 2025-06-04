@@ -64,7 +64,7 @@ func (slf *FCT) ptrFloor(places int, dval ...FCT) (*FCT, error) {
 				thousandDivDecimal = big.NewInt(1)
 			)
 
-			for i := 0; i < sub; i++ {
+			for range sub {
 				div = fmt.Sprintf("%v0", div)
 				v, ok := new(big.Int).SetString(div, 10)
 				if !ok {
@@ -105,7 +105,7 @@ func (slf *FCT) ptrCeil(places int, dval ...FCT) (*FCT, error) {
 				thousandDivDecimal = big.NewInt(1)
 			)
 
-			for i := 0; i < sub; i++ {
+			for range sub {
 				div = fmt.Sprintf("%v0", div)
 				v, ok := new(big.Int).SetString(div, 10)
 				if !ok {

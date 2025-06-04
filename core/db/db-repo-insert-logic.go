@@ -130,7 +130,7 @@ func (slf *stuRepo[T]) bulkInsert(tx ice.DbTx, entities []*T, chunkSize ...int) 
 		query = strings.ReplaceAll(query, "::insertColumn", report.insertColumn)
 		valQuery := strings.ReplaceAll(valFormat, "::insertArgSign", report.insertArgSign)
 
-		for i := 0; i < size; i++ {
+		for i := range size {
 			query += fm.Ternary(i == 0, valQuery, ", "+valQuery)
 		}
 
