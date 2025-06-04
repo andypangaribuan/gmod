@@ -1,26 +1,11 @@
 # gmod
 
-**Golang Framework**
+Go Modified
 
 Focus on simplicity, speed and safety.
 
-```shell {"id":"01HWD8Q46TFH5VSM019RG9NTWJ"}
+```shell
 go get -u github.com/andypangaribuan/gmod
-```
-
-go cli
-
-```sh {"id":"01HWD8SGV3ZPBDF1B6256B580C","interactive":"false"}
-go mod tidy
-go vet
-gofmt -l .
-```
-
-linter
-
-```sh {"id":"01HWN0CGFAV1V4XZT25HNJ4QNG"}
-golangci-lint run
-staticcheck ./...
 ```
 
 ## Versioning
@@ -34,11 +19,9 @@ Feel free to contribute to this project.
 If you find a bug or want a feature, but don't know how to fix/implement it, please fill an [`issue`](https://github.com/andypangaribuan/gmod/issues).  
 If you fixed a bug or implemented a feature, please send a [`pull request`](https://github.com/andypangaribuan/gmod/pulls).
 
-## License
+## MIT License
 
-MIT License
-
-Copyright (c) 2024 Andy Pangaribuan
+Copyright (c) 2025 Andy Pangaribuan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
