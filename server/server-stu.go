@@ -123,6 +123,7 @@ type stuFuseRMainContext struct {
 	startedAt    time.Time
 	fcx          *fiber.Ctx
 	clog         clog.Instance
+	storage      any
 	handlers     []func(FuseRContext) any
 	errorHandler func(FuseRContext, error) any
 

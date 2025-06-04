@@ -89,6 +89,7 @@ type FuseRContext interface {
 	Auth(obj ...any) any
 	UserId(id ...any) any
 	PartnerId(id ...any) any
+	Storage(obj ...any) any
 	SetFiles(files map[string]string)
 
 	ReqHeader() *map[string]string
@@ -140,6 +141,7 @@ type FuseRRegulator interface {
 	Call(handler func(ctx FuseRContext) any, opt ...FuseRCallOpt) (res any, meta ResponseMeta, raw bool)
 	CallOpt() FuseRCallOpt
 	Endpoint() string
+	Storage(obj ...any) any
 	Recover()
 }
 

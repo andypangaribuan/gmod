@@ -46,6 +46,14 @@ func (slf *stuFuseRRegulator) Endpoint() string {
 	return slf.mcx.val.endpoint
 }
 
+func (slf *stuFuseRRegulator) Storage(obj ...any) any {
+	if len(obj) > 0 {
+		slf.mcx.storage = obj[0]
+	}
+
+	return slf.mcx.storage
+}
+
 func (slf *stuFuseRRegulator) Recover() {
 	v := recover()
 

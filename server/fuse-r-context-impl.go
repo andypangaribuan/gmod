@@ -52,6 +52,14 @@ func (slf *stuFuseRContext) PartnerId(id ...any) any {
 	return slf.mcx.partnerId
 }
 
+func (slf *stuFuseRContext) Storage(obj ...any) any {
+	if len(obj) > 0 {
+		slf.mcx.storage = obj[0]
+	}
+
+	return slf.mcx.storage
+}
+
 func (slf *stuFuseRContext) SetFiles(files map[string]string) {
 	if len(files) > 0 {
 		slf.mcx.files = &files
