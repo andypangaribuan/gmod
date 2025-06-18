@@ -17,6 +17,7 @@ const (
 	OrderedLevelXDB     = 4
 	OrderedLevelHandler = 5
 	OrderedLevelService = 9
+	OrderedLevelCache   = 10
 )
 
 func OrderedInit(level int, fn func()) {
