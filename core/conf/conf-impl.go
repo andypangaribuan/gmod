@@ -26,7 +26,9 @@ func (slf *stuConf) SetTimezone(timezone string) ice.Conf {
 }
 
 func (slf *stuConf) SetClogAddress(address string, svcName string, svcVersion string) ice.Conf {
-	slf.clogAddress = address
+	if address != "" && address != "-" {
+		slf.clogAddress = address
+	}
 	slf.svcName = svcName
 	slf.svcVersion = svcVersion
 	return slf
