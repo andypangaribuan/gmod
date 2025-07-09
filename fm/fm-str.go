@@ -116,3 +116,16 @@ func FindNilOrEmptyString(keyVals map[string]any) string {
 
 	return FindEmptyString(keyVals)
 }
+
+func SetTrimSpaceNilIfEmptyString(vals ...**string) {
+	for _, val := range vals {
+		if val != nil && *val != nil {
+			nv := strings.TrimSpace(**val)
+			if nv == "" {
+				*val = nil
+			} else {
+				*val = &nv
+			}
+		}
+	}
+}
