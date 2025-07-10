@@ -30,3 +30,17 @@ func SliceRemove[T any](slice []T, index ...int) []T {
 
 	return slice
 }
+
+func UniqueSlice[T comparable](slice []T) []T {
+	seen := make(map[T]bool, 0)
+	result := make([]T, 0)
+
+	for _, item := range slice {
+		if _, ok := seen[item]; !ok {
+			seen[item] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
