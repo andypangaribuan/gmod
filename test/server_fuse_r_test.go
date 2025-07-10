@@ -267,12 +267,12 @@ func sfrInsert(ctx server.FuseRContext) any {
 
 func sfrDelete(ctx server.FuseRContext) any {
 	query := ctx.ReqQuery()
-	if query == nil {
+	if len(query) == 0 {
 		return ctx.R406NotAcceptable("have no query")
 	}
 
 	var name *string
-	for k, v := range *query {
+	for k, v := range query {
 		if k == "name" {
 			name = &v
 		}
@@ -294,18 +294,18 @@ func sfrForm(ctx server.FuseRContext) any {
 	form := ctx.ReqForm()
 	file := ctx.ReqFile()
 
-	if form == nil {
+	if len(form) == 0 {
 		fmt.Printf("[form] no data\n")
 	} else {
-		for k, v := range *form {
+		for k, v := range form {
 			fmt.Printf("[form] key: %v, file: %v\n", k, v)
 		}
 	}
 
-	if file == nil {
+	if len(file) == 0 {
 		fmt.Printf("[file] no data\n")
 	} else {
-		for k, v := range *file {
+		for k, v := range file {
 			fmt.Printf("[file] key: %v, total-file: %v\n", k, len(v))
 		}
 	}

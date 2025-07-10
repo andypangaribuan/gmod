@@ -92,11 +92,11 @@ type FuseRContext interface {
 	Storage(obj ...any) any
 	SetFiles(files map[string]string)
 
-	ReqHeader() *map[string]string
-	ReqParam() *map[string]string
-	ReqQuery() *map[string]string
-	ReqForm() *map[string][]string
-	ReqFile() *map[string][]*multipart.FileHeader
+	ReqHeader() map[string]string
+	ReqParam() map[string]string
+	ReqQuery() map[string]string
+	ReqForm() map[string][]string
+	ReqFile() map[string][]*multipart.FileHeader
 
 	GetHeader(key string, dval ...string) *string
 	GetClientIP() string

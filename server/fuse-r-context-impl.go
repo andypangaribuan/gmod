@@ -66,24 +66,44 @@ func (slf *stuFuseRContext) SetFiles(files map[string]string) {
 	}
 }
 
-func (slf *stuFuseRContext) ReqHeader() *map[string]string {
-	return slf.header
+func (slf *stuFuseRContext) ReqHeader() map[string]string {
+	if slf.header == nil {
+		return make(map[string]string, 0)
+	}
+
+	return *slf.header
 }
 
-func (slf *stuFuseRContext) ReqParam() *map[string]string {
-	return slf.param
+func (slf *stuFuseRContext) ReqParam() map[string]string {
+	if slf.param == nil {
+		return make(map[string]string, 0)
+	}
+
+	return *slf.param
 }
 
-func (slf *stuFuseRContext) ReqQuery() *map[string]string {
-	return slf.queries
+func (slf *stuFuseRContext) ReqQuery() map[string]string {
+	if slf.queries == nil {
+		return make(map[string]string, 0)
+	}
+
+	return *slf.queries
 }
 
-func (slf *stuFuseRContext) ReqForm() *map[string][]string {
-	return slf.form
+func (slf *stuFuseRContext) ReqForm() map[string][]string {
+	if slf.form == nil {
+		return make(map[string][]string, 0)
+	}
+
+	return *slf.form
 }
 
-func (slf *stuFuseRContext) ReqFile() *map[string][]*multipart.FileHeader {
-	return slf.file
+func (slf *stuFuseRContext) ReqFile() map[string][]*multipart.FileHeader {
+	if slf.file == nil {
+		return make(map[string][]*multipart.FileHeader, 0)
+	}
+
+	return *slf.file
 }
 
 func (slf *stuFuseRContext) GetHeader(key string, dval ...string) *string {
