@@ -106,6 +106,10 @@ func (slf *stuFuseRContext) ReqFile() map[string][]*multipart.FileHeader {
 	return *slf.file
 }
 
+func (slf *stuFuseRContext) ReqBody() []byte {
+	return slf.mcx.fcx.Body()
+}
+
 func (slf *stuFuseRContext) GetHeader(key string, dval ...string) *string {
 	if slf.header != nil && len(*slf.header) > 0 {
 		val, ok := (*slf.header)[strings.ToLower(key)]

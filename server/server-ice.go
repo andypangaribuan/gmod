@@ -97,6 +97,7 @@ type FuseRContext interface {
 	ReqQuery() map[string]string
 	ReqForm() map[string][]string
 	ReqFile() map[string][]*multipart.FileHeader
+	ReqBody() []byte
 
 	GetHeader(key string, dval ...string) *string
 	GetClientIP() string
