@@ -26,6 +26,7 @@ func (slf *stuXDB) fetches(tx ice.DbTx, query string, args []any) *stuRepoResult
 		err        error
 		rows       []map[string]any
 		execReport *mol.DbExecReport
+		output     = slf.getOutput(args)
 	)
 
 	err = report.transform()
@@ -34,10 +35,18 @@ func (slf *stuXDB) fetches(tx ice.DbTx, query string, args []any) *stuRepoResult
 	}
 
 	if tx != nil {
-		execReport, err = slf.ins.TxSelect(tx, &rows, report.query, report.args...)
+		if output == nil {
+			execReport, err = slf.ins.TxSelect(tx, &rows, report.query, report.args...)
+		} else {
+			execReport, err = slf.ins.TxSelect(tx, output, report.query, report.args...)
+		}
 	} else {
 		usingRW := slf.isUsingRW(args)
-		execReport, err = slf.ins.Select(&rows, usingRW, report.query, report.args...)
+		if output == nil {
+			execReport, err = slf.ins.Select(&rows, usingRW, report.query, report.args...)
+		} else {
+			execReport, err = slf.ins.Select(output, usingRW, report.query, report.args...)
+		}
 	}
 
 	report.execReport = execReport

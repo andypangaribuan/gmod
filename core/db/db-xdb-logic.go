@@ -42,6 +42,20 @@ func (slf *stuXDB) getArgs(args []any) []any {
 	return filtered
 }
 
+func (slf *stuXDB) getOutput(args []any) any {
+	for _, arg := range args {
+		switch val := arg.(type) {
+		case FetchOptBuilder:
+			v, ok := val.(*stuFetchOptBuilder)
+			if ok && v != nil && v.out != nil {
+				return v.out
+			}
+		}
+	}
+
+	return nil
+}
+
 func (slf *stuXDB) result(report *stuReport, err error, id *int64, rows []map[string]any) *stuRepoResult[map[string]any] {
 	return &stuRepoResult[map[string]any]{
 		report: report,

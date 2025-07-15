@@ -35,3 +35,8 @@ func (slf *stuFetchOptBuilder) UsingRW(val ...bool) FetchOptBuilder {
 	slf.usingRW = fm.GetFirst(val, true)
 	return slf
 }
+
+func (slf *stuFetchOptBuilder) Out(ref any) FetchOptBuilder {
+	slf.out = ref
+	return slf
+}

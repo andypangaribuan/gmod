@@ -98,6 +98,7 @@ type stuFetchOptBuilder struct {
 	fullQuery           *string
 	fullQueryFormatter  *func(query string) string
 	usingRW             *bool
+	out                 any
 }
 
 type stuUpdateBuilder struct {

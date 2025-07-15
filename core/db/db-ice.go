@@ -69,6 +69,7 @@ type FetchOptBuilder interface {
 	FullQuery(query string) FetchOptBuilder
 	FullQueryFormatter(formatter func(query string) string) FetchOptBuilder
 	UsingRW(val ...bool) FetchOptBuilder
+	Out(ref any) FetchOptBuilder
 }
 
 type UpdateBuilder interface {
