@@ -29,16 +29,19 @@ func (slf *stuQueryBuilder) validator(validator []func() (ok bool, args []any), 
 	return
 }
 
-func (slf *stuQueryBuilder) getArgsValidator1(args []any) ([]any, *queryBuilderFuncValidator1) {
+func (slf *stuQueryBuilder) getArgsValidator1(args []any) ([]any, *func() (ok bool, args []any)) {
 	var (
 		ls = make([]any, 0)
-		fn *queryBuilderFuncValidator1
+		fn *func() (ok bool, args []any)
 	)
 
 	for _, arg := range args {
 		switch v := arg.(type) {
-		case queryBuilderFuncValidator1:
+		case func() (ok bool, args []any):
 			fn = &v
+
+		case func():
+			fn = nil
 
 		default:
 			ls = append(ls, arg)
