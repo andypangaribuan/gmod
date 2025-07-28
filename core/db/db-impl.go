@@ -44,3 +44,13 @@ func (*stuDb) PostgresRW(readConf mol.DbConnection, writeConf mol.DbConnection) 
 
 	return instance
 }
+
+func (*stuDb) QueryBuilder() ice.DbQueryBuilder {
+	instance := &stuQueryBuilder{
+		adapter:    make([]string, 0),
+		conditions: make([]string, 0),
+		args:       make([][]any, 0),
+	}
+
+	return instance
+}

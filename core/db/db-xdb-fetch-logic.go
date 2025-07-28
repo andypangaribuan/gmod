@@ -10,6 +10,8 @@
 package db
 
 import (
+	"strings"
+
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/andypangaribuan/gmod/mol"
 )
@@ -18,7 +20,7 @@ func (slf *stuXDB) fetches(tx ice.DbTx, query string, args []any) *stuRepoResult
 	var (
 		report = &stuReport{
 			args:  slf.getArgs(args),
-			query: query,
+			query: strings.TrimSpace(query),
 		}
 	)
 

@@ -9,13 +9,7 @@
 
 package fm
 
-import (
-	"fmt"
-	"strings"
-	"time"
-
-	"github.com/andypangaribuan/gmod/fct"
-)
+import "strings"
 
 func TrimSpace(val *string) *string {
 	if val == nil {
@@ -92,65 +86,8 @@ func FindEmptyString(vals map[string]any) string {
 
 func FindNil(keyVals map[string]any) string {
 	for key, val := range keyVals {
-		if val == nil {
+		if IsNil(val) {
 			return key
-		}
-
-		switch v := val.(type) {
-		case *string:
-			if v == nil {
-				return key
-			}
-
-		case *int:
-			if v == nil {
-				return key
-			}
-
-		case *int16:
-			if v == nil {
-				return key
-			}
-
-		case *int32:
-			if v == nil {
-				return key
-			}
-
-		case *int64:
-			if v == nil {
-				return key
-			}
-
-		case *float32:
-			if v == nil {
-				return key
-			}
-
-		case *float64:
-			if v == nil {
-				return key
-			}
-
-		case *bool:
-			if v == nil {
-				return key
-			}
-
-		case *time.Time:
-			if v == nil {
-				return key
-			}
-
-		case *fct.FCT:
-			if v == nil {
-				return key
-			}
-
-		default:
-			if fmt.Sprintf("%+v", val) == "<nil>" {
-				return key
-			}
 		}
 	}
 

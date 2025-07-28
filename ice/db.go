@@ -14,6 +14,7 @@ import "github.com/andypangaribuan/gmod/mol"
 type Db interface {
 	Postgres(conf mol.DbConnection) DbPostgresInstance
 	PostgresRW(readConf mol.DbConnection, writeConf mol.DbConnection) DbPostgresInstance
+	QueryBuilder() DbQueryBuilder
 }
 
 type DbTx interface {
@@ -38,4 +39,14 @@ type DbInstance interface {
 	TxSelect(tx DbTx, out any, query string, args ...any) (*mol.DbExecReport, error)
 	TxExecute(tx DbTx, query string, args ...any) (*mol.DbExecReport, error)
 	TxExecuteRID(tx DbTx, query string, args ...any) (*int64, *mol.DbExecReport, error)
+}
+
+type DbQueryBuilder interface {
+	And(condition string, args ...any) DbQueryBuilder
+	AndNotNill(condition string, arg any, validator ...func() (ok bool, args []any)) DbQueryBuilder
+	AndNotNill2(condition string, arg1 any, arg2 any, validator ...func() (ok bool, args []any)) DbQueryBuilder
+
+	AndNotNil(condition string, args ...any) DbQueryBuilder
+
+	Build() (where string, args []any)
 }

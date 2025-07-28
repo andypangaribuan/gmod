@@ -23,7 +23,7 @@ func (slf *stuVDB[T]) fetches(isLimitOne bool, tx ice.DbTx, sqlName string, args
 		fullQuery = slf.getQuery("full-query", args)
 		report    = &stuReport{
 			args:  slf.getArgs(args),
-			query: slf.dvalSql[sqlName],
+			query: strings.TrimSpace(slf.dvalSql[sqlName]),
 		}
 	)
 

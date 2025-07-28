@@ -10,11 +10,114 @@
 
 package fm
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+	"time"
+
+	"github.com/andypangaribuan/gmod/fct"
+)
 
 func IsNil(val any) bool {
 	if val == nil {
 		return true
+	}
+
+	switch v := val.(type) {
+	case *bool:
+		if v == nil {
+			return true
+		}
+
+	case *string:
+		if v == nil {
+			return true
+		}
+
+	case *int:
+		if v == nil {
+			return true
+		}
+
+	case *int8:
+		if v == nil {
+			return true
+		}
+
+	case *int16:
+		if v == nil {
+			return true
+		}
+
+	case *int32:
+		if v == nil {
+			return true
+		}
+
+	case *int64:
+		if v == nil {
+			return true
+		}
+
+	case *uint:
+		if v == nil {
+			return true
+		}
+
+	case *uint8:
+		if v == nil {
+			return true
+		}
+
+	case *uint16:
+		if v == nil {
+			return true
+		}
+
+	case *uint32:
+		if v == nil {
+			return true
+		}
+
+	case *uint64:
+		if v == nil {
+			return true
+		}
+
+	case *float32:
+		if v == nil {
+			return true
+		}
+
+	case *float64:
+		if v == nil {
+			return true
+		}
+
+	case *complex64:
+		if v == nil {
+			return true
+		}
+
+	case *complex128:
+		if v == nil {
+			return true
+		}
+
+	case *time.Time:
+		if v == nil {
+			return true
+		}
+
+	case *fct.FCT:
+		if v == nil {
+			return true
+		}
+
+	default:
+		if fmt.Sprintf("%+v", val) == "<nil>" {
+			return true
+		}
 	}
 
 	v := reflect.ValueOf(val)
