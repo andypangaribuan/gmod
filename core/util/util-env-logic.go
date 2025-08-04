@@ -27,9 +27,9 @@ func init() {
 	zxEnv = make(map[string]string, 0)
 }
 
-func getFromZxEnv(key string) string {
+func loadZxEnv() {
 	if len(zxEnv) > 0 {
-		return zxEnv[key]
+		return
 	}
 
 	if zxEnvName == nil {
@@ -43,12 +43,12 @@ func getFromZxEnv(key string) string {
 	}
 
 	if *zxEnvName == "" {
-		return ""
+		return
 	}
 
 	value := os.Getenv(*zxEnvName)
 	if value == "" {
-		return ""
+		return
 	}
 
 	lines := strings.Split(value, "\n")
@@ -68,8 +68,16 @@ func getFromZxEnv(key string) string {
 			zxEnv[key] = val
 		}
 	}
+}
 
-	return zxEnv[key]
+func getFromZxEnv(key string) string {
+	loadZxEnv()
+	val, ok := zxEnv[key]
+	if !ok {
+		return ""
+	}
+
+	return val
 }
 
 func getEnv[T any](key string, dval ...T) (string, *T) {
@@ -112,4 +120,28 @@ func (*stuUtilEnv) invalid(key string, sval string, typ string, err ...error) {
 	if len(err) == 0 || err[0] != nil {
 		log.Fatalf(`env value "%v", from key env key "%v" is not a valid %v value`, sval, key, typ)
 	}
+}
+
+func getKeysByPrefix(prefix string) []string {
+	prefixLength := len(prefix)
+	ls := make([]string, 0)
+
+	loadZxEnv()
+	if len(zxEnv) > 0 {
+		for key := range zxEnv {
+			if len(key) >= prefixLength && key[:prefixLength] == prefix {
+				ls = append(ls, key)
+			}
+		}
+	} else {
+		envVars := os.Environ()
+		for _, key := range envVars {
+			key = strings.Split(key, "=")[0]
+			if len(key) >= prefixLength && key[:prefixLength] == prefix {
+				ls = append(ls, key)
+			}
+		}
+	}
+
+	return ls
 }

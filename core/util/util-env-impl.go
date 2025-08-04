@@ -168,3 +168,7 @@ func (slf *stuUtilEnv) GetBase64(key string) ice.UtilEnvBase64 {
 		data: data,
 	}
 }
+
+func (slf *stuUtilEnv) GetKeysByPrefix(prefix string) []string {
+	return getKeysByPrefix(prefix)
+}

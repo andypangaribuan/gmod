@@ -29,6 +29,7 @@ type UtilEnv interface {
 	GetStringSlice(key string, separator string, dval ...[]string) []string
 	GetDurationMs(key string, dval ...time.Duration) time.Duration
 	GetBase64(key string) UtilEnvBase64
+	GetKeysByPrefix(prefix string) []string
 }
 
 type UtilEnvBase64 interface {
