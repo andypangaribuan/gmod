@@ -25,6 +25,8 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 	}
 
 	var (
+		timenow    = gm.Util.Timenow()
+		query      = report.query
 		sqlArgs    *string
 		errMessage *string
 		stackTrace *string
@@ -32,12 +34,27 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		host2      *string
 		duration1  int
 		duration2  *int
+		startedAt  = timenow
+		finishedAt = timenow
 	)
+
+	if report.execReport != nil {
+		query = report.execReport.Query
+		startedAt = report.execReport.StartedAt
+		finishedAt = report.execReport.FinishedAt
+	}
 
 	execPath, execFunc := gm.Util.GetExecPathFunc(execPathFuncSkipLevel)
 
-	if len(report.execReport.Args) > 0 {
+	if report.execReport != nil && len(report.execReport.Args) > 0 {
 		jons, err := gm.Json.Encode(report.execReport.Args)
+		if err == nil {
+			sqlArgs = &jons
+		} else {
+			sqlArgs = fm.Ptr(fmt.Sprintf("%v", sqlArgs))
+		}
+	} else if len(report.args) > 0 {
+		jons, err := gm.Json.Encode(report.args)
 		if err == nil {
 			sqlArgs = &jons
 		} else {
@@ -78,7 +95,7 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 	}
 
 	mol := &clog.DbqV1{
-		SqlQuery:     report.execReport.Query,
+		SqlQuery:     query,
 		SqlArgs:      sqlArgs,
 		Severity:     fm.Ternary(err == nil, "success", "error"),
 		ExecPath:     execPath,
@@ -89,8 +106,8 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		Host2:        host2,
 		Duration1:    duration1,
 		Duration2:    duration2,
-		StartedAt:    report.execReport.StartedAt,
-		FinishedAt:   report.execReport.FinishedAt,
+		StartedAt:    startedAt,
+		FinishedAt:   finishedAt,
 	}
 
 	_ = cin.DbqV1(mol)

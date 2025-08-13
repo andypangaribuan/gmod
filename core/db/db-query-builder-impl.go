@@ -62,7 +62,6 @@ func (slf *stuQueryBuilder) AndNotNil(condition string, args ...any) ice.DbQuery
 	return slf
 }
 
-
 func (slf *stuQueryBuilder) Build() (where string, args []any) {
 	where = ""
 	args = make([]any, 0)
