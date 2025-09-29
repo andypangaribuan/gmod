@@ -164,6 +164,6 @@ func (slf *stuGrpcSender[RQ, RS]) Error(code string, err error) (*RS, error) {
 }
 
 func (slf *stuGrpcSender[RQ, RS]) Success(result *RS) (*RS, error) {
-	logcSaveGrpcResponse(slf.destination, slf.logc, slf.req, slf.header, result)
+	logcSaveGrpcSuccess(slf.destination, slf.logc, slf.req, slf.header, result)
 	return result, nil
 }

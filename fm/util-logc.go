@@ -50,7 +50,7 @@ func logcSaveGrpcError(destination string, logc clog.Instance, req any, header m
 	}
 }
 
-func logcSaveGrpcResponse(destination string, logc clog.Instance, req any, header map[string]string, res any) {
+func logcSaveGrpcSuccess(destination string, logc clog.Instance, req any, header map[string]string, res any) {
 	if logc != nil {
 		execPath, execFunc := gm.Util.GetExecPathFunc(2)
 		data := map[string]any{
@@ -63,7 +63,7 @@ func logcSaveGrpcResponse(destination string, logc clog.Instance, req any, heade
 
 		_ = logc.GrpcV1(&clog.GrpcV1{
 			Destination: destination,
-			Severity:    "info",
+			Severity:    "success",
 			ExecPath:    execPath,
 			ExecFunc:    execFunc,
 			ReqHeader:   Ternary(headerErr == nil, &jsonHeader, nil),
