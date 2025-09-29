@@ -10,7 +10,11 @@
 
 package ice
 
+import "context"
+
 type GrpcSender[T any] interface {
+	Context() context.Context
+	Header() map[string]string
 	Error(code string, err error) (*T, error)
 	Success(result *T) (*T, error)
 }
