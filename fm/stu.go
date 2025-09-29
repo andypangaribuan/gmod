@@ -11,11 +11,14 @@
 package fm
 
 import (
+	"context"
+
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 type stuGrpcSender[RQ any, RS any] struct {
+	ctx            context.Context
 	destination    string
 	logc           clog.Instance
 	header         map[string]string

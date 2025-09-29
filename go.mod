@@ -1,6 +1,6 @@
 module github.com/andypangaribuan/gmod
 
-go 1.22.2
+go 1.25.1
 
 require (
 	cloud.google.com/go/storage v1.43.0

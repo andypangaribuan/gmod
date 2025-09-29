@@ -137,20 +137,29 @@ func GrpcExec[RQ any, RS any](destination string, ctx context.Context, req *RQ, 
 	var (
 		header = GrpcHeader(ctx)
 		logc   = clog.New(header)
-		send   = GrpcSender(destination, logc, req, header, onError)
+		send   = GrpcSender(ctx, destination, logc, req, header, onError)
 	)
 
 	return exec(send, logc, req)
 }
 
-func GrpcSender[RQ any, RS any](destination string, logc clog.Instance, req *RQ, header map[string]string, getErrResponse func(code *wrapperspb.StringValue, message *wrapperspb.StringValue) *RS) ice.GrpcSender[RS] {
+func GrpcSender[RQ any, RS any](ctx context.Context, destination string, logc clog.Instance, req *RQ, header map[string]string, getErrResponse func(code *wrapperspb.StringValue, message *wrapperspb.StringValue) *RS) ice.GrpcSender[RS] {
 	return &stuGrpcSender[RQ, RS]{
+		ctx:            ctx,
 		destination:    destination,
 		logc:           logc,
 		header:         header,
 		req:            req,
 		getErrResponse: getErrResponse,
 	}
+}
+
+func (slf *stuGrpcSender[RQ, RS]) Context() context.Context {
+	return slf.ctx
+}
+
+func (slf *stuGrpcSender[RQ, RS]) Header() map[string]string {
+	return slf.header
 }
 
 func (slf *stuGrpcSender[RQ, RS]) Error(code string, err error) (*RS, error) {
