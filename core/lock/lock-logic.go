@@ -40,6 +40,7 @@ func getTxRedisLock(logc clog.Instance, key string, timeout time.Duration, tryFo
 	var (
 		startedAt = time.Now()
 		ins       = &stuLockInstance{
+			logc:      logc,
 			ctx:       context.Background(),
 			startedAt: time.Now(),
 			key:       key,
@@ -95,6 +96,7 @@ func getTxEtcdLock(logc clog.Instance, key string, timeout time.Duration, tryFor
 	var (
 		startedAt = time.Now()
 		ins       = &stuLockInstance{
+			logc:      logc,
 			ctx:       context.Background(),
 			startedAt: time.Now(),
 			key:       key,
