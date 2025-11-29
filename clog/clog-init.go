@@ -149,6 +149,10 @@ func pusher() {
 				case "GrpcV1":
 					req := sq.req.(*sclog.RequestGrpcV1)
 					doGrpcCall(client.GrpcV1, req)
+
+				case "DistLockV1":
+					req := sq.req.(*sclog.RequestDistLockV1)
+					doGrpcCall(client.DistLockV1, req)
 				}
 			})
 		}

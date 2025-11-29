@@ -27,6 +27,7 @@ type stuEnv struct {
 	ClogAddress         string
 	SvcInternalBaseUrls []string
 
+	TxLockEngine        string
 	TxLockEngineAddress string
 	TxLockTimeout       time.Duration
 	TxLockTryFor        time.Duration
