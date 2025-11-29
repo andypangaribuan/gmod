@@ -10,6 +10,7 @@
 package lock
 
 import (
+	"context"
 	"time"
 )
 
@@ -18,11 +19,44 @@ func (slf *stuLockInstance) Release() {
 		return
 	}
 
-	if slf.lock == nil {
-		return
+	if txLockEngineName == "redis" {
+		defer slf.clean()
+		if slf.released || slf.redisLock == nil {
+			return
+		}
+
+		if slf.cancel != nil {
+			cancel := *slf.cancel
+			cancel()
+		}
+
+		err := slf.redisLock.Release(slf.ctx)
+		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock")
 	}
 
-	_ = slf.lock.Release(slf.ctx)
+	if txLockEngineName == "etcd" {
+		defer slf.clean()
+		if slf.released || slf.etcdSession == nil || slf.etcdMtx == nil {
+			return
+		}
+
+		if slf.cancel != nil {
+			cancel := *slf.cancel
+			cancel()
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		err := slf.etcdMtx.Unlock(ctx)
+		if err != nil {
+			pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock:mutex-unlock")
+			return
+		}
+
+		err = slf.etcdSession.Close()
+		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock:session-close")
+	}
 }
 
 func (slf *stuLockInstance) IsLocked() (bool, error) {
@@ -35,7 +69,7 @@ func (slf *stuLockInstance) IsLocked() (bool, error) {
 		return false, err
 	}
 
-	ttl, err := slf.lock.TTL(slf.ctx)
+	ttl, err := slf.redisLock.TTL(slf.ctx)
 	if err != nil {
 		return false, err
 	}
@@ -53,5 +87,20 @@ func (slf *stuLockInstance) Extend(duration time.Duration) error {
 		return err
 	}
 
-	return slf.lock.Refresh(slf.ctx, duration, nil)
+	if txLockEngineName == "redis" {
+		err := slf.redisLock.Refresh(slf.ctx, duration, nil)
+		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "extend-lock")
+		return err
+	}
+
+	return nil
+}
+
+func (slf *stuLockInstance) clean() {
+	slf.released = true
+	slf.ctx = nil
+	slf.redisLock = nil
+	slf.cancel = nil
+	slf.etcdSession = nil
+	slf.etcdMtx = nil
 }

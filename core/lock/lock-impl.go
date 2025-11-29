@@ -10,6 +10,7 @@
 package lock
 
 import (
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/pkg/errors"
 )
@@ -18,12 +19,14 @@ func (slf *stuLock) NewOpt() ice.LockOpt {
 	return new(stuLockOpt)
 }
 
-func (slf *stuLock) Tx(id string, opt ...ice.LockOpt) (ice.LockInstance, error) {
+func (slf *stuLock) Tx(logc clog.Instance, key string, opt ...ice.LockOpt) (ice.LockInstance, error) {
 	if isTxOnDevMode() {
 		return new(stuLockInstance), nil
 	}
 
-	if txLockEngine == nil {
+	if (txLockRedisClient == nil && txLockEtcdClient == nil) ||
+		(txLockEngineName == "redis" && txLockRedisClient == nil) ||
+		(txLockEngineName == "etcd" && txLockEtcdClient == nil) {
 		return new(stuLockInstance), errors.New("doesn't have lock engine, please set from gm.Conf.SetTxLockEngine")
 	}
 
@@ -49,5 +52,5 @@ func (slf *stuLock) Tx(id string, opt ...ice.LockOpt) (ice.LockInstance, error) 
 		}
 	}
 
-	return getTxLock(prefix+id, timeout, tryFor)
+	return getTxLock(logc, prefix+key, timeout, tryFor)
 }

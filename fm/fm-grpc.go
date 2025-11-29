@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/andypangaribuan/gmod/clog"
+	"github.com/andypangaribuan/gmod/gm"
 	"github.com/andypangaribuan/gmod/ice"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -158,6 +159,7 @@ func GrpcSender[RQ any, RS any](destination string, ctx context.Context, req *RQ
 
 func grpcSender[RQ any, RS any](ctx context.Context, destination string, logc clog.Instance, req *RQ, header map[string]string, getErrResponse func(code *wrapperspb.StringValue, message *wrapperspb.StringValue) *RS) ice.GrpcSender[RS] {
 	return &stuGrpcSender[RQ, RS]{
+		startedAt:      gm.Util.Timenow(),
 		ctx:            ctx,
 		destination:    destination,
 		logc:           logc,
@@ -181,11 +183,11 @@ func (slf *stuGrpcSender[RQ, RS]) Error(code string, err error) (*RS, error) {
 		errMessage = TernaryR(err == nil, nil, func() *wrapperspb.StringValue { return PbwString(Ptr(err.Error())) })
 	)
 
-	logcSaveGrpcError(slf.destination, slf.logc, slf.req, slf.header, code, err)
+	logcSaveGrpcError(slf.startedAt, slf.destination, slf.logc, slf.req, slf.header, code, err)
 	return slf.getErrResponse(errCode, errMessage), nil
 }
 
 func (slf *stuGrpcSender[RQ, RS]) Success(result *RS) (*RS, error) {
-	logcSaveGrpcSuccess(slf.destination, slf.logc, slf.req, slf.header, result)
+	logcSaveGrpcSuccess(slf.startedAt, slf.destination, slf.logc, slf.req, slf.header, result)
 	return result, nil
 }

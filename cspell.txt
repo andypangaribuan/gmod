@@ -55,3 +55,4 @@ protoreflect
 protoimpl
 idxs
 extendee
+etcdclientv3

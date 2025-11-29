@@ -15,6 +15,7 @@ import (
 
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/bsm/redislock"
+	etcdclientv3 "go.etcd.io/etcd/client/v3"
 )
 
 //go:linkname iceLock github.com/andypangaribuan/gmod.iceLock
@@ -26,6 +27,8 @@ var mainLockCallback func()
 var (
 	dvalTxTimeout       time.Duration
 	dvalTxTryFor        *time.Duration
-	txLockEngine        *redislock.Client
+	txLockRedisClient   *redislock.Client
+	txLockEtcdClient    *etcdclientv3.Client
 	txLockEngineAddress string
+	txLockEngineName    string
 )

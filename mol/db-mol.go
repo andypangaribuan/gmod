@@ -41,6 +41,8 @@ type DbExecReport struct {
 
 type DbExecReportHost struct {
 	Host       string
+	Name       string
+	Scheme     string
 	StartedAt  time.Time
 	FinishedAt time.Time
 	DurationMs int64

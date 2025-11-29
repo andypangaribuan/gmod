@@ -16,4 +16,5 @@ type Instance interface {
 	ServicePieceV1(mol *ServicePieceV1, async ...bool) error
 	ServiceV1(mol *ServiceV1, async ...bool) error
 	GrpcV1(mol *GrpcV1, async ...bool) error
+	DistLockV1(mol *DistLockV1, async ...bool) error
 }

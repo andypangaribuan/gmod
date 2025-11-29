@@ -12,9 +12,11 @@ package lock
 import "github.com/pkg/errors"
 
 func (slf *stuLockInstance) isHaveLock() error {
-	if slf.lock != nil {
-		return nil
+	if slf.released ||
+		(txLockEngineName == "redis" && slf.redisLock == nil) ||
+		(txLockEngineName == "etcd" && slf.etcdSession == nil) {
+		return errors.New("you don't have any lock")
 	}
 
-	return errors.New("you don't have any lock")
+	return nil
 }

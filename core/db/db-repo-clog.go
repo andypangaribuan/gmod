@@ -30,6 +30,8 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		sqlArgs    *string
 		errMessage *string
 		stackTrace *string
+		dbName     *string
+		schemaName *string
 		host1      string
 		host2      *string
 		duration1  int
@@ -84,6 +86,14 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 
 	if report.execReport != nil && report.execReport.Hosts != nil {
 		for i, h := range report.execReport.Hosts {
+			if h.Name != "" {
+				dbName = &h.Name
+			}
+
+			if h.Scheme != "" {
+				schemaName = &h.Scheme
+			}
+
 			if i == 0 {
 				host1 = h.Host
 				duration1 = int(h.DurationMs)
@@ -102,6 +112,8 @@ func pushClogReport(cin clog.Instance, report *stuReport, err error, execPathFun
 		ExecFunc:     execFunc,
 		ErrorMessage: errMessage,
 		StackTrace:   stackTrace,
+		DbName:       dbName,
+		SchemaName:   schemaName,
 		Host1:        host1,
 		Host2:        host2,
 		Duration1:    duration1,

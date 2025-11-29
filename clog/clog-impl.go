@@ -10,6 +10,8 @@
 package clog
 
 import (
+	"time"
+
 	"github.com/andypangaribuan/gmod/grpc/service/sclog"
 )
 
@@ -18,6 +20,7 @@ func (slf *stuInstance) NoteV1(mol *NoteV1, async ...bool) error {
 		return nil
 	}
 
+	timenow := mrf1[time.Time]("mrf-util-timenow")
 	if mol.ExecPath == "" && mol.ExecFunc == "" {
 		mol.ExecPath, mol.ExecFunc = mrf2[string, string]("mrf-util-get-exec-path-func", 3)
 	}
@@ -33,6 +36,7 @@ func (slf *stuInstance) NoteV1(mol *NoteV1, async ...bool) error {
 		Key:          pbwString(mol.Key),
 		SubKey:       pbwString(mol.SubKey),
 		Data:         mol.Data,
+		OccurredAt:   timeToStrFull(timenow),
 	}
 
 	return grpcCall(*getFirst(async, true), client.NoteV1, "NoteV1", req)
@@ -56,6 +60,8 @@ func (slf *stuInstance) DbqV1(mol *DbqV1, async ...bool) error {
 		ExecFunction: mol.ExecFunc,
 		ErrorMessage: pbwString(mol.ErrorMessage),
 		StackTrace:   pbwString(mol.StackTrace),
+		DbName:       pbwString(mol.DbName),
+		SchemaName:   pbwString(mol.SchemaName),
 		Host1:        mol.Host1,
 		Host2:        pbwString(mol.Host2),
 		Duration1:    int32(mol.Duration1),
@@ -182,7 +188,35 @@ func (slf *stuInstance) GrpcV1(mol *GrpcV1, async ...bool) error {
 		ExecFunction:     mol.ExecFunc,
 		ReqHeader:        pbwString(mol.ReqHeader),
 		Data:             pbwString(mol.Data),
+		ErrMessage:       pbwString(mol.ErrMessage),
+		StackTrace:       pbwString(mol.StackTrace),
+		StartedAt:        timeToStrFull(mol.StartedAt),
+		FinishedAt:       timeToStrFull(mol.FinishedAt),
 	}
 
 	return grpcCall(*getFirst(async, true), client.GrpcV1, "GrpcV1", req)
+}
+
+func (slf *stuInstance) DistLockV1(mol *DistLockV1, async ...bool) error {
+	if client == nil {
+		return nil
+	}
+
+	req := &sclog.RequestDistLockV1{
+		Uid:        slf.uid,
+		UserId:     pbwString(slf.userId),
+		PartnerId:  pbwString(slf.partnerId),
+		SvcName:    svcName,
+		SvcVersion: svcVersion,
+		Engine:     mol.Engine,
+		Address:    mol.Address,
+		Key:        mol.Key,
+		ErrWhen:    pbwString(mol.ErrWhen),
+		ErrMessage: pbwString(mol.ErrMessage),
+		StackTrace: pbwString(mol.StackTrace),
+		StartedAt:  timeToStrFull(mol.StartedAt),
+		FinishedAt: timeToStrFull(mol.FinishedAt),
+	}
+
+	return grpcCall(*getFirst(async, true), client.DistLockV1, "DistLockV1", req)
 }

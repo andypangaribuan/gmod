@@ -31,7 +31,10 @@ func updateReport(report *mol.DbExecReport) {
 func updateReportHost(conn *stuConnection, reportHost *mol.DbExecReportHost) {
 	if conn != nil {
 		reportHost.Host = conn.conf.Host
+		reportHost.Name = conn.conf.Name
+		reportHost.Scheme = conn.conf.Scheme
 	}
+
 	reportHost.FinishedAt = gm.Util.Timenow()
 	reportHost.DurationMs = reportHost.FinishedAt.Sub(reportHost.StartedAt).Milliseconds()
 }

@@ -27,6 +27,8 @@ type DbqV1 struct {
 	ExecFunc     string
 	ErrorMessage *string
 	StackTrace   *string
+	DbName       *string
+	SchemaName   *string
 	Host1        string
 	Host2        *string
 	Duration1    int
@@ -101,4 +103,19 @@ type GrpcV1 struct {
 	ExecFunc    string
 	ReqHeader   *string
 	Data        *string
+	ErrMessage  *string
+	StackTrace  *string
+	StartedAt   time.Time
+	FinishedAt  time.Time
+}
+
+type DistLockV1 struct {
+	Engine     string
+	Address    string
+	Key        string
+	ErrWhen    *string
+	ErrMessage *string
+	StackTrace *string
+	StartedAt  time.Time
+	FinishedAt time.Time
 }

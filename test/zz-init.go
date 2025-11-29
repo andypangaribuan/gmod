@@ -24,6 +24,6 @@ func init() {
 		SetClogAddress(env.ClogAddress, env.AppName, env.AppVersion).
 		SetClogRetryMaxDuration(time.Minute*5).
 		SetInternalBaseUrls(env.SvcInternalBaseUrls).
-		SetTxLockEngine(env.TxLockEngineAddress, env.TxLockTimeout, &env.TxLockTryFor).
+		SetTxLockEngine("etcd", env.TxLockEngineAddress, env.TxLockTimeout, &env.TxLockTryFor).
 		Commit()
 }

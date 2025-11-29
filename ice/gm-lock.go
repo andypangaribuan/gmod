@@ -9,16 +9,15 @@
 
 package ice
 
-import "time"
+import (
+	"time"
+
+	"github.com/andypangaribuan/gmod/clog"
+)
 
 type Lock interface {
 	NewOpt() LockOpt
-
-	// code
-	// -1:
-	//  0: have an error
-	//  1: locked
-	Tx(id string, opt ...LockOpt) (LockInstance, error)
+	Tx(logc clog.Instance, key string, opt ...LockOpt) (LockInstance, error)
 }
 
 type LockOpt interface {

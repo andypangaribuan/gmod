@@ -13,7 +13,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/andypangaribuan/gmod/clog"
 	"github.com/bsm/redislock"
+	"go.etcd.io/etcd/client/v3/concurrency"
 )
 
 type stuLock struct{}
@@ -25,6 +27,13 @@ type stuLockOpt struct {
 }
 
 type stuLockInstance struct {
-	ctx  context.Context
-	lock *redislock.Lock
+	released    bool
+	logc        clog.Instance
+	ctx         context.Context
+	startedAt   time.Time
+	key         string
+	redisLock   *redislock.Lock
+	cancel      *context.CancelFunc
+	etcdSession *concurrency.Session
+	etcdMtx     *concurrency.Mutex
 }

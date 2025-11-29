@@ -19,8 +19,9 @@ type Conf interface {
 	SetClogMaxConcurrentPusher(maxConcurrentPusher int) Conf
 	SetInternalBaseUrls(urls []string) Conf
 
+	// supported engine: etcd, redis
 	// address "-" means no engine, so all the feature will success every time, used when on development
-	SetTxLockEngine(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) Conf
+	SetTxLockEngine(engine string, address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) Conf
 
 	Commit()
 }

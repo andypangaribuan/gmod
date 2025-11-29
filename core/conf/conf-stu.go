@@ -20,6 +20,7 @@ type stuConf struct {
 	svcName                 string         // accessed from reflection
 	svcVersion              string         // accessed from reflection
 	internalBaseUrls        []string       // accessed from reflection
+	txLockEngineName        string         // accessed from reflection
 	txLockEngineAddress     string         // accessed from reflection
 	txLockDvalTimeout       time.Duration  // accessed from reflection
 	txLockDvalTryFor        *time.Duration // accessed from reflection

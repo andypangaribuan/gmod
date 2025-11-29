@@ -12,13 +12,14 @@ package fm
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"github.com/andypangaribuan/gmod/gm"
 	"github.com/pkg/errors"
 )
 
-func logcSaveGrpcError(destination string, logc clog.Instance, req any, header map[string]string, code string, err error) {
+func logcSaveGrpcError(startedAt time.Time, destination string, logc clog.Instance, req any, header map[string]string, code string, err error) {
 	if logc != nil {
 		execPath, execFunc := gm.Util.GetExecPathFunc(2)
 		data := map[string]any{
@@ -26,14 +27,14 @@ func logcSaveGrpcError(destination string, logc clog.Instance, req any, header m
 			"error-code": code,
 		}
 
-		if err != nil {
-			data["error-message"] = err.Error()
-			data["error-stacktrace"] = fmt.Sprintf("%+v", errors.WithStack(err))
+		var (
+			errMessage *string
+			stackTrace *string
+		)
 
-			if data["error-message"] == data["error-stacktrace"] {
-				v := gm.Util.StackTrace()
-				fmt.Println(v)
-			}
+		if err != nil {
+			errMessage = Ptr(err.Error())
+			stackTrace = Ptr(fmt.Sprintf("%+v", errors.WithStack(err)))
 		}
 
 		jsonHeader, headerErr := gm.Json.Encode(header)
@@ -46,11 +47,15 @@ func logcSaveGrpcError(destination string, logc clog.Instance, req any, header m
 			ExecFunc:    execFunc,
 			ReqHeader:   Ternary(headerErr == nil, &jsonHeader, nil),
 			Data:        Ternary(dataErr == nil, &jsonData, nil),
+			ErrMessage:  errMessage,
+			StackTrace:  stackTrace,
+			StartedAt:   startedAt,
+			FinishedAt:  gm.Util.Timenow(),
 		})
 	}
 }
 
-func logcSaveGrpcSuccess(destination string, logc clog.Instance, req any, header map[string]string, res any) {
+func logcSaveGrpcSuccess(startedAt time.Time, destination string, logc clog.Instance, req any, header map[string]string, res any) {
 	if logc != nil {
 		execPath, execFunc := gm.Util.GetExecPathFunc(2)
 		data := map[string]any{
@@ -68,6 +73,8 @@ func logcSaveGrpcSuccess(destination string, logc clog.Instance, req any, header
 			ExecFunc:    execFunc,
 			ReqHeader:   Ternary(headerErr == nil, &jsonHeader, nil),
 			Data:        Ternary(dataErr == nil, &jsonData, nil),
+			StartedAt:   startedAt,
+			FinishedAt:  gm.Util.Timenow(),
 		})
 	}
 }

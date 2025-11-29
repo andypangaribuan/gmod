@@ -49,7 +49,7 @@ func txLockIns(t *testing.T, wg *sync.WaitGroup, startedAt time.Time, key string
 		}
 	}
 
-	lock, err := gm.Lock.Tx(key)
+	lock, err := gm.Lock.Tx(nil, key)
 	defer lock.Release()
 
 	if err != nil {

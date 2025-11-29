@@ -12,12 +12,14 @@ package fm
 
 import (
 	"context"
+	"time"
 
 	"github.com/andypangaribuan/gmod/clog"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 type stuGrpcSender[RQ any, RS any] struct {
+	startedAt      time.Time
 	ctx            context.Context
 	destination    string
 	logc           clog.Instance

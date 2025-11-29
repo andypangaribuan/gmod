@@ -49,7 +49,8 @@ func (slf *stuConf) SetInternalBaseUrls(urls []string) ice.Conf {
 	return slf
 }
 
-func (slf *stuConf) SetTxLockEngine(address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) ice.Conf {
+func (slf *stuConf) SetTxLockEngine(engine string, address string, dvalTimeout time.Duration, dvalTryFor *time.Duration) ice.Conf {
+	slf.txLockEngineName = engine
 	slf.txLockEngineAddress = address
 	slf.txLockDvalTimeout = dvalTimeout
 	slf.txLockDvalTryFor = dvalTryFor

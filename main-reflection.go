@@ -32,6 +32,9 @@ func reflection(key string, arg ...any) []any {
 	case "mrf-util-uid":
 		return rx(iceUtil.UID())
 
+	case "mrf-util-timenow":
+		return rx(iceUtil.Timenow())
+
 	case "mrf-util-get-exec-path-func":
 		return rx(iceUtil.GetExecPathFunc(arg[0].(int)))
 
