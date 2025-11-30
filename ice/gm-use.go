@@ -9,4 +9,4 @@
 
 package ice
 
-type Use interface{}
+type Use any

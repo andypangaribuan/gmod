@@ -42,7 +42,7 @@ func ToCurrencyFormat[T string | int | int32 | int64 | float32 | float64](val T,
 		}
 	}
 
-	var iv interface{} = val
+	var iv any = val
 
 	switch iv := iv.(type) {
 	case int:

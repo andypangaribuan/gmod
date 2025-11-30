@@ -184,7 +184,7 @@ func (slf *stuFuseRContext) ReqParser(header any, body any) error {
 					if err == nil {
 						h.RFTime = &tm
 
-						_ = gm.Util.ReflectionSet(header, map[string]interface{}{"RequestHeader": h})
+						_ = gm.Util.ReflectionSet(header, map[string]any{"RequestHeader": h})
 					}
 				}
 			}

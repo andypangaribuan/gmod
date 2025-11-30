@@ -11,7 +11,7 @@ package clog
 
 import "strings"
 
-func New(args ...interface{}) Instance {
+func New(args ...any) Instance {
 	var (
 		uid              string
 		userId           *string

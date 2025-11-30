@@ -9,4 +9,4 @@
 
 package ice
 
-type Conv interface{}
+type Conv any
