@@ -18,7 +18,7 @@ import (
 	"github.com/andypangaribuan/gmod/fm"
 )
 
-func pushClogReport(logc clog.Instance, key string, startedAt time.Time, err error, when string) {
+func pushClogReport(logc clog.Instance, key string, obtainAt time.Time, startedAt time.Time, err error, when string) {
 	if logc == nil {
 		return
 	}
@@ -43,6 +43,7 @@ func pushClogReport(logc clog.Instance, key string, startedAt time.Time, err err
 		ErrWhen:    errWhen,
 		ErrMessage: errMessage,
 		StackTrace: stackTrace,
+		ObtainAt:   obtainAt,
 		StartedAt:  startedAt,
 		FinishedAt: finishedAt,
 	}

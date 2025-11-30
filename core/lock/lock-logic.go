@@ -38,8 +38,7 @@ func getTxLock(logc clog.Instance, key string, timeout time.Duration, tryFor *ti
 
 func getTxRedisLock(logc clog.Instance, key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
 	var (
-		startedAt = time.Now()
-		ins       = &stuLockInstance{
+		ins = &stuLockInstance{
 			logc:      logc,
 			ctx:       context.Background(),
 			startedAt: time.Now(),
@@ -50,9 +49,10 @@ func getTxRedisLock(logc clog.Instance, key string, timeout time.Duration, tryFo
 	for {
 		lock, err := txLockRedisClient.Obtain(ins.ctx, key, timeout, nil)
 		if err != nil {
-			if tryFor == nil || time.Since(startedAt) > *tryFor {
+			if tryFor == nil || time.Since(ins.startedAt) > *tryFor {
 				err = errors.WithMessage(err, "failed to lock")
-				pushClogReport(logc, key, ins.startedAt, err, "get-lock")
+				ins.obtainAt = time.Now()
+				pushClogReport(logc, key, ins.obtainAt, ins.startedAt, err, "get-lock")
 				return ins, err
 			}
 
@@ -89,13 +89,14 @@ func getTxRedisLock(logc clog.Instance, key string, timeout time.Duration, tryFo
 	}()
 
 	ins.cancel = &cancel
+	ins.obtainAt = time.Now()
+
 	return ins, nil
 }
 
 func getTxEtcdLock(logc clog.Instance, key string, timeout time.Duration, tryFor *time.Duration) (ice.LockInstance, error) {
 	var (
-		startedAt = time.Now()
-		ins       = &stuLockInstance{
+		ins = &stuLockInstance{
 			logc:      logc,
 			ctx:       context.Background(),
 			startedAt: time.Now(),
@@ -107,6 +108,8 @@ func getTxEtcdLock(logc clog.Instance, key string, timeout time.Duration, tryFor
 	ttl := max(int(timeout/time.Second), 3)
 	session, err := concurrency.NewSession(txLockEtcdClient, concurrency.WithTTL(ttl))
 	if err != nil {
+		ins.obtainAt = time.Now()
+		pushClogReport(logc, key, ins.obtainAt, ins.startedAt, err, "get-session")
 		return nil, err
 	}
 
@@ -120,9 +123,10 @@ func getTxEtcdLock(logc clog.Instance, key string, timeout time.Duration, tryFor
 			break
 		}
 
-		if tryFor != nil && time.Since(startedAt) > *tryFor {
+		if tryFor != nil && time.Since(ins.startedAt) > *tryFor {
 			err = errors.WithMessage(err, "failed to lock")
-			pushClogReport(logc, key, ins.startedAt, err, "get-lock")
+			ins.obtainAt = time.Now()
+			pushClogReport(logc, key, ins.obtainAt, ins.startedAt, err, "get-lock")
 			return ins, err
 		}
 
@@ -131,6 +135,7 @@ func getTxEtcdLock(logc clog.Instance, key string, timeout time.Duration, tryFor
 
 	ins.etcdSession = session
 	ins.etcdMtx = mtx
+	ins.obtainAt = time.Now()
 
 	return ins, nil
 }

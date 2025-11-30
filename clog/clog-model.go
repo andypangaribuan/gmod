@@ -116,6 +116,7 @@ type DistLockV1 struct {
 	ErrWhen    *string
 	ErrMessage *string
 	StackTrace *string
+	ObtainAt   time.Time
 	StartedAt  time.Time
 	FinishedAt time.Time
 }

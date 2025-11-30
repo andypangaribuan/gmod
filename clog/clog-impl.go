@@ -214,6 +214,7 @@ func (slf *stuInstance) DistLockV1(mol *DistLockV1, async ...bool) error {
 		ErrWhen:    pbwString(mol.ErrWhen),
 		ErrMessage: pbwString(mol.ErrMessage),
 		StackTrace: pbwString(mol.StackTrace),
+		ObtainAt:   timeToStrFull(mol.ObtainAt),
 		StartedAt:  timeToStrFull(mol.StartedAt),
 		FinishedAt: timeToStrFull(mol.FinishedAt),
 	}

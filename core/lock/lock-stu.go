@@ -31,6 +31,7 @@ type stuLockInstance struct {
 	logc        clog.Instance
 	ctx         context.Context
 	startedAt   time.Time
+	obtainAt    time.Time
 	key         string
 	redisLock   *redislock.Lock
 	cancel      *context.CancelFunc

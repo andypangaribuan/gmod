@@ -31,7 +31,7 @@ func (slf *stuLockInstance) Release() {
 		}
 
 		err := slf.redisLock.Release(slf.ctx)
-		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock")
+		pushClogReport(slf.logc, slf.key, slf.obtainAt, slf.startedAt, err, "release-lock")
 	}
 
 	if txLockEngineName == "etcd" {
@@ -50,12 +50,12 @@ func (slf *stuLockInstance) Release() {
 
 		err := slf.etcdMtx.Unlock(ctx)
 		if err != nil {
-			pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock:mutex-unlock")
+			pushClogReport(slf.logc, slf.key, slf.obtainAt, slf.startedAt, err, "release-lock:mutex-unlock")
 			return
 		}
 
 		err = slf.etcdSession.Close()
-		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "release-lock:session-close")
+		pushClogReport(slf.logc, slf.key, slf.obtainAt, slf.startedAt, err, "release-lock:session-close")
 	}
 }
 
@@ -89,7 +89,7 @@ func (slf *stuLockInstance) Extend(duration time.Duration) error {
 
 	if txLockEngineName == "redis" {
 		err := slf.redisLock.Refresh(slf.ctx, duration, nil)
-		pushClogReport(slf.logc, slf.key, slf.startedAt, err, "extend-lock")
+		pushClogReport(slf.logc, slf.key, slf.obtainAt, slf.startedAt, err, "extend-lock")
 		return err
 	}
 
@@ -98,6 +98,7 @@ func (slf *stuLockInstance) Extend(duration time.Duration) error {
 
 func (slf *stuLockInstance) clean() {
 	slf.released = true
+	slf.logc = nil
 	slf.ctx = nil
 	slf.redisLock = nil
 	slf.cancel = nil
