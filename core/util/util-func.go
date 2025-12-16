@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/andypangaribuan/gmod/fm"
 )
@@ -139,4 +140,152 @@ func getRandom(max int) []int {
 	xRandMx.Lock()
 	defer xRandMx.Unlock()
 	return xRand.Perm(max)
+}
+
+func encodeToBase52(n uint64, length int) string {
+	out := make([]byte, length)
+	for i := length - 1; i >= 0; i-- {
+		out[i] = base52Alphabet[n%base52]
+		n /= base52
+	}
+	return string(out)
+}
+
+func encodeTimestampBase52(t time.Time) string {
+	year, month, day := t.Date()
+	hour, minute, second := t.Clock()
+	micro := t.Nanosecond() / 1000
+
+	m := int(month) - 1
+	d := day - 1
+
+	var index uint64
+	index = uint64(year)
+	index = index*12 + uint64(m)
+	index = index*31 + uint64(d)
+	index = index*24 + uint64(hour)
+	index = index*60 + uint64(minute)
+	index = index*60 + uint64(second)
+	index = index*1_000_000 + uint64(micro)
+
+	return encodeToBase52(index, 11)
+}
+
+func decodeFromBase52(s string) uint64 {
+	var n uint64
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		pos := uint64(0)
+		for j := 0; j < base52; j++ {
+			if base52Alphabet[j] == ch {
+				pos = uint64(j)
+				break
+			}
+		}
+		n = n*base52 + pos
+	}
+	return n
+}
+
+func decodeTimestampBase52(code string) time.Time {
+	n := decodeFromBase52(code)
+
+	micro := int(n % 1_000_000)
+	n /= 1_000_000
+
+	second := int(n % 60)
+	n /= 60
+
+	minute := int(n % 60)
+	n /= 60
+
+	hour := int(n % 24)
+	n /= 24
+
+	d := int(n % 31)
+	n /= 31
+
+	m := int(n % 12)
+	n /= 12
+
+	year := int(n)
+
+	month := time.Month(m + 1)
+	day := d + 1
+
+	return time.Date(year, month, day, hour, minute, second, micro*1000, time.UTC)
+}
+
+func encodeToBase62(n uint64, length int) string {
+	out := make([]byte, length)
+	for i := length - 1; i >= 0; i-- {
+		out[i] = base62Alphabet[n%base62]
+		n /= base62
+	}
+	return string(out)
+}
+
+func encodeTimestampBase62(t time.Time) string {
+	year, month, day := t.Date()
+	hour, minute, second := t.Clock()
+	micro := t.Nanosecond() / 1000
+
+	m := int(month) - 1
+	d := day - 1
+
+	var index uint64
+	index = uint64(year)
+	index = index*12 + uint64(m)
+	index = index*31 + uint64(d)
+	index = index*24 + uint64(hour)
+	index = index*60 + uint64(minute)
+	index = index*60 + uint64(second)
+	index = index*1_000_000 + uint64(micro)
+
+	return encodeToBase62(index, 10)
+}
+
+func decodeFromBase62(s string) uint64 {
+	var n uint64
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		pos := uint64(0)
+		for j := 0; j < base62; j++ {
+			if base62Alphabet[j] == ch {
+				pos = uint64(j)
+				break
+			}
+		}
+		n = n*base62 + pos
+	}
+	return n
+}
+
+func decodeTimestampBase62(code string) time.Time {
+	n := decodeFromBase62(code)
+
+	micro := int(n % 1_000_000)
+	n /= 1_000_000
+
+	second := int(n % 60)
+	n /= 60
+
+	minute := int(n % 60)
+	n /= 60
+
+	hour := int(n % 24)
+	n /= 24
+
+	d := int(n % 31)
+	n /= 31
+
+	m := int(n % 12)
+	n /= 12
+
+	year := int(n)
+
+	month := time.Month(m + 1)
+	day := d + 1
+
+	return time.Date(year, month, day, hour, minute, second, micro*1000, time.UTC)
 }

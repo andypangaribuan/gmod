@@ -17,12 +17,17 @@ type Util interface {
 	ConcurrentProcess(total, max int, callback func(index int))
 	XConcurrentProcess(maxConcurrent int, maxJob int) UtilConcurrentProcess
 
+	UID52(addition ...int) string
+	UID62(addition ...int) string
 	LiteUID() string
 	UID(addition ...int) string
+	XID(addition ...int) string
 	GetAlphabet(isUpper ...bool) string
 	GetNumeric() string
 	GetRandom(length int, value string) string
-	DecodeUID(uid string, addition ...int) (rawId string, randId string, err error)
+	DecodeUID52(uid string) (timeId *time.Time, randId string, err error)
+	DecodeUID62(uid string) (timeId *time.Time, randId string, err error)
+	DecodeXID(uid string, addition ...int) (rawId string, randId string, err error)
 	ReplaceAll(value *string, replaceValue string, replaceKey ...string) *string
 
 	ReadTextFile(filePath string) ([]string, error)

@@ -32,6 +32,11 @@ const (
 	alphabetLower = "abcdefghijklmnopqrstuvwxyz"
 	alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	numeric       = "0123456789"
+
+	base52Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	base52         = 52
+	base62Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	base62         = 62
 )
 
 var (

@@ -61,11 +61,52 @@ func (slf *stuUtil) XConcurrentProcess(maxConcurrent int, maxJob int) ice.UtilCo
 	return slf.xConcurrentProcess(maxConcurrent, maxJob)
 }
 
+func (slf *stuUtil) UID52(addition ...int) string {
+	length := 0
+	if len(addition) > 0 && addition[0] > 0 {
+		length = addition[0]
+	}
+
+	randId := ""
+	if length > 0 {
+		randId = slf.GetRandom(length, numeric+alphabetLower+alphabetUpper)
+	}
+
+	return encodeTimestampBase52(time.Now().UTC()) + randId
+}
+
+func (slf *stuUtil) UID62(addition ...int) string {
+	length := 0
+	if len(addition) > 0 && addition[0] > 0 {
+		length = addition[0]
+	}
+
+	randId := ""
+	if length > 0 {
+		randId = slf.GetRandom(length, numeric+alphabetLower+alphabetUpper)
+	}
+
+	return encodeTimestampBase62(time.Now().UTC()) + randId
+}
+
 func (slf *stuUtil) LiteUID() string {
 	return slf.UID(3)
 }
 
 func (slf *stuUtil) UID(addition ...int) string {
+	length := *fm.GetFirst(addition, 8)
+	length = fm.Ternary(length < 0, 0, length)
+	length += 2
+
+	randId := ""
+	if length > 0 {
+		randId = slf.GetRandom(length, numeric+alphabetLower+alphabetUpper)
+	}
+
+	return encodeTimestampBase62(time.Now().UTC()) + randId
+}
+
+func (slf *stuUtil) XID(addition ...int) string {
 	length := *fm.GetFirst(addition, 8)
 	length = fm.Ternary(length < 0, 0, length)
 
@@ -101,24 +142,6 @@ func (slf *stuUtil) GetRandom(length int, value string) string {
 		return ""
 	}
 
-	// var (
-	// 	res   = ""
-	// 	count = -1
-	// 	max   = len(value)
-	// 	min   = 1
-	// 	rin   int
-	// )
-
-	// for {
-	// 	count++
-	// 	if count == length {
-	// 		break
-	// 	}
-
-	// 	rin = xRand.Intn(max) + min
-	// 	res += value[rin-1 : rin]
-	// }
-
 	var (
 		res   = ""
 		max   = len(value)
@@ -126,7 +149,6 @@ func (slf *stuUtil) GetRandom(length int, value string) string {
 	)
 
 	for count < length {
-		// perm := xRand.Perm(max)
 		perm := getRandom(max)
 		for _, randIndex := range perm {
 			res += value[randIndex : randIndex+1]
@@ -140,7 +162,29 @@ func (slf *stuUtil) GetRandom(length int, value string) string {
 	return res
 }
 
-func (slf *stuUtil) DecodeUID(uid string, addition ...int) (rawId string, randId string, err error) {
+func (slf *stuUtil) DecodeUID52(uid string) (timeId *time.Time, randId string, err error) {
+	length := len(uid)
+	if length < 11 {
+		return nil, "", errors.New("invalid uid-52")
+	}
+
+	randId = uid[11:]
+	timeIdPtr := decodeTimestampBase52(uid[:11])
+	return &timeIdPtr, randId, nil
+}
+
+func (slf *stuUtil) DecodeUID62(uid string) (timeId *time.Time, randId string, err error) {
+	length := len(uid)
+	if length < 10 {
+		return nil, "", errors.New("invalid uid-62")
+	}
+
+	randId = uid[10:]
+	timeIdPtr := decodeTimestampBase62(uid[:10])
+	return &timeIdPtr, randId, nil
+}
+
+func (slf *stuUtil) DecodeXID(uid string, addition ...int) (rawId string, randId string, err error) {
 	length := *fm.GetFirst(addition, 8)
 	length = fm.Ternary(length < 0, 0, length)
 
@@ -160,10 +204,7 @@ func (slf *stuUtil) DecodeUID(uid string, addition ...int) (rawId string, randId
 
 	for _, uid := range uids {
 		num = l3uidK[uid]
-		cut := len(num) - chunkSize
-		if cut < 0 {
-			cut = 0
-		}
+		cut := max(len(num)-chunkSize, 0)
 
 		raw += num[cut:]
 	}
@@ -267,7 +308,7 @@ func (*stuUtil) PanicCatcher(fn func()) (err error) {
 				err = v
 			} else {
 				rv := reflect.ValueOf(pv)
-				if rv.Kind() == reflect.Ptr {
+				if rv.Kind() == reflect.Pointer {
 					pv = rv.Elem()
 				}
 
@@ -281,14 +322,14 @@ func (*stuUtil) PanicCatcher(fn func()) (err error) {
 
 func (*stuUtil) ReflectionGet(obj any, fieldName string) (any, error) {
 	val := reflect.ValueOf(obj)
-	if val.Kind() != reflect.Ptr {
+	if val.Kind() != reflect.Pointer {
 		return nil, errors.New("obj must be a pointer")
 	}
 
 	val = val.Elem()
 	typ := val.Type()
 
-	if val.Kind() != reflect.Struct && val.Kind() == reflect.Ptr {
+	if val.Kind() != reflect.Struct && val.Kind() == reflect.Pointer {
 		val = val.Elem()
 		typ = val.Type()
 	}
@@ -316,14 +357,14 @@ func (*stuUtil) ReflectionGet(obj any, fieldName string) (any, error) {
 
 func (slf *stuUtil) ReflectionSet(obj any, bind map[string]any) error {
 	val := reflect.ValueOf(obj)
-	if val.Kind() != reflect.Ptr {
+	if val.Kind() != reflect.Pointer {
 		return errors.New("obj must be a pointer")
 	}
 
 	val = val.Elem()
 	typ := val.Type()
 
-	if val.Kind() != reflect.Struct && val.Kind() == reflect.Ptr {
+	if val.Kind() != reflect.Struct && val.Kind() == reflect.Pointer {
 		val = val.Elem()
 		typ = val.Type()
 	}
