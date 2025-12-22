@@ -23,7 +23,7 @@ func beforeGracefulShutdown(then ...func()) {
 	<-sigChan
 
 	for _, fn := range then {
-		fn()
+		go fn()
 	}
 }
 
