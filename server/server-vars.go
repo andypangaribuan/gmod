@@ -34,6 +34,9 @@ var (
 
 	cronMX        map[string]*sync.Mutex
 	cronIsStartUp map[string]bool
+
+	mx                     sync.Mutex
+	isGracefulShutdownImpl bool
 )
 
 const messageInternalServerError = "We apologize and are fixing the problem. Please try again at a later stage."

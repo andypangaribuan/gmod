@@ -27,3 +27,7 @@ func FuseGR(grpcPort int, grpcRoutes func(router RouterG), restPort int, restRou
 func FuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPort int, wsRoutes func(router RouterS)) {
 	serverImpl.FuseGS(grpcPort, grpcRoutes, wsPort, wsRoutes)
 }
+
+func BeforeGracefulShutdown(then ...func()) {
+	go beforeGracefulShutdown(then...)
+}

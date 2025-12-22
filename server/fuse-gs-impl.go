@@ -83,6 +83,7 @@ func (slf *stuServer) fuseGS(grpcPort int, grpcRoutes func(router RouterG), wsPo
 	}()
 
 	go slf.runWS(wsPort, wsRoutes, router.withAutoRecover)
+	go gracefulShutdown()
 
 	err = router.server.Serve(listener)
 	if err != nil {

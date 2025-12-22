@@ -70,6 +70,7 @@ func (slf *stuServer) fuseRS(restPort int, routes func(router RouterR), ws *func
 	}()
 
 	slf.startWebsocket(fuseFiberApp, ws)
+	go gracefulShutdown()
 
 	err := fuseFiberApp.Listen(fmt.Sprintf(":%v", restPort))
 	if err != nil {
