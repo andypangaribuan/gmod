@@ -10,6 +10,13 @@
     }
   ],
   "dictionaries": ["project"],
+  "languageSettings": [
+    {
+      "languageId": "go",
+      "allowCompoundWords": false,
+      "ignoreRegExpList": ["string"]
+    }
+  ],
   "words": ["andypangaribuan", "pangaribuan", "decompilation", "taskfile"],
   "ignorePaths": [
     "*.mod",

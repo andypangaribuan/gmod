@@ -16,6 +16,7 @@ import (
 
 type UseGcs interface {
 	Init(credential UtilEnvBase64, bucketName string) error
+	Read(dirPath string, callback func(name string) bool) error
 	Write(filePath string, reader io.Reader) error
 	WriteData(filePath string, data []byte) error
 	WriteReqFile(parts *map[string][]*multipart.FileHeader, key string, dirPath string, overrideFileName string) (fileName string, fileExt string, err error)

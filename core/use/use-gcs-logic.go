@@ -19,6 +19,7 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/andypangaribuan/gmod/ice"
 	"github.com/pkg/errors"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -30,6 +31,44 @@ func (slf *stuUseGcs) init(credential ice.UtilEnvBase64, bucketName string) erro
 	}
 
 	slf.bucket = client.Bucket(bucketName)
+	return nil
+}
+
+// dirPath should end with "/"
+// e.q. "foldername/"
+func (slf *stuUseGcs) read(dirPath string, callback func(name string) bool) error {
+	if slf.bucket == nil {
+		return errors.New("do init first, before you use this")
+	}
+
+	var (
+		ctx   = context.Background()
+		query *storage.Query
+	)
+
+	if dirPath != "" {
+		query = &storage.Query{
+			Prefix: dirPath,
+		}
+	}
+
+	it := slf.bucket.Objects(ctx, query)
+
+	for {
+		attrs, err := it.Next()
+		if err == iterator.Done || err == io.EOF {
+			break
+		}
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		next := callback(attrs.Name)
+		if !next {
+			break
+		}
+	}
+
 	return nil
 }
 
