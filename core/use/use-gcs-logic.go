@@ -36,7 +36,7 @@ func (slf *stuUseGcs) init(credential ice.UtilEnvBase64, bucketName string) erro
 
 // dirPath should end with "/"
 // e.q. "foldername/"
-func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name string) bool) error {
+func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name string) (canNext bool)) error {
 	if slf.bucket == nil {
 		return errors.New("do init first, before you use this")
 	}
@@ -59,7 +59,7 @@ func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name 
 		if err == iterator.Done {
 			break
 		}
-		
+
 		if err != nil {
 			return errors.WithStack(err)
 		}

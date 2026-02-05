@@ -21,7 +21,7 @@ func (slf *stuUseGcs) Init(credential ice.UtilEnvBase64, bucketName string) erro
 	return slf.init(credential, bucketName)
 }
 
-func (slf *stuUseGcs) Read(dirPath string, callback func(directory string, name string) bool) error {
+func (slf *stuUseGcs) Read(dirPath string, callback func(directory string, name string) (canNext bool)) error {
 	return slf.read(dirPath, callback)
 }
 
