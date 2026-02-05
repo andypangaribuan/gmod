@@ -56,9 +56,10 @@ func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name 
 
 	for {
 		attrs, err := it.Next()
-		if err == iterator.Done || err == io.EOF {
+		if err == iterator.Done {
 			break
 		}
+		
 		if err != nil {
 			return errors.WithStack(err)
 		}
