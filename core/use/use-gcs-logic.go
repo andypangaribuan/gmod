@@ -70,23 +70,23 @@ func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name 
 			break
 		}
 
-		reader, err := slf.bucket.Object(attrs.Name).NewReader(ctx)
-		if err != nil {
-			return errors.WithMessagef(err, "failed to read the file: %v", attrs.Name)
-		}
-		defer func() {
-			_ = reader.Close()
-		}()
+		// reader, err := slf.bucket.Object(attrs.Name).NewReader(ctx)
+		// if err != nil {
+		// 	return errors.WithMessagef(err, "failed to read the file: %v", attrs.Name)
+		// }
+		// defer func() {
+		// 	_ = reader.Close()
+		// }()
 
-		lines := make([]string, 0)
-		scanner := bufio.NewScanner(reader)
-		for scanner.Scan() {
-			line := scanner.Text()
-			line = strings.TrimSpace(line)
-			if line != "" {
-				lines = append(lines, line)
-			}
-		}
+		// lines := make([]string, 0)
+		// scanner := bufio.NewScanner(reader)
+		// for scanner.Scan() {
+		// 	line := scanner.Text()
+		// 	line = strings.TrimSpace(line)
+		// 	if line != "" {
+		// 		lines = append(lines, line)
+		// 	}
+		// }
 	}
 
 	return nil
