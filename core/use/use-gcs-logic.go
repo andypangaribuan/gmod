@@ -97,23 +97,38 @@ func (slf *stuUseGcs) readLines(filePath string) (lines []string, err error) {
 		return nil, errors.New("do init first, before you use this")
 	}
 
-	reader, err := slf.bucket.Object(filePath).NewReader(context.Background())
+	r, err := slf.bucket.Object(filePath).NewReader(context.Background())
 	if err != nil {
 		return nil, errors.WithMessagef(err, "failed to read the file: %v", filePath)
 	}
 	defer func() {
-		_ = reader.Close()
+		_ = r.Close()
 	}()
 
 	lines = make([]string, 0)
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		line := scanner.Text()
-		line = strings.TrimSpace(line)
-		if line != "" {
-			lines = append(lines, line)
+	reader := bufio.NewReader(r)
+
+	for {
+		line, err := reader.ReadString('\n')
+		lines = append(lines, line)
+		// if len(line) > 0 {
+		// 	processLine(strings.TrimRight(line, "\n"))
+		// }
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return nil, err
 		}
 	}
+
+	// lines = make([]string, 0)
+	// scanner := bufio.NewScanner(reader)
+	// for scanner.Scan() {
+	// 	line := scanner.Text()
+	// 	lines = append(lines, line)
+	// }
 
 	return lines, nil
 }
