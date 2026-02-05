@@ -40,3 +40,7 @@ func (slf *stuUseGcs) WriteData(filePath string, data []byte) error {
 func (slf *stuUseGcs) WriteReqFile(parts *map[string][]*multipart.FileHeader, key string, dirPath string, overrideFileName string) (fileName string, fileExt string, err error) {
 	return slf.writeReqFile(parts, key, dirPath, overrideFileName)
 }
+
+func (slf *stuUseGcs) Delete(filepath string) error {
+	return slf.delete(filepath)
+}

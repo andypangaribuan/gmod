@@ -194,3 +194,9 @@ func (slf *stuUseGcs) writeReqFile(parts *map[string][]*multipart.FileHeader, ke
 	err = slf.write(fullPath, buf)
 	return
 }
+
+func (slf *stuUseGcs) delete(filepath string) error {
+	return slf.bucket.
+		Object(filepath).
+		Delete(context.Background())
+}

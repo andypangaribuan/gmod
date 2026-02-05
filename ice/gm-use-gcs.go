@@ -21,4 +21,5 @@ type UseGcs interface {
 	Write(filePath string, reader io.Reader) error
 	WriteData(filePath string, data []byte) error
 	WriteReqFile(parts *map[string][]*multipart.FileHeader, key string, dirPath string, overrideFileName string) (fileName string, fileExt string, err error)
+	Delete(filepath string) error
 }
