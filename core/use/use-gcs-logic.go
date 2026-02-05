@@ -10,6 +10,7 @@
 package use
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"io"
@@ -68,9 +69,53 @@ func (slf *stuUseGcs) read(dirPath string, callback func(directory string, name 
 		if !next {
 			break
 		}
+
+		reader, err := slf.bucket.Object(attrs.Name).NewReader(ctx)
+		if err != nil {
+			return errors.WithMessagef(err, "failed to read the file: %v", attrs.Name)
+		}
+		defer func() {
+			_ = reader.Close()
+		}()
+
+		lines := make([]string, 0)
+		scanner := bufio.NewScanner(reader)
+		for scanner.Scan() {
+			line := scanner.Text()
+			line = strings.TrimSpace(line)
+			if line != "" {
+				lines = append(lines, line)
+			}
+		}
 	}
 
 	return nil
+}
+
+func (slf *stuUseGcs) readLines(filePath string) (lines []string, err error) {
+	if slf.bucket == nil {
+		return nil, errors.New("do init first, before you use this")
+	}
+
+	reader, err := slf.bucket.Object(filePath).NewReader(context.Background())
+	if err != nil {
+		return nil, errors.WithMessagef(err, "failed to read the file: %v", filePath)
+	}
+	defer func() {
+		_ = reader.Close()
+	}()
+
+	lines = make([]string, 0)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		line := scanner.Text()
+		line = strings.TrimSpace(line)
+		if line != "" {
+			lines = append(lines, line)
+		}
+	}
+
+	return lines, nil
 }
 
 func (slf *stuUseGcs) write(filePath string, reader io.Reader) error {

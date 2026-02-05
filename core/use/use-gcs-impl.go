@@ -25,6 +25,10 @@ func (slf *stuUseGcs) Read(dirPath string, callback func(directory string, name 
 	return slf.read(dirPath, callback)
 }
 
+func (slf *stuUseGcs) ReadLines(filePath string) (lines []string, err error) {
+	return slf.readLines(filePath)
+}
+
 func (slf *stuUseGcs) Write(filePath string, reader io.Reader) error {
 	return slf.write(filePath, reader)
 }
